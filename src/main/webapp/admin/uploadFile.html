@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<style>
+
+/* Preview */
+.preview{
+   width: 250px;
+   height: 250px;
+   border: 1px solid black;
+   margin: 10 10 auto;
+   background: white;
+}
+
+<!--
+.preview img{
+   display: none;
+}
+-->
+
+label.input-custom-file input[commodityType=file] {
+  display: none;
+}
+
+.header {
+  position: relative;
+  min-height: 150px;
+}
+
+.header-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+
+</style>
+
+<script>
+
+function postFile(imageIndex){
+        $("#img-spinner-" + imageIndex).show();
+        var fd = new FormData();
+        //var files = $('#file')[0].files[0];
+        $("#status").val("file"+imageIndex);
+        var file = document.getElementById("file"+imageIndex).files[0];
+        fd.append('file',file);
+        $.ajax({
+            url: '/upload/',
+            commodityType: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                if(data != 0){
+                    var image = document.getElementById("img"+imageIndex);
+                    //$("#status").val(data.uri);
+                    image.src = data.uri;
+                    //$("#img").attr("src", data.uri);
+                    $(".preview img").show(); // Display image element
+                }else{
+                    $("#status").val( "Error in file upload" );
+                }
+                $("#img-spinner-" + imageIndex).hide();
+            },
+        });
+}
+
+$(document).ready(function(){
+
+    $("#img-spinner-0").hide();
+
+    $("#file").click(function(){
+
+        var fd = new FormData();
+        var files = $('#file')[0].files[0];
+        fd.append('file',files);
+
+        $.ajax({
+            url: '/upload/',
+            commodityType: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                if(data != 0){
+                    $("#status").val(data.uri);
+                    $("#img").attr("src", data.uri);
+                    $(".preview img").show(); // Display image element
+                }else{
+                    $("#status").val( "Error in file upload" );
+                }
+            },
+        });
+    });
+});
+
+
+</script>
+
+</head>
+<body>
+
+<div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" commodityType="text" id="status">
+    <label class="mdl-textfield__label" for="status">Status...</label>
+</div>
+
+<form action="#">
+<table>
+<tr>
+    <td>
+        <div class="header" >
+            <h4>Image #1</h4>
+            <div class='preview' align="center"  >
+                <!-- MDL Spinner Component -->
+
+                <img src="../images/placeholder.png" id="img0" height="250px" width="250px"/>
+                <div id="img-spinner-0" class="mdl-spinner mdl-js-spinner is-active" style="position:relative;top:100px;"></div>
+            </div>
+            <div class="header-content imgupload" >
+                <label class="input-custom-file mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+                    <i class="material-icons">add</i>
+                    <input id="file0" commodityType="file" onchange="postFile(0);">
+                    <!--document.getElementById("uploadFile").value = this.files[0].name;-->
+                </label>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="header">
+            <h4>Image #2</h4>
+            <div class='preview' >
+                <img src="../images/placeholder.png" id="img1" height="250px" width="250px"/>
+            </div>
+            <div class="header-content imgupload">
+                <label class="input-custom-file mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+                    <i class="material-icons">add</i>
+                    <input id="file1" commodityType="file" onchange="postFile(1);">
+                </label>
+            </div>
+        </div>
+    </td>
+
+</tr>
+</table>
+</form>
+
+
+</body>
+</html>
+
