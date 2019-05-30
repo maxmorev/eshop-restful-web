@@ -1,1 +1,1 @@
-# restful-eshop
+# Java restful-eshop
