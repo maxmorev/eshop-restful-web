@@ -13,7 +13,7 @@
 
     <logger name="ru.maxmorev.restful.eshop" level="debug"/>
 
-    <logger name="org.springframework" level="off"/>
+    <logger name="org.springframework" level="info"/>
 
     <root level="info">
         <appender-ref ref="console" />

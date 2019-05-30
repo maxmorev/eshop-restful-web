@@ -10,3 +10,7 @@ select * from commodity_branch_attribute_set  join commodity_attribute on (commo
 select * from shopping_cart;
 select * from commodity_branch join commodity cm on(cm.id=commodity_branch.commodity_id) where commodity_branch.id=163;
 select * from shopping_cart_set;
+
+select * from commodity_branch_attribute_set cbas join commodity_branch cb on (cbas.branch_id = cb.id) where commodity_id=158 and (cbas.attribute_value_id=80 or cbas.attribute_value_id=118);
+
+select * from commodity_branch_attribute_set cbas

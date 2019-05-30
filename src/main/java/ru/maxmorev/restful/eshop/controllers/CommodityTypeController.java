@@ -1,12 +1,14 @@
 package ru.maxmorev.restful.eshop.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
-import ru.maxmorev.restful.eshop.controllers.response.CrudResponse;
+import ru.maxmorev.restful.eshop.controllers.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -16,10 +18,15 @@ public class CommodityTypeController {
     private static final Logger logger = Logger.getLogger(CommodityTypeController.class.getName());
 
     private CommodityService commodityService;
+    private MessageSource messageSource;
 
     @Autowired
     public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
+    }
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
     }
 
     @RequestMapping(path = "/types/", method = RequestMethod.GET)
@@ -32,40 +39,36 @@ public class CommodityTypeController {
 
     @RequestMapping(path = "/type/", method = RequestMethod.POST)
     @ResponseBody
-    public CrudResponse createCommodityType(@RequestBody CommodityType type ){
-
+    public Message createCommodityType(@RequestBody CommodityType type, Locale locale ){
         logger.info("type : " + type);
-
         commodityService.addType(type);
-
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = "/type/", method = RequestMethod.PUT)
     @ResponseBody
-    public CrudResponse updateCommodityType(@RequestBody CommodityType type ){
+    public Message updateCommodityType(@RequestBody CommodityType type, Locale locale ){
         commodityService.addType(type);
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
 
     @RequestMapping(path = "/type/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public CrudResponse deleteCommodityType(@PathVariable(name = "id", required = true) Long id){
+    public Message deleteCommodityType(@PathVariable(name = "id", required = true) Long id, Locale locale){
         commodityService.deleteTypeById(id);
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = "/type/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public CommodityType getCommodityType(@PathVariable(name = "id", required = true) Long id){
+    public CommodityType getCommodityType(@PathVariable(name = "id", required = true) Long id, Locale locale){
         Optional<CommodityType> cmType = commodityService.findTypeById(id);
         if(cmType.isPresent()){
             return cmType.get();
         }else{
-            StringBuilder errorMessage = new StringBuilder("Commodity Type with id=");
-            errorMessage.append(id).append(" not found");
-            throw new RuntimeException(errorMessage.toString());
+            //messageSource.getMessage("commodity.branch.error.id", new Object[]{branchId}, locale)
+            throw new IllegalArgumentException(messageSource.getMessage("commodity.type.error.id", new Object[]{id}, locale));
         }
     }
 

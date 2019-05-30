@@ -1,7 +1,7 @@
 /* COMMODITY_TYPE */
 var URL_SERVICES = "http://localhost:8080/restful-eshop";
 
-//URL_SERVICES = "http://localhost:8888";
+URL_SERVICES = "http://localhost:8888";
 
 function deleteType(typeId){
 
@@ -287,20 +287,23 @@ function showNavigationCaption(text){
 
 
   function showError(json, errorTab){
-
-    var message = "<b>" + json.responseJSON.status +"</b>:&nbsp;" + json.responseJSON.message;
+    var errorContent = json.responseJSON.message;//json.responseJSON.message.replace(/\n/g, "<br/>");
+    var message = "<b>" + json.responseJSON.status +"</b>:&nbsp;" + errorContent;
     if(errorTab===undefined){
         $('#error-message-content-1').empty();
         $('#error-message-content-1').append(message);
         $('#error-message-content-1').show();
-        $('#error-message').show();
+        $('#error-message-1').show();
+        $('#error-container-1').show();
+
     }else{
         $('#error-message-content-'+errorTab).empty();
         $('#error-message-content-'+errorTab).append(message);
         $('#error-message-content-'+errorTab).show();
         $('#error-message-'+errorTab).show();
+        $('#error-container-'+errorTab).show();
     }
-
+    componentHandler.upgradeDom();
   }
 
   function showErrorFromText(text, errorTab){
@@ -706,8 +709,10 @@ function btnClickAddCommodity(branchId){
                     //refreshTypes();
                     //cleanCreateType()
                },
-               error: function( xhr, status, error ) {
+               error: function( json, status, error ) {
                     //...
+                    //ERROR COMMODITY
+                    showError(json, 2);
                     var toastMessage = {message: 'Error in '+method+' Commodity' };
                     snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
                     //refreshTypes();

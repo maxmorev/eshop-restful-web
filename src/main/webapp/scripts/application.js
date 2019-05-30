@@ -17,19 +17,15 @@ function mark(el, imgURI) {
     document.getElementById('mainImage').src=imgURI;
 }
 
-
 //COMMODITY SELECT PROPERTIES SECTION
 /**
     APPLICATION PARAMETERS
 **/
 
-
-
 function addToBasket(errorMessage, successMessage){
     var elms = document.getElementsByClassName("circleSelection");
     var colorId = elms[0].getAttribute("id");
     showToast("SELECTED COLOR : " + colorId);
-
 }
 
 
@@ -38,7 +34,6 @@ function showToast(message){
     var snackbarContainer = document.querySelector('#demo-toast-example');
     var toastMessage = {message: message };
     snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
 }
 
 function sendDataAsJson(url, method, data){
@@ -67,8 +62,6 @@ function addToShoppingCartSet(cartId, branchId, amount){
             branchId: branchId,
             amount: amount
     };
-
     sendDataAsJson(urlService, 'POST', data)
-
 }
 

@@ -1,13 +1,19 @@
 package ru.maxmorev.restful.eshop.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
-import ru.maxmorev.restful.eshop.controllers.response.CrudResponse;
+import ru.maxmorev.restful.eshop.controllers.response.Message;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.services.CommodityService;
+
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -17,36 +23,53 @@ public class CommodityController {
     private static final Logger logger = Logger.getLogger(CommodityController.class.getName());
 
     private CommodityService commodityService;
+    private MessageSource messageSource;
 
     @Autowired
     public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
     }
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @RequestMapping(path = "/commodity/", method=RequestMethod.POST)
     @ResponseBody
-    public CrudResponse createCommodityFromRequset(@RequestBody RequestCommodity requestCommodity ){
+    public Message createCommodityFromRequset(@RequestBody @Valid RequestCommodity requestCommodity, BindingResult bindingResult, Locale locale){
         logger.info("POST -> createCommodityFromRequset");
+        if (bindingResult.hasErrors()) {
+            logger.info("!!!! bindingResult.hasErrors() !!!!");
+            String errorContent = "";
+            int index = 0;
+            for(ObjectError error: bindingResult.getAllErrors()){
+                errorContent += ++index+". " + error.getDefaultMessage()+"\n";
+                logger.info(error.getDefaultMessage());
+            }
+            throw new RuntimeException( errorContent );
+            //return new Message(Message.ERROR, "Error create commodity");
+        }
         commodityService.addCommodity(requestCommodity);
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = "/commodity/", method = RequestMethod.PUT)
     @ResponseBody
-    public CrudResponse updateCommodity(@RequestBody RequestCommodity requestCommodity ){
+    public Message updateCommodity(@RequestBody RequestCommodity requestCommodity , Locale locale){
         logger.info("PUT -> updateCommodity");
         commodityService.updateCommodity(requestCommodity);
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = "/commodity/id/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Commodity getCommodity( @PathVariable(name="id", required = true) Long id ) throws Exception{
+    public Commodity getCommodity( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
         Commodity cm = commodityService.findCommodityById(id);
         if(Objects.nonNull(cm)){
             return cm;
         }else {
-            throw new IllegalArgumentException("Illegal parameter id=" + id);
+            //
+            throw new IllegalArgumentException(messageSource.getMessage("commodity.error.id", new Object[]{id}, locale));
         }
     }
 
@@ -64,12 +87,12 @@ public class CommodityController {
 
     @RequestMapping(path = "/commodityBranch/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public CommodityBranch getCommodityBranch( @PathVariable(name="id", required = true) Long branchId ) throws Exception{
+    public CommodityBranch getCommodityBranch( @PathVariable(name="id", required = true) Long branchId, Locale locale ) throws Exception{
         CommodityBranch branch = commodityService.findBranchById(branchId);
         if(Objects.nonNull(branch)){
             return branch;
         }else {
-            throw new IllegalArgumentException("Illegal parameter id=" + branchId);
+            throw new IllegalArgumentException(messageSource.getMessage("commodity.branch.error.id", new Object[]{branchId}, locale));
         }
     }
 

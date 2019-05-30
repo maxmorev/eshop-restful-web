@@ -30,7 +30,7 @@ public class FileUploadController {
     public ResponseEntity<FileUploadResponse> uploadData(@RequestParam("file") MultipartFile file) throws Exception {
 
         if (file == null) {
-            throw new RuntimeException("You must select the a file for uploading");
+            throw new IllegalArgumentException("You must select the a file for uploading");
         }
 
         InputStream inputStream = file.getInputStream();

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.maxmorev.restful.eshop.controllers.response.ErrorInfo;
+import ru.maxmorev.restful.eshop.controllers.response.Message;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,9 +18,8 @@ public class GlobalDefaultExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    ErrorInfo
-    handleBadRequest(HttpServletRequest req, Exception ex) {
-        return new ErrorInfo(req.getRequestURL().toString(), ex);
+    public Message handleBadRequest(HttpServletRequest req, Exception ex) {
+        return new Message(Message.ERROR, req.getRequestURL().toString(), ex);
     }
 
 }

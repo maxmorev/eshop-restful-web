@@ -199,8 +199,6 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     private void createCommodityBranch(RequestCommodity requestCommodity, Commodity commodity){
-
-
         //create branch
         CommodityBranch commodityBranch = new CommodityBranch();
         commodityBranch.setAmount( requestCommodity.getAmount() );
@@ -208,8 +206,6 @@ public class CommodityServiceImpl implements CommodityService {
         commodityBranch.setCommodityId(commodity.getId());
         commodityBranchRepository.save( commodityBranch );
         createBranchPropertySet(requestCommodity.getPropertyValues(), commodityBranch);
-
-
     }
 
     private boolean createPropertySet(CommodityBranchAttributeSet propertySet, Long valId){
@@ -250,7 +246,13 @@ public class CommodityServiceImpl implements CommodityService {
         Optional<Commodity> commodityExist = commodityRepository.findByNameAndTypeId(requestCommodity.getName(), requestCommodity.getTypeId());
         if(commodityExist.isPresent()){
             //create new branch for existent commodity
+            /*
+            TODO check: if there is a branch with identical set of properties
+            if exist - send message, else create branch
+            */
+
             createCommodityBranch( requestCommodity, commodityExist.get() );
+
 
         }else{
             //create new commodity and dependent classes

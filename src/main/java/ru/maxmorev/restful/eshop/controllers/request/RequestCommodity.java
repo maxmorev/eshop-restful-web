@@ -3,26 +3,52 @@ package ru.maxmorev.restful.eshop.controllers.request;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.maxmorev.restful.eshop.annotation.CheckCommodityBranchAttributes;
 
+import javax.validation.Payload;
+import javax.validation.constraints.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Proxy POJO for creation commodity
  * this class will be extracted into classes: Commodity, CommodityBranch
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@CheckCommodityBranchAttributes(message = "{validation.commodity.attribute.values}")
 public class RequestCommodity {
 
-
+    @NotBlank(message = "{validation.commodity.name.NotBlank.message}")
+    @Size(min=8, max=256, message = "{validation.commodity.name.size.message}")
     private String name;
+    @NotBlank(message = "{validation.commodity.shortDescription.NotBlank.message}")
+    @Size(min=16, max=256, message = "{validation.commodity.shortDescription.size.message}")
     private String shortDescription;
+    @NotBlank(message = "{validation.commodity.overview.NotBlank.message}")
+    @Size(min=64, max=2048, message = "{validation.commodity.overview.size.message}")
     private String overview;
+    @NotNull(message = "{validation.commodity.amount.NotNull.message}")
+    @Min(value = 1, message = "{validation.commodity.amount.min.message}")
     private Integer amount;
+    @NotNull(message = "{validation.commodity.price.NotNull.message}")
     private Float price;
+    @NotNull(message = "{validation.commodity.typeId.NotNull.message}")
     private Long typeId;
+    @NotNull(message = "{validation.commodity.propertyValues.NotNull.message}")
+    @Size(min=1, message = "{validation.commodity.propertyValues.size.message}")
     List<Long> propertyValues;
+    @NotNull(message = "{validation.commodity.images.NotNull.message}")
+    @Size(min=1, message = "{validation.commodity.images.size.message}")
     List<String> images;
     private Long branchId;
+
+    @AssertTrue(message = "{validation.commodity.price.gt.zero}")
+    public boolean isPriceGreaterZero(){
+        if(Objects.nonNull(price) && price>0.0f){
+            return true;
+        }
+        return false;
+    }
 
     public String getName() {
         return name;

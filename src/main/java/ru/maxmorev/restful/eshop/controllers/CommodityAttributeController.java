@@ -1,13 +1,15 @@
 package ru.maxmorev.restful.eshop.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.controllers.response.CrudResponse;
+import ru.maxmorev.restful.eshop.controllers.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -17,15 +19,21 @@ public class CommodityAttributeController {
     private static final Logger logger = Logger.getLogger(CommodityAttributeController.class.getName());
 
     private CommodityService commodityService;
+    private MessageSource messageSource;
+
 
     @Autowired
     public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
     }
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @RequestMapping(path = "/property/", method = RequestMethod.POST)
     @ResponseBody
-    public CrudResponse createProperty(@RequestBody RequestAttributeValue property ){
+    public Message createProperty(@RequestBody RequestAttributeValue property, Locale locale ){
         //to prevent duplicated properties
         //cleanup attribute meta
         property.setName( property.getName().toLowerCase().trim() );
@@ -35,7 +43,7 @@ public class CommodityAttributeController {
         }
         logger.info("&&& -> RA is " + property);
         commodityService.addProperty(property);
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
 
@@ -53,9 +61,9 @@ public class CommodityAttributeController {
 
     @RequestMapping(path = "/propertyValue/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public CrudResponse deletePropertyValue(@PathVariable(name = "id", required = true) Long valueId){
+    public Message deletePropertyValue(@PathVariable(name = "id", required = true) Long valueId, Locale locale){
         commodityService.deletePropertyValueById(valueId);
-        return CrudResponse.OK;
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
 
