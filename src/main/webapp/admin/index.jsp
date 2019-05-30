@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page isELIgnored="false" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -61,6 +63,10 @@
 
     </style>
     <!-- end of commodity css -->
+    <script type="text/javascript">
+
+    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
+    </script>
     <script src="../scripts/commodity-type.js"></script>
 
 
