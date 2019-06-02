@@ -1,0 +1,3 @@
+*.html linguist-vendored
+*.js linguist-language=Javascript
+src/main/webapp linguist-vendored
