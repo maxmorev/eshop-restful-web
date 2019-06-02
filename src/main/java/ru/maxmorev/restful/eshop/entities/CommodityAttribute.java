@@ -8,14 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Entity(name = "commodity_attribute")
+@Entity
+@Table(name = "commodity_attribute")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityAttribute {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+public class CommodityAttribute extends AbstractEntity{
 
     @Column(updatable = false)
     private String name;
@@ -26,25 +26,19 @@ public class CommodityAttribute {
     @Column(name = "attribute_measure")
     private String measure;
 
-    @Column(name = "type_id", nullable = false)
-    private Long typeId;
-
     @ManyToOne(optional=false)
-    @JoinColumn(name="type_id", referencedColumnName="id", insertable=false, updatable=false)
+    @JoinColumn(name="type_id", referencedColumnName="id")
     @JsonIgnore
     private CommodityType commodityType;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attributeId", targetEntity= CommodityAttributeValue.class, fetch = FetchType.EAGER)
-    //@JsonIgnore
-    private List<CommodityAttributeValue> values;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "attribute", targetEntity= CommodityAttributeValue.class, fetch = FetchType.EAGER)
+    private Set<CommodityAttributeValue> values = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getTypeId(){ return commodityType.id;}
 
     public String getName() {
         return name;
@@ -70,14 +64,6 @@ public class CommodityAttribute {
         this.measure = measure;
     }
 
-    public Long getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Long typeId) {
-        this.typeId = typeId;
-    }
-
     public CommodityType getCommodityType() {
         return commodityType;
     }
@@ -86,16 +72,23 @@ public class CommodityAttribute {
         this.commodityType = commodityType;
     }
 
-    public List<CommodityAttributeValue> getValues() {
+    public Set<CommodityAttributeValue> getValues() {
         return values;
     }
 
-    public void setValues(List<CommodityAttributeValue> values) {
+    public void setValues(Set<CommodityAttributeValue> values) {
         this.values = values;
     }
 
-    @Override
-    public String toString() {
+    public Set<CommodityBranchAttributeSet> getAttributeSet() {
+        return attributeSet;
+    }
+
+    public void setAttributeSet(Set<CommodityBranchAttributeSet> attributeSet) {
+        this.attributeSet = attributeSet;
+    }
+
+    @Override public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
@@ -103,4 +96,31 @@ public class CommodityAttribute {
             return e.getMessage();
         }
     }
+
+    @Override public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        CommodityAttribute that = (CommodityAttribute) o;
+        if (!name.equals(that.name))
+            return false;
+        if (!dataType.equals(that.dataType))
+            return false;
+        if (!measure.equals(that.measure))
+            return false;
+        return true;
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (dataType != null ? dataType.hashCode() : 0);
+        result = 31 * result + (measure != null ? measure.hashCode() : 0);
+        return result;
+    }
+
+
 }

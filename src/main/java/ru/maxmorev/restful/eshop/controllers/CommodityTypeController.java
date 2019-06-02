@@ -9,6 +9,7 @@ import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -63,9 +64,9 @@ public class CommodityTypeController {
     @RequestMapping(path = "/type/{id}", method = RequestMethod.GET)
     @ResponseBody
     public CommodityType getCommodityType(@PathVariable(name = "id", required = true) Long id, Locale locale){
-        Optional<CommodityType> cmType = commodityService.findTypeById(id);
-        if(cmType.isPresent()){
-            return cmType.get();
+        CommodityType cmType = commodityService.findTypeById(id);
+        if(Objects.nonNull(cmType)){
+            return cmType;
         }else{
             //messageSource.getMessage("commodity.branch.error.id", new Object[]{branchId}, locale)
             throw new IllegalArgumentException(messageSource.getMessage("commodity.type.error.id", new Object[]{id}, locale));

@@ -3,18 +3,19 @@ package ru.maxmorev.restful.eshop.repos;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
+import ru.maxmorev.restful.eshop.entities.CommodityType;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommodityPropertyRepository extends CrudRepository<CommodityAttribute, Long> {
+public interface CommodityAttributeRepository extends CrudRepository<CommodityAttribute, Long> {
 
     @Override
     List<CommodityAttribute> findAll();
 
-    Optional<CommodityAttribute> findByNameAndTypeId(String name, Long typeId);
+    Optional<CommodityAttribute> findByNameAndCommodityType(String name, CommodityType type);
 
-    List<CommodityAttribute> findByTypeId(Long typeId);
+    List<CommodityAttribute> findByCommodityType(CommodityType type);
 
 }

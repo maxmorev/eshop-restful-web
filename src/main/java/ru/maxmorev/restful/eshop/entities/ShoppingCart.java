@@ -6,29 +6,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
-@Entity(name = "shopping_cart")
+@Entity
+@Table(name = "shopping_cart")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShoppingCart {
+public class ShoppingCart extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+    @Version
+    @Column(name = "VERSION")
+    private int version;
 
     @Column(name="consumer_id")
     private Long consumerId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCartId", targetEntity=ShoppingCartSet.class, fetch = FetchType.EAGER)
-    //@JsonIgnore
-    private List<ShoppingCartSet> shoppingSet;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart", targetEntity=ShoppingCartSet.class, fetch = FetchType.EAGER)
+    private Set<ShoppingCartSet> shoppingSet;
 
     public Long getConsumerId() {
         return consumerId;
@@ -38,11 +31,11 @@ public class ShoppingCart {
         this.consumerId = consumerId;
     }
 
-    public List<ShoppingCartSet> getShoppingSet() {
+    public Set<ShoppingCartSet> getShoppingSet() {
         return shoppingSet;
     }
 
-    public void setShoppingSet(List<ShoppingCartSet> shoppingSet) {
+    public void setShoppingSet(Set<ShoppingCartSet> shoppingSet) {
         this.shoppingSet = shoppingSet;
     }
 

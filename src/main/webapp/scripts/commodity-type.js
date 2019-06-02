@@ -1,7 +1,6 @@
 /* COMMODITY_TYPE */
-var URL_SERVICES = "http://localhost:8080/restful-eshop";
-
-URL_SERVICES = "http://localhost:8888";
+//var URL_SERVICES = "http://localhost:8080/restful-eshop";
+//URL_SERVICES = "http://localhost:8888";
 
 function deleteType(typeId){
 
@@ -755,7 +754,7 @@ function loadCommodity(id){
     $.getJSON( URL_SERVICES + getURL, function(json, status){
 
         //$("#create-commodity").show();
-        COMMODITY_TYPE = json.typeId;
+        COMMODITY_TYPE = json.type.id;
         selectType();
         loadCreateCFProperties(COMMODITY_TYPE);
         //load images
@@ -802,9 +801,9 @@ function loadCommodityBranch(branchId){
 
         //load properties
         PROPERTIES = [];
-        var props = json.propertySet;
+        var props = json.attributeSet;
         for(var pi=0; pi<props.length; pi++){
-            PROPERTIES.push( props[pi].attributeValueId );
+            PROPERTIES.push( props[pi].attributeValue.id );
         }
 
         $('#commodityAmount').val( json.amount );
@@ -844,7 +843,7 @@ function loadListCommodity(){
                 content += '<td class="mdl-data-table__cell--non-numeric">';
 
                 //process properties
-                var properties = branch.propertySet;
+                var properties = branch.attributeSet;
 
                 for(var pi = 0; pi < properties.length; pi++){
                     content += properties[pi].attribute.name + ' : ' + properties[pi].attributeValue.value + '<br/>';

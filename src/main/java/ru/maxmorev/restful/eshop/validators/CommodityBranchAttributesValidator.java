@@ -6,6 +6,7 @@ import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.repos.CommodityRepository;
+import ru.maxmorev.restful.eshop.repos.CommodityTypeRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -14,10 +15,15 @@ import java.util.*;
 public class CommodityBranchAttributesValidator implements ConstraintValidator<CheckCommodityBranchAttributes, RequestCommodity> {
 
     private CommodityRepository commodityRepository;
+    private CommodityTypeRepository commodityTypeRepository;
 
     @Autowired
     public void setCommodityRepository(CommodityRepository commodityRepository) {
         this.commodityRepository = commodityRepository;
+    }
+    @Autowired
+    public void setCommodityTypeRepository(CommodityTypeRepository commodityTypeRepository) {
+        this.commodityTypeRepository = commodityTypeRepository;
     }
 
     /**
@@ -33,7 +39,7 @@ public class CommodityBranchAttributesValidator implements ConstraintValidator<C
      */
     @Override
     public boolean isValid(RequestCommodity value, ConstraintValidatorContext context) {
-        Optional<Commodity> commodityExist = commodityRepository.findByNameAndTypeId(value.getName(), value.getTypeId());
+        Optional<Commodity> commodityExist = commodityRepository.findByNameAndType(value.getName(), commodityTypeRepository.findById(value.getTypeId()).get() );
         if(commodityExist.isPresent()) {
             /*
             TODO check: if there is a branch with identical set of properties
@@ -41,13 +47,13 @@ public class CommodityBranchAttributesValidator implements ConstraintValidator<C
             */
             List<Long> values = value.getPropertyValues();
             //Collections.sort(values);
-            List<CommodityBranch> branches = commodityExist.get().getBranches();
+            Set<CommodityBranch> branches = commodityExist.get().getBranches();
             boolean eq;
             for(CommodityBranch branch: branches){
-                if(values.size()==branch.getPropertySet().size()){
+                if(values.size()==branch.getAttributeSet().size()){
                     //check values
                     Set<Long> branchValSet = new HashSet<>();
-                    branch.getPropertySet().forEach(propertySet->branchValSet.add(propertySet.getAttributeValueId()));
+                    branch.getAttributeSet().forEach(propertySet->branchValSet.add(propertySet.getAttributeValue().getId()));
                     eq = true;
                     for(Long v:values){
                         if(branchValSet.add(v)){

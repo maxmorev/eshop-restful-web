@@ -6,20 +6,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-@Entity(name = "commodity_branch")
+@Entity
+@Table(name = "commodity_branch")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityBranch {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+public class CommodityBranch extends AbstractEntity{
 
-    @Column(name = "commodity_id", nullable = false)
-    private Long commodityId;
+    @Version
+    @Column(name = "VERSION")
+    private int version;
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="commodity_id", referencedColumnName="id", insertable=false, updatable=false)
+    @JoinColumn(name="commodity_id", referencedColumnName="id")
     @JsonIgnore
     private Commodity commodity;
 
@@ -27,28 +29,15 @@ public class CommodityBranch {
 
     private Float price; //price for 1 item in branch
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branchId", targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
-    //@JsonIgnore
-    private List<CommodityBranchAttributeSet> propertySet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.EAGER)
+    private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
+
+    public Long getCommodityId(){
+        return this.commodity.getId();
+    }
 
     public String getCode(){
         return commodity.getId()+"-" + this.getId();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCommodityId() {
-        return commodityId;
-    }
-
-    public void setCommodityId(Long commodityId) {
-        this.commodityId = commodityId;
     }
 
     public Commodity getCommodity() {
@@ -75,22 +64,45 @@ public class CommodityBranch {
         this.price = price;
     }
 
-    public List<CommodityBranchAttributeSet> getPropertySet() {
-        return propertySet;
+    public Set<CommodityBranchAttributeSet> getAttributeSet() {
+        return attributeSet;
     }
 
-    public void setPropertySet(List<CommodityBranchAttributeSet> propertySet) {
-        this.propertySet = propertySet;
+    public void setAttributeSet(Set<CommodityBranchAttributeSet> attributeSet) {
+        this.attributeSet = attributeSet;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             return e.getMessage();
         }
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        CommodityBranch that = (CommodityBranch) o;
+        if (!commodity.equals(that.commodity))
+            return false;
+        if(!Objects.equals(amount, that.amount))
+            return false;
+        return Objects.equals(price, that.price);
+
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (commodity != null ? commodity.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        return result;
     }
 
 }

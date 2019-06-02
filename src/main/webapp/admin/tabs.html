@@ -109,14 +109,14 @@ function refreshProperties(typeId){
             }
 
         }
-        $('#container-properties').empty();
-        $('#container-properties').append(content);
+        $('#container-attributes').empty();
+        $('#container-attributes').append(content);
 
 
 	 })
 	 .fail(function(json, status) {
-	    $('#container-properties').empty();
-	    toastMessage = {message: "Error on load properties." };
+	    $('#container-attributes').empty();
+	    toastMessage = {message: "Error on load attributes." };
         snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
 
 	 });
@@ -167,7 +167,7 @@ function onEditTypeClick(typeId) {
     $("#form-create").hide();
     $("#form-edit-commodityType").show();
     $("#commodityType-list").hide();
-    $("#commodityType-properties").show();
+    $("#commodityType-attributes").show();
 
 
   };
@@ -190,7 +190,7 @@ function onEditTypeClick(typeId) {
     $("#form-create").show();
     $("#form-edit-commodityType").hide();
     $("#commodityType-list").show();
-    $("#commodityType-properties").hide();
+    $("#commodityType-attributes").hide();
 
   };
 
@@ -501,13 +501,13 @@ $(document).ready(function () {
                         </div>
                         <!-- // end commodityType list -->
 
-                        <!-- properties -->
-                        <div id="commodityType-properties">
+                        <!-- attributes -->
+                        <div id="commodityType-attributes">
                             <!-- Mini FAB button -->
                             <button id="btn-attribute-back" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
                                 <i class="material-icons">arrow_back</i>
                             </button>
-                            <div ><h6>Create properties of you commodity commodityType</h6>
+                            <div ><h6>Create attributes of you commodity commodityType</h6>
                                 Example:<br/> The wear's attribute name is <b>Size</b> and attribute value for <b>Size</b> is <b>S</b>
                             </div>
                             <div class="mdl-grid">
@@ -541,7 +541,7 @@ $(document).ready(function () {
                                     <th class="mdl-data-table__cell--non-numeric">Delete</th>
                                 </tr>
                                 </thead>
-                                <tbody id="container-properties">
+                                <tbody id="container-attributes">
                                 <td class="mdl-data-table__cell--non-numeric">size</td>
                                 <td class="mdl-data-table__cell--non-numeric">S</td>
                                 <td class="mdl-data-table__cell--non-numeric">
@@ -552,7 +552,7 @@ $(document).ready(function () {
                             </table>
 
                         </div>
-                        <!-- // properties -->
+                        <!-- // attributes -->
 
                     </div>
 

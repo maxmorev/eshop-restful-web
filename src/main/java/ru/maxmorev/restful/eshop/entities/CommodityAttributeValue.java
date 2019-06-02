@@ -8,28 +8,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity(name = "commodity_attribute_value")
+@Entity
+@Table(name = "commodity_attribute_value")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityAttributeValue {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+public class CommodityAttributeValue extends AbstractEntity{
 
     @Column(length = 256)
     private String string;
+
     @Column(length = 2048)
     private String text;
+
     @Column
     private Float real;
+
     @Column
     private Long integer;
 
-    @Column(name = "attribute_id", nullable = false)
-    private Long attributeId;
-
     @ManyToOne(optional=false)
-    @JoinColumn(name="attribute_id", referencedColumnName="id", insertable=false, updatable=false)
+    @JoinColumn(name="attribute_id", referencedColumnName="id")
     @JsonIgnore
     private CommodityAttribute attribute;
 
@@ -38,6 +35,7 @@ public class CommodityAttributeValue {
     }
 
     public CommodityAttributeValue(CommodityAttribute attribute){
+        super();
         this.attribute = attribute;
     }
 
@@ -77,13 +75,6 @@ public class CommodityAttributeValue {
         return null;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getString() {
         return string;
@@ -117,14 +108,6 @@ public class CommodityAttributeValue {
         this.integer = integer;
     }
 
-    public Long getAttributeId() {
-        return attributeId;
-    }
-
-    public void setAttributeId(Long attributeId) {
-        this.attributeId = attributeId;
-    }
-
     public CommodityAttribute getAttribute() {
         return attribute;
     }
@@ -133,8 +116,7 @@ public class CommodityAttributeValue {
         this.attribute = attribute;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
@@ -143,4 +125,29 @@ public class CommodityAttributeValue {
         }
     }
 
+    @Override public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        CommodityAttributeValue that = (CommodityAttributeValue) o;
+        if (!Objects.equals(string, that.string))
+            return false;
+        if (!Objects.equals(text, that.text))
+            return false;
+        if (!Objects.equals(real, that.real))
+            return false;
+        return Objects.equals(integer, that.integer);
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (string != null ? string.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (real != null ? real.hashCode() : 0);
+        result = 31 * result + (integer != null ? integer.hashCode() : 0);
+        return result;
+    }
 }

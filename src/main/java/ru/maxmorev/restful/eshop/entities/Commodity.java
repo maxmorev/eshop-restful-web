@@ -7,22 +7,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-@Entity(name = "commodity")
+@Entity
+@Table(name = "commodity")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Commodity {
+public class Commodity extends AbstractEntity {
 
-        @Id
-        @GeneratedValue(strategy= GenerationType.AUTO)
-        private Long id;
-
-        @Column(name = "type_id", nullable = false)
-        private Long typeId;
-
-        @Column(unique = true, updatable = false)
-        private String code;//Unique code use codeGenerator
+        @Version
+        @Column(name = "VERSION")
+        private int version;
 
         @Column(nullable = false)
         private String name;
@@ -33,50 +27,24 @@ public class Commodity {
         @Column(nullable = false, length = 2048)
         private String overview;
 
+        @Temporal(TemporalType.DATE)
         @Column(name="date_of_creation", nullable = false)
         private Date dateOfCreation;
 
 
         @ManyToOne(optional=false)
-        @JoinColumn(name="type_id", referencedColumnName="id", insertable=false, updatable=false)
+        @JoinColumn(name="type_id", referencedColumnName="id")
         private CommodityType type;
 
-        @OneToMany(cascade = CascadeType.ALL, mappedBy = "commodityId", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
-        //@JsonIgnore
-        private List<CommodityImage> images;
+        @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodityId", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
+        private List<CommodityImage> images = new ArrayList<>();
 
-        @OneToMany(cascade = CascadeType.ALL, mappedBy = "commodityId", targetEntity=CommodityBranch.class, fetch = FetchType.LAZY)
-        //@JsonIgnore
-        private List<CommodityBranch> branches;
+        @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityBranch.class, fetch = FetchType.LAZY)
+        private Set<CommodityBranch> branches = new HashSet<>();
 
         public Commodity(){
                 super();
                 this.dateOfCreation = new Date();
-                this.code = String.valueOf( dateOfCreation.getTime() );
-        }
-
-        public Long getId() {
-                return id;
-        }
-
-        public void setId(Long id) {
-                this.id = id;
-        }
-
-        public Long getTypeId() {
-                return typeId;
-        }
-
-        public void setTypeId(Long typeId) {
-                this.typeId = typeId;
-        }
-
-        public String getCode() {
-                return code;
-        }
-
-        public void setCode(String code) {
-                this.code = code;
         }
 
         public String getName() {
@@ -127,11 +95,11 @@ public class Commodity {
                 this.images = images;
         }
 
-        public List<CommodityBranch> getBranches() {
+        public Set<CommodityBranch> getBranches() {
                 return branches;
         }
 
-        public void setBranches(List<CommodityBranch> branches) {
+        public void setBranches(Set<CommodityBranch> branches) {
                 this.branches = branches;
         }
 
@@ -143,16 +111,36 @@ public class Commodity {
                 }else{
                         return "";
                 }
-
         }
 
-        @Override
-        public String toString() {
+        @Override public String toString() {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                         return mapper.writeValueAsString(this);
                 } catch (JsonProcessingException e) {
                         return e.getMessage();
                 }
+        }
+
+        @Override public boolean equals(Object o) {
+                if (this == o)
+                        return true;
+                if (o == null || getClass() != o.getClass())
+                        return false;
+                if (!super.equals(o))
+                        return false;
+                Commodity that = (Commodity) o;
+                if (!name.equals(that.name))
+                        return false;
+                return true;
+        }
+
+        @Override public int hashCode() {
+                int result = super.hashCode();
+                result = 31 * result + (name != null ? name.hashCode() : 0);
+                result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
+                result = 31 * result + (overview != null ? overview.hashCode() : 0);
+                result = 31 * result + (dateOfCreation != null ? dateOfCreation.hashCode() : 0);
+                return result;
         }
 }

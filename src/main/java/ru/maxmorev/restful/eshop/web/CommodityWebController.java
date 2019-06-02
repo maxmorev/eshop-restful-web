@@ -47,9 +47,9 @@ public class CommodityWebController extends CommonWebController{
             //TODO error handling
             return "commodity/error";
         }
-        Optional<CommodityType> typeExist = commodityService.findTypeByName(name);
-        if(typeExist.isPresent()) {
-            uiModel.addAttribute("currentType", typeExist.get());
+        CommodityType type = commodityService.findTypeByName(name);
+        if(Objects.nonNull(type)) {
+            uiModel.addAttribute("currentType", type);
         }
         addCommonAttributesToModel(uiModel);
         uiModel.addAttribute("commodities", commodities);

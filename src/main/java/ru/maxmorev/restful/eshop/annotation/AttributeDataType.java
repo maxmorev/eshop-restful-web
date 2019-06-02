@@ -5,6 +5,6 @@ public enum AttributeDataType {
     String,
     Text,
     Integer,
-    Float;
+    Float
 
 }

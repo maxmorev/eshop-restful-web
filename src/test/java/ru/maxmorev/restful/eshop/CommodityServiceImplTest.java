@@ -1,6 +1,7 @@
 package ru.maxmorev.restful.eshop;
 
 
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,8 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
     public void testFindTypeById() throws Exception {
-        Optional<CommodityType> result = commodityService.findTypeById(1L);
-        assertEquals(true, result.isPresent() );
+        CommodityType result = commodityService.findTypeById(1L);
+        assertNotNull(result);
     }
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
@@ -189,7 +190,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
-    public void testUpdateBranch() throws Exception {
+    public void testUpdateCommodity() throws Exception {
         //updateCommodity(RequestCommodity requestCommodity )
         RequestCommodity rc = new RequestCommodity();
         CommodityBranch branch = commodityService.findBranchById(5L);
@@ -202,7 +203,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         //update propertyValueId
         List<Long> values = Arrays.asList(9L);
         rc.setPropertyValues(values);
-        rc.setTypeId(branch.getCommodity().getTypeId());
+        rc.setTypeId(branch.getCommodity().getType().getId());
         rc.setShortDescription(branch.getCommodity().getShortDescription());
         rc.setOverview(branch.getCommodity().getOverview());
         rc.setName("BOMBER MA-1");//update name was t-shirt
@@ -216,7 +217,8 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         assertEquals((long)rc.getAmount(), (long)branchUpdate.getAmount() );
         assertEquals(rc.getPrice(), branchUpdate.getPrice(), 2);
         assertEquals(rc.getName(), branchUpdate.getCommodity().getName());
-        assertEquals((long)9, (long)branch.getPropertySet().get(0).getAttributeValueId());
+        List<CommodityBranchAttributeSet> list = Lists.newArrayList(branch.getAttributeSet());
+        assertEquals((long)9, (long)list.get(0).getAttributeValue().getId());
 
     }
 

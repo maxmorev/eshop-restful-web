@@ -5,37 +5,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-@Entity(name = "commodity_image")
+@Entity
+@Table(name = "commodity_image")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityImage {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "commodity_id", nullable = false)
-    private Long commodityId;
+public class CommodityImage extends AbstractEntity {
 
     @Column(nullable = false)
     private String uri;
 
+    @Column(name = "commodity_id", nullable = false)
+    private Long commodityId;
+
     private Integer width;
 
     private Integer height;
-
-    /*@JsonIgnore
-    @JoinColumn(name="commodity_id", referencedColumnName="id", insertable=false, updatable=false)
-    private Commodity commodity;
-*/
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getCommodityId() {
         return commodityId;
@@ -71,7 +57,7 @@ public class CommodityImage {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, uri);
+        return Objects.hash(uri);
     }
 
     @Override
@@ -79,11 +65,7 @@ public class CommodityImage {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CommodityImage that = (CommodityImage) o;
-        return id.equals(that.id) &&
-                commodityId.equals(that.commodityId) &&
-                uri.equals(that.uri) &&
-                Objects.equals(width, that.width) &&
-                Objects.equals(height, that.height);
+        return uri.equals(that.uri);
     }
 
     @Override

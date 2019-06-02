@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.maxmorev.restful.eshop.entities.CommodityAttributeValue;
 
 @Repository
-public interface CommodityPropertyValueRepository extends CrudRepository<CommodityAttributeValue, Long> {
+public interface CommodityAttributeValueRepository extends CrudRepository<CommodityAttributeValue, Long> {
 }

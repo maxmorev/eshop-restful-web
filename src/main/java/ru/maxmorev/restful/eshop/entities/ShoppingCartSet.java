@@ -7,29 +7,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
 
-@Entity(name = "shopping_cart_set")
+@Entity
+@Table(name = "shopping_cart_set")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShoppingCartSet {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "shopping_cart_id", nullable = false)
-    private Long shoppingCartId;
-
-    @Column(name = "branch_id", nullable = false)
-    private Long branchId;
+public class ShoppingCartSet extends AbstractEntity {
 
     @Column(name="amount", nullable = false)
     private Integer amount = 1;
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="branch_id", referencedColumnName="id", insertable=false, updatable=false)
+    @JoinColumn(name="branch_id", referencedColumnName="id")
     private CommodityBranch branch;
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="shopping_cart_id", referencedColumnName="id", insertable=false, updatable=false)
+    @JoinColumn(name="shopping_cart_id", referencedColumnName="id")
     @JsonIgnore
     private ShoppingCart shoppingCart;
 
@@ -39,22 +30,6 @@ public class ShoppingCartSet {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getShoppingCartId() {
-        return shoppingCartId;
-    }
-
-    public void setShoppingCartId(Long shoppingCartId) {
-        this.shoppingCartId = shoppingCartId;
-    }
-
-    public Long getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
     }
 
     public Integer getAmount() {

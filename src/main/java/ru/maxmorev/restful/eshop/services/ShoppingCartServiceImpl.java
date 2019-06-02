@@ -58,20 +58,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if(Objects.isNull(shoppingCartSet.getAmount()) || shoppingCartSet.getAmount()==0){
             throw new IllegalArgumentException("Illegal argument amount="+shoppingCartSet.getAmount());
         }
-        CommodityBranch branch = commodityService.findBranchById(shoppingCartSet.getBranchId());
+        CommodityBranch branch = commodityService.findBranchById(shoppingCartSet.getBranch().getId());
         if(Objects.isNull(branch)){
-            throw new IllegalArgumentException("Illegal argument branchId="+shoppingCartSet.getBranchId());
+            throw new IllegalArgumentException("Illegal argument branchId="+shoppingCartSet.getBranch().getId());
         }
-        ShoppingCart cart = this.findShoppingCartById(shoppingCartSet.getShoppingCartId());
+        ShoppingCart cart = this.findShoppingCartById(shoppingCartSet.getShoppingCart().getId());
         if(Objects.isNull(cart)){
-            throw new IllegalArgumentException("Illegal argument shoppingCartId="+shoppingCartSet.getShoppingCartId());
+            throw new IllegalArgumentException("Illegal argument shoppingCartId="+shoppingCartSet.getShoppingCart().getId());
         }
 
         if( shoppingCartSet.getAmount() > branch.getAmount() ){
             throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
         }
         if(Objects.nonNull(cart.getShoppingSet())) {
-            Optional<ShoppingCartSet> setExist = cart.getShoppingSet().stream().filter(set -> set.getBranchId().equals(branch.getId())).findFirst();
+            Optional<ShoppingCartSet> setExist = cart.getShoppingSet().stream().filter(set -> set.getBranch().getId().equals(branch.getId())).findFirst();
             if (setExist.isPresent()) {
                 if (setExist.get().getAmount() + shoppingCartSet.getAmount() > branch.getAmount()) {
                     return false;
