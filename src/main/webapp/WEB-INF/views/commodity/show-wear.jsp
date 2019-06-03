@@ -25,7 +25,7 @@ var SELECTED_BRANCH;
 var AMOUNT;
 
 function addToShoppingCart(){
-
+    //showToast( "shoppingCart: " + shoppingCart + " SELECTED BRANCH : " + SELECTED_BRANCH );
     addToShoppingCartSet(shoppingCart, SELECTED_BRANCH, 1);
 
 }
@@ -107,7 +107,7 @@ for(var i=0; i<objJson.length; i++){
     var br = objJson[i];
     var sizes = [];
     var colors = [];
-    br.propertySet.forEach( function(propertySet){
+    br.attributeSet.forEach( function(propertySet){
         if(propertySet.attribute.name=="size"){sizes.push({ id: propertySet.attributeValue.id, value: propertySet.attributeValue.value });}
         if(propertySet.attribute.name=="color"){colors.push({ id: propertySet.attributeValue.id, value: propertySet.attributeValue.value });}
     });
@@ -156,7 +156,7 @@ showSizes();
                 </div>
                 <div class="mdl-grid portfolio-copy">
                     <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name}</h3>
-                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.branches[0].price} ₽</b></div>
+                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ₽</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
                     </div>

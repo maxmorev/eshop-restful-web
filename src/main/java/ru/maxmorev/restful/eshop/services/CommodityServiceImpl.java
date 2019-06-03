@@ -1,6 +1,8 @@
 package ru.maxmorev.restful.eshop.services;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +13,12 @@ import ru.maxmorev.restful.eshop.entities.*;
 import ru.maxmorev.restful.eshop.repos.*;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 @Service("commodityService")
 @Transactional
 public class CommodityServiceImpl implements CommodityService {
 
-    private static final Logger logger = Logger.getLogger(CommodityServiceImpl.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(CommodityServiceImpl.class);
 
     //Repositories
     private CommodityTypeRepository commodityTypeRepository;
@@ -282,8 +283,6 @@ public class CommodityServiceImpl implements CommodityService {
                 //TODO change attributeSet
                 List<Long> valueIdList = requestCommodity.getPropertyValues();
                 for(Long propertyValueId: valueIdList){
-
-
                     Optional<CommodityAttributeValue> commodityPropertyValueExist = commodityAttributeValueRepository.findById(propertyValueId);
                     if(commodityPropertyValueExist.isPresent()) {
                         CommodityAttributeValue commodityAttributeValue = commodityPropertyValueExist.get();
@@ -293,12 +292,8 @@ public class CommodityServiceImpl implements CommodityService {
                         newAttribute.setAttribute(commodityAttributeValue.getAttribute());
                         newAttribute.setAttributeValue(commodityAttributeValue);
                         branch.getAttributeSet().add(newAttribute);
-
+                        logger.info("Add newAttribute->" + newAttribute);
                     }
-
-
-
-
                 }
                 //createBranchPropertySet(requestCommodity.getPropertyValues(), branch);
 

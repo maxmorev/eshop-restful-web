@@ -103,6 +103,10 @@ public class Commodity extends AbstractEntity {
                 this.branches = branches;
         }
 
+        public Float getPrice(){
+                return branches.stream().findFirst().get().getPrice();
+        }
+
         @JsonIgnore
         public String getLastImageUri(){
                 int size = images.size();

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestAttributeValue {
+
     private Long typeId;
     private String name;
     private String dataType;

@@ -12,7 +12,7 @@ public class Message {
     public Message(String status, String url, Exception message) {
         this.status = status;
         this.url = url;
-        this.message = message.getLocalizedMessage();
+        this.message = message.getMessage();
     }
 
     public Message(String status, String message){

@@ -22,10 +22,10 @@ function showWearAttributes(id, sizes, colors){
     $('#attribute-container-'+id).append(content);
 }
 
-function showAttributes(id, propertySet){
+function showAttributes(id, attributeSet){
 
     var content="";
-    propertySet.forEach(function(prop){
+    attributeSet.forEach(function(prop){
         content += prop.attribute.name + ": " + prop.attributeValue.value + " " + prop.attribute.measure + "<br/>";
     });
     $('#attribute-container-'+id).empty();
@@ -49,7 +49,7 @@ $(document).ready(function () {
 
     commodities.forEach( function(commodity) {
         //process commodity
-        const attributes = commodity.branches[0].propertySet;
+        const attributes = commodity.branches[0].attributeSet;
         var notWearAttributes = attributes.filter( function(a){return !isWear(a.attribute.name) ; });
         if(notWearAttributes.length>0){
             notWearAttributes.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
@@ -61,7 +61,7 @@ $(document).ready(function () {
             var sizes = [];
             commodity.branches.forEach( function(branch){
 
-                branch.propertySet.forEach(function(a){
+                branch.attributeSet.forEach(function(a){
                     if(a.attribute.name=="color"){
                         if( !colors.includes(a.attributeValue.value) ){
                             colors.push(a.attributeValue.value);
@@ -101,7 +101,7 @@ $(document).ready(function () {
                     </div>
                     <div class="mdl-card__actions mdl-card--border" style="height:50px">
                         <div class="portfolio-list-action">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="${showCommodityUrl}/${commodity.id}">${labelPrice} &#160; ${commodity.branches[0].price} ₽</a>
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="${showCommodityUrl}/${commodity.id}">${labelPrice} &#160; ${commodity.price} ₽</a>
                         </div>
                     </div>
                 </div>

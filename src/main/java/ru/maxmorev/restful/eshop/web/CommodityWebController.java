@@ -63,7 +63,7 @@ public class CommodityWebController extends CommonWebController{
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             @PathVariable(value = "id", required = true) Long id, Model uiModel) {
-        logger.info("Get commodity by id");
+        logger.info("Get commodity by id="+id);
         Commodity cm = commodityService.findCommodityById(id);
         if(Objects.isNull(cm)){
             //TODO message like "The product you are looking for no longer exists."

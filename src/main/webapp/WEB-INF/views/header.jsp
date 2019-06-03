@@ -46,8 +46,22 @@
     </header>
     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
         <nav class="mdl-navigation mdl-typography--body-1-force-preferred-font">
-            <a class="mdl-navigation__link is-active" href="#t-shirts">T-SHIRTS</a>
-            <a class="mdl-navigation__link" href="#caramics">CERAMICS</a>
+                <c:if test="${not empty types}">
+                    <c:forEach items="${types}" var="type">
+                    <c:if test="${not empty currentType}">
+                       <c:if test="${currentType.name == type.name}">
+                        <a class="mdl-navigation__link is-active" href="${showCommoditiesByTypeUrl}/${type.name}">${type.name}</a>
+                       </c:if>
+                       <c:if test="${currentType.name != type.name}">
+                       <a class="mdl-navigation__link" href="${showCommoditiesByTypeUrl}/${type.name}">${type.name}</a>
+                       </c:if>
+                    </c:if>
+                    <c:if test="${empty currentType}">
+                    <a class="mdl-navigation__link" href="${showCommoditiesByTypeUrl}/${type.name}">${type.name}</a>
+                    </c:if>
+                    </c:forEach>
+
+                </c:if>
             <a class="mdl-navigation__link" href="#about">${labelAbout}</a>
             <a class="mdl-navigation__link" href="#contacts">${labelContacts}</a>
             <a class="mdl-navigation__link" href="#shopping_cart"><i class="material-icons">shopping_cart</i></a>

@@ -30,6 +30,7 @@
     <spring:theme code="styleSheetApp" var="app_css_app" />
     <spring:url value="/${app_css}" var="app_css_url" />
     <spring:url value="/${app_css_app}" var="app_css_app_url" />
+    <spring:url value="/images" var="app_img_url" />
 
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -57,6 +58,25 @@
         var URL_SERVICES = '${url_services}';
     </script>
     <script src="${pageContext.request.contextPath}/scripts/application.js"></script>
+    <style>
+    .portfolio-header {
+      position: relative;
+      background-image: url(${app_img_url}/header-bg.jpg);
+    }
+
+    .portfolio-logo {
+      background: url(${app_img_url}/logo.png) 50% no-repeat;
+      background-size: cover;
+      height: 150px;
+      width: 150px;
+      margin: auto auto 10px;
+    }
+
+    footer {
+      background-image: url(${app_img_url}/footer-background.png);
+      background-size: cover;
+    }
+    </style>
 </head>
 
 <body>

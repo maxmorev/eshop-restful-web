@@ -1,5 +1,7 @@
 package ru.maxmorev.restful.eshop.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +13,11 @@ import ru.maxmorev.restful.eshop.services.CommodityService;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 @RestController
 public class CommodityAttributeController {
 
-    private static final Logger logger = Logger.getLogger(CommodityAttributeController.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(CommodityAttributeController.class);
 
     private CommodityService commodityService;
     private MessageSource messageSource;

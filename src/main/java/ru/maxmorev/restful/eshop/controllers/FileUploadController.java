@@ -1,6 +1,8 @@
 package ru.maxmorev.restful.eshop.controllers;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -16,13 +18,11 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.logging.Logger;
 
 @RestController
 public class FileUploadController {
 
-
-    private static final Logger logger = Logger.getLogger(FileUploadController.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     private ApplicationContext applicationContext;
 

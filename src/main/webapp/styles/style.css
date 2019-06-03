@@ -1,7 +1,4 @@
-.portfolio-header {
-  position: relative;
-  background-image: url(http://localhost:8080/img/header-bg.jpg);
-}
+
 
 .portfolio-header .mdl-layout__header-row {
   padding: 0;
@@ -26,14 +23,6 @@
 
 .is-compact .portfolio-logo-row {
   min-height: auto;
-}
-
-.portfolio-logo {
-  background: url(http://localhost:8080/img/logo.png) 50% no-repeat;
-  background-size: cover;
-  height: 150px;
-  width: 150px;
-  margin: auto auto 10px;
 }
 
 .is-compact .portfolio-logo {
@@ -91,10 +80,6 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
-}
-
-.portfolio-blog-card-full-bg {
-  background: url(http://localhost:8080/img/example-blog03.jpg) center / cover;
 }
 
 .portfolio-blog-card-event-bg {
@@ -169,11 +154,6 @@ img.article-image {
 .portfolio-contact form {
   max-width: 550px;
   margin: auto;
-}
-
-footer {
-  background-image: url(http://localhost:8080/img/footer-background.png);
-  background-size: cover;
 }
 
 .commodity-name {

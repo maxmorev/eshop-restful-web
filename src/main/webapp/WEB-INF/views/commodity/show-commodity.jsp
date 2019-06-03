@@ -36,16 +36,21 @@ function showAttributes(propertySet){
 
 };
 
+function showAmount(branch){
+    var content="${labelAmount}:&#160;"+branch.amount;
+    $('#amount-container').empty();
+    $('#amount-container').append(content);
+}
+
 $(document).ready(function () {
     var branches_str = '${commodity.branches}';
     branches = JSON.parse(branches_str);
-    var propertySet = branches[0].propertySet;
+    var propertySet = branches[0].attributeSet;
     propertySet.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
     showAttributes(propertySet);
-
+    showAmount(branches[0]);
     var btnPropertyBack = document.querySelector('#btn-add-to-basket');
     btnPropertyBack.addEventListener('click', findBranch);
-
 
 });
 </script>
@@ -76,7 +81,7 @@ $(document).ready(function () {
                 </div>
                 <div class="mdl-grid portfolio-copy">
                     <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name}</h3>
-                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.branches[0].price} ₽</b></div>
+                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ₽</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
                     </div>
@@ -92,7 +97,7 @@ $(document).ready(function () {
                             <div id="attribute-container">
                             </div>
                             <div id="amount-container">
-                            ${labelAmount}:&#160;${commodity.branches[0].amount}
+
                             </div>
                         </div>
                         <div class="mdl-cell mdl-cell--4-col">

@@ -1,5 +1,7 @@
 package ru.maxmorev.restful.eshop.validators;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.maxmorev.restful.eshop.annotation.CheckCommodityBranchAttributes;
 import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
@@ -10,9 +12,14 @@ import ru.maxmorev.restful.eshop.repos.CommodityTypeRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class CommodityBranchAttributesValidator implements ConstraintValidator<CheckCommodityBranchAttributes, RequestCommodity> {
+
+    private final Logger logger = LoggerFactory.getLogger(CommodityBranchAttributesValidator.class);
 
     private CommodityRepository commodityRepository;
     private CommodityTypeRepository commodityTypeRepository;

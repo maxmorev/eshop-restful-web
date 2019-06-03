@@ -1,8 +1,11 @@
 package ru.maxmorev.restful.eshop.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.maxmorev.restful.eshop.controllers.CommodityAttributeController;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
@@ -15,6 +18,8 @@ import java.util.Optional;
 @Service("shoppingCartService")
 @Transactional
 public class ShoppingCartServiceImpl implements ShoppingCartService {
+
+    private final Logger logger = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
 
     private ShoppingCartRepository shoppingCartRepository;
     private ShoppingCartSetRepository shoppingCartSetRepository;
@@ -55,18 +60,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public boolean addToShoppingCartSet(ShoppingCartSet shoppingCartSet) {
 
-        if(Objects.isNull(shoppingCartSet.getAmount()) || shoppingCartSet.getAmount()==0){
+        if(Objects.isNull(shoppingCartSet.getAmount()) || shoppingCartSet.getAmount()<=0){
             throw new IllegalArgumentException("Illegal argument amount="+shoppingCartSet.getAmount());
         }
-        CommodityBranch branch = commodityService.findBranchById(shoppingCartSet.getBranch().getId());
-        if(Objects.isNull(branch)){
-            throw new IllegalArgumentException("Illegal argument branchId="+shoppingCartSet.getBranch().getId());
-        }
-        ShoppingCart cart = this.findShoppingCartById(shoppingCartSet.getShoppingCart().getId());
-        if(Objects.isNull(cart)){
-            throw new IllegalArgumentException("Illegal argument shoppingCartId="+shoppingCartSet.getShoppingCart().getId());
+
+        if(Objects.isNull(shoppingCartSet.getBranch())){
+            throw new IllegalArgumentException("Illegal argument branch="+shoppingCartSet.getBranch());
         }
 
+        if(Objects.isNull(shoppingCartSet.getShoppingCart())){
+            throw new IllegalArgumentException("Illegal argument shoppingCart="+shoppingCartSet.getShoppingCart());
+        }
+        CommodityBranch branch = shoppingCartSet.getBranch();
+        ShoppingCart cart = shoppingCartSet.getShoppingCart();
         if( shoppingCartSet.getAmount() > branch.getAmount() ){
             throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
         }
