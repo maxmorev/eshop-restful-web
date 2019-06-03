@@ -362,8 +362,6 @@ $(document).ready(function () {
         description: $( "#commodityTypeDesc" ).val()
      };
 
-     showErrorFromText(URL_SERVICES);
-
      var options = {
                 url: URL_SERVICES + "/type/",
                 type: 'post',
@@ -837,18 +835,18 @@ function loadListCommodity(){
 
             for(var ci=0; ci<cm.branches.length; ci++){
                 var branch = cm.branches[ci];
-
                 content += '<tr onclick="loadCommodityBranch('+branch.id+');"><td class="mdl-data-table__cell--non-numeric">'+ cm.name +'</td>';
                 content += '<td class="mdl-data-table__cell--non-numeric">' + cm.type.name + '</td>';
                 content += '<td class="mdl-data-table__cell--non-numeric">';
-
                 //process properties
                 var properties = branch.attributeSet;
-
                 for(var pi = 0; pi < properties.length; pi++){
-                    content += properties[pi].attribute.name + ' : ' + properties[pi].attributeValue.value + '<br/>';
+                    if(properties[pi].attribute.name=="color"){
+                        content += properties[pi].attribute.name+'<div class="colorCircleSml" style="background: #'+properties[pi].attributeValue.value+'">&#160;' + properties[pi].attributeValue.value + "&#160;</div><br/>";
+                    }else{
+                        content += properties[pi].attribute.name + ' : ' + properties[pi].attributeValue.value + '<br/>';
+                    }
                 };
-
                 content += '</td>';
                 content += '<td>' + branch.amount + '</td>';
                 content += '<td>' + branch.price + '</td>';

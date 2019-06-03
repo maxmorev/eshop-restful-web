@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class GlobalDefaultExceptionHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
+    private final static Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
     public static final String DEFAULT_ERROR_VIEW = "error";
 

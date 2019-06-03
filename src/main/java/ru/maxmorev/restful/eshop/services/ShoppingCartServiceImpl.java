@@ -19,7 +19,7 @@ import java.util.Optional;
 @Transactional
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-    private final Logger logger = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
 
     private ShoppingCartRepository shoppingCartRepository;
     private ShoppingCartSetRepository shoppingCartSetRepository;

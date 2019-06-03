@@ -55,7 +55,7 @@ function sendDataAsJson(url, method, data){
 }
 
 function addToShoppingCartSet(cartId, branchId, amount){
-    showToast('URL SERVICES is '+URL_SERVICES)
+    //showToast('URL SERVICES is '+URL_SERVICES)
     var urlService = URL_SERVICES + "shoppingCart/";
     var data = {
             shoppingCartId: cartId,

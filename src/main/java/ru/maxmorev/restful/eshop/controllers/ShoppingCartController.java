@@ -18,7 +18,7 @@ import java.util.Locale;
 @RestController
 public class ShoppingCartController {
 
-    private final Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
+    private final static Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
 
     private CommodityService commodityService;
     private ShoppingCartService shoppingCartService;

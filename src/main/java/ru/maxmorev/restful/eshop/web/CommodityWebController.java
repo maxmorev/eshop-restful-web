@@ -14,15 +14,13 @@ import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 public class CommodityWebController extends CommonWebController{
 
-    private final Logger logger = LoggerFactory.getLogger(CommodityWebController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommodityWebController.class);
 
 
     @GetMapping(path = {"/commodity/","/"})

@@ -22,7 +22,7 @@ import java.util.Date;
 @RestController
 public class FileUploadController {
 
-    private final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+    private final static Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     private ApplicationContext applicationContext;
 

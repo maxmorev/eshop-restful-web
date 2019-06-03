@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public abstract class CommonWebController {
 
-    private final Logger logger = LoggerFactory.getLogger(CommonWebController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonWebController.class);
 
     protected ShoppingCartService shoppingCartService;
 

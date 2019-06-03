@@ -16,7 +16,7 @@ import java.io.IOException;
 @Controller
 public class ShoppingCartWebController extends CommonWebController {
 
-    private final Logger logger = LoggerFactory.getLogger(ShoppingCartWebController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartWebController.class);
 
     @GetMapping(path = {"/shopping/cart/"})
     public String getShoppingCart(

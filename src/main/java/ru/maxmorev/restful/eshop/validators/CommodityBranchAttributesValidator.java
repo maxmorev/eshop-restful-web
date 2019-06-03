@@ -12,14 +12,11 @@ import ru.maxmorev.restful.eshop.repos.CommodityTypeRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class CommodityBranchAttributesValidator implements ConstraintValidator<CheckCommodityBranchAttributes, RequestCommodity> {
 
-    private final Logger logger = LoggerFactory.getLogger(CommodityBranchAttributesValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommodityBranchAttributesValidator.class);
 
     private CommodityRepository commodityRepository;
     private CommodityTypeRepository commodityTypeRepository;
@@ -56,30 +53,33 @@ public class CommodityBranchAttributesValidator implements ConstraintValidator<C
             //Collections.sort(values);
             Set<CommodityBranch> branches = commodityExist.get().getBranches();
             boolean eq;
-            for(CommodityBranch branch: branches){
-                if(values.size()==branch.getAttributeSet().size()){
-                    //check values
-                    Set<Long> branchValSet = new HashSet<>();
-                    branch.getAttributeSet().forEach(propertySet->branchValSet.add(propertySet.getAttributeValue().getId()));
-                    eq = true;
-                    for(Long v:values){
-                        if(branchValSet.add(v)){
-                            eq = false;
-                            break;
-                        }
-                    }
-                    if(eq){ //there is a branch with identical set of attributes values
-                        return false;
-                    }
+             //check only if add new branch
 
+                for(CommodityBranch branch: branches){
+                    if(values.size()==branch.getAttributeSet().size() && (value.getBranchId()==null?true:!value.getBranchId().equals(branch.getId()))){
+                        //check values
+                        Set<Long> branchValSet = new HashSet<>();
+                        branch.getAttributeSet().forEach(propertySet->branchValSet.add(propertySet.getAttributeValue().getId()));
+                        eq = true;
+                        for(Long v:values){
+                            if(branchValSet.add(v)){
+                                eq = false;
+                                break;
+                            }
+                        }
+                        if(eq){ //there is a branch with identical set of attributes values
+                            return false;
+                        }
+
+                    }
                 }
-            }
+
         }
         return true;
     }
 
     @Override
     public void initialize(CheckCommodityBranchAttributes constraintAnnotation) {
-
+        //do nothing
     }
 }

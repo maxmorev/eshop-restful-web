@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,10 +21,13 @@ public class CommodityType extends AbstractEntity {
     @Column(name = "VERSION")
     private int version;
 
+    @NotBlank(message = "{validation.CommodityType.name.NotBlank.message}")
     @Column(unique = true, updatable = false)
     private String name;
 
-    @Column(nullable = false)
+    @NotBlank(message = "{validation.CommodityType.description.NotBlank.message}")
+    @Size(min=8, max=128, message = "{validation.CommodityType.description.size.message}")
+    @Column(nullable = false, length = 128)
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodityType", targetEntity= CommodityAttribute.class, fetch = FetchType.LAZY)

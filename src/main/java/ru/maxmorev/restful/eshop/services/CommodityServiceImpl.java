@@ -18,7 +18,7 @@ import java.util.*;
 @Transactional
 public class CommodityServiceImpl implements CommodityService {
 
-    private final Logger logger = LoggerFactory.getLogger(CommodityServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommodityServiceImpl.class);
 
     //Repositories
     private CommodityTypeRepository commodityTypeRepository;

@@ -1,9 +1,15 @@
 package ru.maxmorev.restful.eshop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
+
 import java.util.*;
 //Algorithm
 
 public class TestSpeedAlgorithm {
+
+    private final static Logger logger = LoggerFactory.getLogger(TestSpeedAlgorithm.class);
 
     public static void main(String... args){
 

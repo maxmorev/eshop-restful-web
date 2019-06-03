@@ -4,19 +4,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.controllers.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.controllers.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 @RestController
-public class CommodityTypeController {
+public class CommodityTypeController extends AbstractRestController {
 
-    private final Logger logger = LoggerFactory.getLogger(CommodityTypeController.class);
+    private final static Logger logger = LoggerFactory.getLogger(CommodityTypeController.class);
 
     private CommodityService commodityService;
     private MessageSource messageSource;
@@ -40,15 +43,17 @@ public class CommodityTypeController {
 
     @RequestMapping(path = "/type/", method = RequestMethod.POST)
     @ResponseBody
-    public Message createCommodityType(@RequestBody CommodityType type, Locale locale ){
+    public Message createCommodityType(@RequestBody @Valid CommodityType type, BindingResult bindingResult, Locale locale){
         logger.info("type : " + type);
+        processBindingResult(bindingResult);
         commodityService.addType(type);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = "/type/", method = RequestMethod.PUT)
     @ResponseBody
-    public Message updateCommodityType(@RequestBody CommodityType type, Locale locale ){
+    public Message updateCommodityType(@RequestBody @Valid CommodityType type, BindingResult bindingResult, Locale locale ){
+        processBindingResult(bindingResult);
         commodityService.addType(type);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }

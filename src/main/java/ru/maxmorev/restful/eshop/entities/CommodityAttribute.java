@@ -17,7 +17,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommodityAttribute extends AbstractEntity{
 
-    @Column(updatable = false)
+    @Column(updatable = false, length = 64)
     private String name;
 
     @Column(name = "data_type", nullable = false)
