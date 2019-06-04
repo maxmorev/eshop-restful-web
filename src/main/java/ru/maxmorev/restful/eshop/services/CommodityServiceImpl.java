@@ -146,9 +146,11 @@ public class CommodityServiceImpl implements CommodityService {
     public void deletePropertyValueById(Long valueId) {
         Optional<CommodityAttributeValue> av =
                 commodityAttributeValueRepository.findById(valueId);
-        if(!av.isPresent()){
+        if(av.isPresent()){
             CommodityAttribute ca = av.get().getAttribute();
-            ca.getValues().remove(av);
+
+            logger.info("remove value "+ av.get().getValue() + " : " + ca.getValues().remove(av.get()));
+
             if(ca.getValues().isEmpty()){
                 //delete empty property
                 commodityAttributeRepository.delete(ca);

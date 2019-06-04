@@ -77,12 +77,15 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     @Test(expected=javax.persistence.PersistenceException.class)
     public void testDeletePropertyValueByIdError() throws Exception {
         //deletePropertyValueById(Long valueId)
+        List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
+        logger.info(properties);
         commodityService.deletePropertyValueById(3l);
         em.flush();
         /**
          * the method deletePropertyValueById will try to delete property witch id used as FK in TABLE commodity_branch_property_set
          */
-        List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
+        properties = commodityService.findPropertiesByTypeId(1L);
+        logger.info(properties);
         assertEquals(0, properties.size());
 
     }

@@ -79,3 +79,7 @@
     height: 32px;
     width: 32px
 }
+
+.data-holder{
+    display: inline;
+}

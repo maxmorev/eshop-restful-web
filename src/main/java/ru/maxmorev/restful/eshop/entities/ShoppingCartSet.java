@@ -24,6 +24,10 @@ public class ShoppingCartSet extends AbstractEntity {
     @JsonIgnore
     private ShoppingCart shoppingCart;
 
+    public CommodityInfo getCommodityInfo(){
+        return branch.getCommodity();
+    }
+
     public Long getId() {
         return id;
     }
