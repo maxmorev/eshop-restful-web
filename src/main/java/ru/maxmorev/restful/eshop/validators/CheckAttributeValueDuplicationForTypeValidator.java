@@ -8,20 +8,26 @@ import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.entities.CommodityAttributeValue;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
+import ru.maxmorev.restful.eshop.repos.CommodityAttributeRepository;
 import ru.maxmorev.restful.eshop.repos.CommodityTypeRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CheckAttributeValueDuplicationForTypeValidator implements ConstraintValidator<CheckAttributeValueDuplicationForType, RequestAttributeValue> {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckAttributeValueDuplicationForTypeValidator.class);
     private CommodityTypeRepository commodityTypeRepository;
+    private CommodityAttributeRepository commodityAttributeRepository;
 
-    @Autowired
-    public void setCommodityTypeRepository(CommodityTypeRepository commodityTypeRepository) {
+    @Autowired public void setCommodityTypeRepository(CommodityTypeRepository commodityTypeRepository) {
         this.commodityTypeRepository = commodityTypeRepository;
+    }
+
+    @Autowired public void setCommodityAttributeRepository(CommodityAttributeRepository commodityAttributeRepository) {
+        this.commodityAttributeRepository = commodityAttributeRepository;
     }
 
     @Override
@@ -29,17 +35,13 @@ public class CheckAttributeValueDuplicationForTypeValidator implements Constrain
         CommodityType type = commodityTypeRepository.findById(value.getTypeId()).get();
         logger.info("CHECK TYPE attributes: " + type);
         if(!Objects.isNull(type)){
-
-            for( CommodityAttribute attribute: type.getAttributes()){
-                if(attribute.getName().equals(value.getName())){
-                    for(CommodityAttributeValue attributeValue: attribute.getValues()){
-                        if(attributeValue.getValue().toString().equals(value.getValue())){
-                            return false;
-                        }
-                    }
+            Optional<CommodityAttribute> ca = commodityAttributeRepository.findByNameAndCommodityType(value.getName(), type);
+            if(ca.isPresent()){
+                CommodityAttribute attribute = ca.get();
+                if(attribute.getValues().stream().anyMatch(v->v.getValue().toString().equals(value.getValue()))){
+                    return false;
                 }
             }
-
         }
         return true;
     }

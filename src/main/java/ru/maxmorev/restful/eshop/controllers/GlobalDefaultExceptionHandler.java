@@ -24,7 +24,7 @@ public class GlobalDefaultExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Message handleBadRequest(HttpServletRequest req, Exception ex) {
-        ex.printStackTrace();
+        //ex.printStackTrace();
         logger.error(ex.getLocalizedMessage(), ex);
         return new Message(Message.ERROR, req.getRequestURL().toString(), ex);
     }
