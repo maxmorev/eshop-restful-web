@@ -107,28 +107,28 @@ public class CommodityServiceImpl implements CommodityService {
     @Override
     public void addProperty(RequestAttributeValue property) {
         logger.info("Property : " + property);
-        Optional<CommodityAttribute> propertyOptional = commodityAttributeRepository.findByNameAndCommodityType(property.getName(), commodityTypeRepository.findById(property.getTypeId()).get());
+        Optional<CommodityType> type = commodityTypeRepository.findById(property.getTypeId());
+        if(!type.isPresent()){
+
+            throw new IllegalArgumentException( "Type not found type.id=" + property.getTypeId());
+
+        }
+        Optional<CommodityAttribute> propertyOptional = commodityAttributeRepository.findByNameAndCommodityType(property.getName(), type.get());
         if(propertyOptional.isPresent()){
             //check: if value exist? true: do nothing esle create new value
             CommodityAttribute existProperty = propertyOptional.get();
             CommodityAttributeValue newValue = new CommodityAttributeValue(existProperty);
             Object val = newValue.createValueFrom( property.getValue() );
-            boolean createValue = !existProperty.getValues().stream().filter(v->v.getValue().equals(val)).findFirst().isPresent();
-            if( createValue  ){
+            if( existProperty.getValues().stream().noneMatch(v->v.getValue().equals(val))  ){
                 //create value
                 createValue(existProperty, property.getValue());
             }
 
         }else{
-
-            Optional<CommodityType> typeOptional = commodityTypeRepository.findById(property.getTypeId());
-            if(!typeOptional.isPresent()){
-                throw new IllegalArgumentException( "Type not found type.id=" + property.getTypeId());
-            }
             CommodityAttribute newProperty = new CommodityAttribute();
             newProperty.setDataType(AttributeDataType.valueOf(property.getDataType()));
             newProperty.setName(property.getName());
-            newProperty.setCommodityType(typeOptional.get());
+            newProperty.setCommodityType(type.get());
             newProperty.setMeasure(property.getMeasure());
             commodityAttributeRepository.save(newProperty);
             createValue(newProperty, property.getValue());
@@ -139,32 +139,24 @@ public class CommodityServiceImpl implements CommodityService {
     @Override
     @Transactional(readOnly = true)
     public List<CommodityAttribute> findPropertiesByTypeId(Long typeId) {
-        List<CommodityAttribute> properties = commodityAttributeRepository.findByCommodityType(commodityTypeRepository.findById(typeId).get());
-        return properties;
+        return commodityAttributeRepository.findByCommodityType(commodityTypeRepository.findById(typeId).get());
     }
 
     @Override
     public void deletePropertyValueById(Long valueId) {
-        Optional<CommodityAttributeValue> optionalCommodityPropertyValue =
+        Optional<CommodityAttributeValue> av =
                 commodityAttributeValueRepository.findById(valueId);
-
-        if(optionalCommodityPropertyValue.isPresent()){
-
-            CommodityAttribute cp = optionalCommodityPropertyValue.get().getAttribute();
-
-            Optional<CommodityAttributeValue> optionalCPV = cp.getValues().stream().filter(v->v.getId().equals(valueId)).findFirst();
-            if(optionalCPV.isPresent()){
-                cp.getValues().remove(optionalCPV.get());
-            }
-            //check properties
-            logger.info("check property: " + cp.toString());
-            if(cp.getValues().isEmpty()){
+        if(!av.isPresent()){
+            CommodityAttribute ca = av.get().getAttribute();
+            ca.getValues().remove(av);
+            if(ca.getValues().isEmpty()){
                 //delete empty property
-                commodityAttributeRepository.delete(cp);
+                commodityAttributeRepository.delete(ca);
+                return;
             }
-            //return CrudResponse.OK;
+            commodityAttributeRepository.save(ca);
         }
-        //return CrudResponse.FAIL;
+
     }
 
     /*
@@ -187,15 +179,15 @@ public class CommodityServiceImpl implements CommodityService {
         commodity.setShortDescription(requestCommodity.getShortDescription());
         commodity.setOverview(requestCommodity.getOverview());
         commodity.setType( commodityType );
-        commodityRepository.save( commodity );
+        //commodityRepository.save( commodity );
 
         //create images of commodity
         List<CommodityImage> commodityImages = new ArrayList<>(4);
         for(String imageUrl: requestCommodity.getImages()){
             CommodityImage image = new CommodityImage();
             image.setUri(imageUrl);
-            image.setCommodityId(commodity.getId());
-            commodityImageRepository.save( image );
+            image.setCommodity(commodity);
+            //commodityImageRepository.save( image );
             commodityImages.add( image );
         }
         commodity.setImages(commodityImages);
@@ -208,18 +200,18 @@ public class CommodityServiceImpl implements CommodityService {
         commodityBranch.setAmount( requestCommodity.getAmount() );
         commodityBranch.setPrice( requestCommodity.getPrice() );
         commodityBranch.setCommodity(commodity);
-        commodityBranchRepository.save( commodityBranch );
+        //commodityBranchRepository.save( commodityBranch );
         createBranchPropertySet(requestCommodity.getPropertyValues(), commodityBranch);
+        commodity.getBranches().add(commodityBranch);
     }
 
     private boolean createPropertySet(CommodityBranchAttributeSet propertySet, Long valId){
         Optional<CommodityAttributeValue> commodityPropertyValueExist = commodityAttributeValueRepository.findById(valId);
         if(commodityPropertyValueExist.isPresent()) {
             CommodityAttributeValue commodityAttributeValue = commodityPropertyValueExist.get();
-
             propertySet.setAttribute(commodityAttributeValue.getAttribute());
             propertySet.setAttributeValue(commodityAttributeValue);
-            commodityBranchPropertySetRepository.save(propertySet);
+            //commodityBranchPropertySetRepository.save(propertySet);
             return true;
         }
         return false;
@@ -231,9 +223,6 @@ public class CommodityServiceImpl implements CommodityService {
             CommodityBranchAttributeSet propertySet = new CommodityBranchAttributeSet();
             propertySet.setBranch( commodityBranch );
             if(createPropertySet(propertySet, propertyValueId)) {
-                if(Objects.isNull(commodityBranch.getAttributeSet())) {
-                    commodityBranch.setAttributeSet(new HashSet<>());
-                }
                 commodityBranch.getAttributeSet().add(propertySet);
             }
         }
@@ -251,18 +240,14 @@ public class CommodityServiceImpl implements CommodityService {
         Optional<Commodity> commodityExist = commodityRepository.findByNameAndType(requestCommodity.getName(), commodityTypeRepository.findById(requestCommodity.getTypeId()).get());
         if(commodityExist.isPresent()){
             //create new branch for existent commodity
-            /*
-            TODO check: if there is a branch with identical set of properties
-            if exist - send message, else create branch
-            */
-
-            createCommodityBranch( requestCommodity, commodityExist.get() );
-
+            createCommodityBranch( requestCommodity, commodityExist.get());
+            commodityRepository.save(commodityExist.get());
 
         }else{
             //create new commodity and dependent classes
             Commodity commodity = createCommodityFromRequest(requestCommodity);
             createCommodityBranch(requestCommodity, commodity);
+            commodityRepository.save(commodity);
         }
     }
 
@@ -273,7 +258,7 @@ public class CommodityServiceImpl implements CommodityService {
         if(commodityBranchOptional.isPresent()){
 
             CommodityBranch branch = commodityBranchOptional.get();
-            List<CommodityBranchAttributeSet> propertySetList = Lists.newArrayList(branch.getAttributeSet());
+            List<CommodityBranchAttributeSet> propertySetList = new ArrayList<>(branch.getAttributeSet());
             //update branch propertySet
             boolean updateBranch = false;
             if(requestCommodity.getPropertyValues().size()>0) {
@@ -305,15 +290,11 @@ public class CommodityServiceImpl implements CommodityService {
             logger.info("branch fields updated");
             Commodity commodity = branch.getCommodity();
             commodity.setShortDescription(requestCommodity.getShortDescription());
-
             commodity.setOverview(requestCommodity.getOverview());
-
             commodity.setName(requestCommodity.getName());
-
             List<CommodityImage> images = commodity.getImages();
             logger.info("requestCommodity.getImages().size() = " + requestCommodity.getImages().size());
             logger.info("images.size() = " + images.size() );
-
             if(requestCommodity.getImages().size()==images.size()) {
                 for (int imgIdx = 0; imgIdx < requestCommodity.getImages().size(); imgIdx++) {
                     CommodityImage img = images.get(imgIdx);
@@ -325,7 +306,6 @@ public class CommodityServiceImpl implements CommodityService {
                         //commodityImageRepository.save(img);
                     }
                 }
-
             }
             logger.info("commodity fields updated");
             //commodityBranchRepository.save(branch);

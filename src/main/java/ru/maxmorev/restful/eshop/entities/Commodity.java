@@ -36,7 +36,7 @@ public class Commodity extends AbstractEntity {
         @JoinColumn(name="type_id", referencedColumnName="id")
         private CommodityType type;
 
-        @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodityId", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
+        @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
         private List<CommodityImage> images = new ArrayList<>();
 
         @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityBranch.class, fetch = FetchType.LAZY)

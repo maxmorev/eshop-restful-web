@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,19 +17,21 @@ public class CommodityImage extends AbstractEntity {
     @Column(nullable = false)
     private String uri;
 
-    @Column(name = "commodity_id", nullable = false)
-    private Long commodityId;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="commodity_id", referencedColumnName="id")
+    @JsonIgnore
+    private Commodity commodity;
 
     private Integer width;
 
     private Integer height;
 
-    public Long getCommodityId() {
-        return commodityId;
+    public Commodity getCommodity() {
+        return commodity;
     }
 
-    public void setCommodityId(Long commodityId) {
-        this.commodityId = commodityId;
+    public void setCommodity(Commodity commodity) {
+        this.commodity = commodity;
     }
 
     public String getUri() {
@@ -65,7 +68,10 @@ public class CommodityImage extends AbstractEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CommodityImage that = (CommodityImage) o;
-        return uri.equals(that.uri);
+        if(!uri.equals(that.uri)){
+           return false;
+        }
+        return commodity.equals(that.commodity);
     }
 
     @Override
