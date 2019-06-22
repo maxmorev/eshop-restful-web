@@ -36,32 +36,107 @@ function showToast(message){
     snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
 }
 
-function sendDataAsJson(url, method, data){
+var response;
+function sendDataAsJson(url, method, data, callBack){
+
     var options = {
         url: url,
         type: method,
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(data), // Our valid JSON string
-        success: function( data, status, xhr ) {
-            //...
-            showToast("Success");
+        success: function( json, status, xhr ) {
+            if (callBack) {
+                //showToast("Success");
+                callBack(json);
+            }
+            console.log("json");
+            console.log(json);
+            console.log(JSON.stringify(json));
+            console.log("xhr");
+            console.log(xhr);
+            console.log(JSON.stringify(xhr));
+            response =  json;
         },
         error: function( json, status ) {
             showToast("Error");
         }
     };
     $.ajax( options );
+    return response;
 }
 
-function addToShoppingCartSet(cartId, branchId, amount){
+
+
+function addToShoppingCartSet(cartId, branchId, amount, callBack){
     //showToast('URL SERVICES is '+URL_SERVICES)
-    var urlService = URL_SERVICES + "shoppingCart/";
+    var urlService = URL_SERVICES + "/shoppingCart/";
     var data = {
             shoppingCartId: cartId,
             branchId: branchId,
             amount: amount
     };
-    sendDataAsJson(urlService, 'POST', data)
+    return sendDataAsJson(urlService, 'POST', data, callBack);
 }
+
+function removeFromShoppingCartSet(cartId, branchId, amount, callBack){
+    //showToast('URL SERVICES is '+URL_SERVICES)
+    var urlService = URL_SERVICES + "/shoppingCart/";
+    var data = {
+            shoppingCartId: cartId,
+            branchId: branchId,
+            amount: amount
+    };
+    return sendDataAsJson(urlService, 'DELETE', data, callBack);
+}
+
+
+function activateTab(className){
+    var elements = document.getElementsByClassName(className);
+    var i;
+    for (i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        element.className = className+ ' mdl-navigation__link is-active';
+    }
+    componentHandler.upgradeDom();
+}
+
+//commodity fiches
+function showColorElement(color){
+    return '<div class="colorCircleSml" style="background: #'+color+'">&#160;&#160;&#160;&#160;</div>&#160;';
+}
+
+function showSizeElement(size){
+    return '<div class="textCircle">&#160;'+size+'&#160;</div>&#160;';
+}
+
+function isWear(name){
+    if( name=="size" || name=="color" ) {
+        return true;
+    }
+    return false;
+}
+
+function getNotWearAttributes(attributes){
+    var notWearAttributes = attributes.filter( function(a){return !isWear(a.attribute.name) ; });
+    if(notWearAttributes.length>0)
+        notWearAttributes.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
+    return notWearAttributes;
+}
+
+
+function showCommodityAttribute(prop){
+    return prop.attribute.name + ": " + prop.attributeValue.value + " " + prop.attribute.measure + "<br/>";
+}
+function showWearAttrubute(attr){
+    var attributesContent = '';
+    if(attr.attribute.name=="size"){
+        attributesContent += attr.attribute.name + ':' + showSizeElement(attr.attributeValue.value);
+    }
+    if(attr.attribute.name=="color"){
+        attributesContent += attr.attribute.name + ':' + showColorElement(attr.attributeValue.value);
+    }
+    return attributesContent;
+}
+
 

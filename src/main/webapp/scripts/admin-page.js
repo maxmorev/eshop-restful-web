@@ -822,20 +822,79 @@ function loadCommodityBranch(branchId){
 
 };
 
-function loadListCommodity(){
+var page = 1;
+var rows = 5;
+var totalPages;
+var currentPage;
+
+function loadBeforeListCommodity(){
+    if(currentPage>1) {
+        page = currentPage-1;
+        loadListCommodity(page, 5);
+    }
+}
+
+function loadNextListCommodity(){
+    if(currentPage<totalPages) {
+        page = currentPage+1;
+        loadListCommodity(page, 5);
+    }
+}
+
+function showCommodityNavigate(){
+            if(currentPage<totalPages){
+                //show next
+                $('#navigate_next').show();
+            }else{
+                //hide next
+                $('#navigate_next').hide();
+            }
+            if(currentPage>1){
+                //show prev
+                $('#navigate_before').show();
+
+            }else{
+                //hide prev
+                $('#navigate_before').hide();
+            }
+}
+
+function hideCommodityNavigate(){
+    $('#navigate_before').hide();
+    $('#navigate_next').hide();
+}
+
+function loadListCommodity(pageParam, rowsParam){
+
+    if(pageParam===undefined){
+        page = 1;
+    }else{
+        page = pageParam;
+    }
+    if(rowsParam===undefined){
+        rows = 5;
+    }else{
+        rows = rowsParam;
+    }
 
     var snackbarContainer = document.querySelector('#demo-toast-example');
-    var getURL = "/commodities/";
+    var getURL = "/commodities/?page="+page+"&rows="+rows;
 
     $.getJSON( URL_SERVICES + getURL, function(json, status){
 
         var content = "";
-        for(var i=0; i<json.length; i++){
-            var cm = json[i];
+        var commodities = json.commodityData;
+        totalPages = json.totalPages;
+        currentPage = json.currentPage;
+        showCommodityNavigate();
+        //show controls
+        for(var i=0; i<commodities.length; i++){
+            var cm = commodities[i];
 
             for(var ci=0; ci<cm.branches.length; ci++){
                 var branch = cm.branches[ci];
-                content += '<tr onclick="loadCommodityBranch('+branch.id+');"><td class="mdl-data-table__cell--non-numeric">'+ cm.name +'</td>';
+                content += '<tr><td onclick="loadCommodityBranch('+branch.id+');">'+branch.code+'</td>';
+                content += '<td class="mdl-data-table__cell--non-numeric" onclick="loadCommodityBranch('+branch.id+');">'+ cm.name +'</td>';
                 content += '<td class="mdl-data-table__cell--non-numeric">' + cm.type.name + '</td>';
                 content += '<td class="mdl-data-table__cell--non-numeric">';
                 //process properties
@@ -880,6 +939,7 @@ function loadBranchList(){
     initializeBehaviorOptions();
     $('#btn-createupdate-back').hide();
     $('#create-commodity').hide();
+    hideCommodityNavigate();
     loadListCommodity();
     $('#error-container-2').hide();
     $('#commodities-container').show();

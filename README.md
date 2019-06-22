@@ -9,15 +9,34 @@ https://www.apress.com/gp/book/9781484228074
 ⚫ Java 8
 ⚫ Spring 5
 ⚫ Java-based container configuration
-⚫ Spring Hibernate persistence layer
-⚫ PostgreSQL 9 Database
 ⚫ Spring RESTful Web Service
-⚫ Spring Web MVC framework + Apache Tiles
-⚫ Spring Validation (JSR-349)
+⚫ Spring Web MVC framework + Apache Tiles + JSTL
+⚫ Spring Bean Validation (JSR-349)
 ⚫ Support for the parameterization and internationalization of the messages
-⚫ Web interface: 
-  Google Material Design Light Components(https://getmdl.io)
-  JavaScript (ajax, jquery)
+Web interface: 
+    ⚫ Google Material Design Light Components (https://getmdl.io)
+    ⚫ JavaScript (ajax, jquery)
+Persistence Layer
+    ⚫ Spring Hibernate
+    ⚫ PostgreSQL 9 Database
+    ⚫ The EAV data model (https://inviqa.com/blog/eav-data-model)
 ~~~~
 
-How to fix language repository read https://github.com/github/linguist
+#### Useful links
+How to fix language of your repository read -> https://github.com/github/linguist
+
+What you should know about JavaScript arrays
+https://www.freecodecamp.org/news/what-you-should-know-about-javascript-arrays-a7e5394f78f8/
+
+Используйте Stream API проще (или не используйте вообще)
+https://habr.com/ru/post/337350/
+
+The EAV data model
+
+https://inviqa.com/blog/eav-data-model
+
+https://en.wikipedia.org/wiki/Entity%E2%80%93attribute%E2%80%93value_model
+
+
+PostgreSQL
+https://www.postgresql.org/

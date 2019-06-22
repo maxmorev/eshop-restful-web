@@ -18,29 +18,53 @@
 const shoppingCartJson = '${shoppingCart}';
 const showCommodityUrl = '${showCommodityUrl}';
 
-var shoppingCart = JSON.parse(shoppingCartJson);
+var shoppingCartObj = JSON.parse(shoppingCartJson);
 
-function addToSet(setId){
+function refreshShoppingCart(json){
+    showShoppingCart(json);
 }
 
-function removeFromSet(setId){
+function addToSet(cartId, branchId, setId){
+    addToShoppingCartSet(cartId, branchId, 1, refreshShoppingCart);
+    //refresh shoppingCart
 }
 
-function showShoppingCart(){
+function removeFromSet(cartId, branchId, setId){
+    removeFromShoppingCartSet(cartId, branchId, 1, refreshShoppingCart);
+}
 
+function showShoppingCart(shoppingCart){
+    showToast("show cart id="+shoppingCart.id);
     var shoppingSet = shoppingCart.shoppingSet;
     var content = "";
     var totalItems = 0;
     var totalPrice = 0;
     shoppingSet.forEach(function(set){
         content += '<tr>';
+        content += '<td>'+set.branch.code+'</td>';
         content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'"><img src="'+set.commodityInfo.images[0].uri+'" width="100px"/></a></td>';
-        content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'">'+set.commodityInfo.type.name+': '+set.commodityInfo.name+'</a></td>';
+        content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'">'+set.commodityInfo.name+'</a><br/>';
+        //show attributes
+        var attributes = set.branch.attributeSet;
+        var attributesContent = '';
+        var notWearAttributes = getNotWearAttributes(attributes);
+        if(notWearAttributes.length>0){
+            notWearAttributes.forEach(function(attr){
+                attributesContent += showCommodityAttribute(attr);
+            });
+        }else{
+            attributes.forEach(function(attr){
+                attributesContent += showWearAttrubute(attr);
+            });
+        }
+        content += attributesContent;
+        content += '</td>';
+        //show attributes
         content += '<td>'+set.amount+'</td>';
         content += '<td>'+set.branch.price+'</td>';
         content += '<td>'+set.amount*set.branch.price+'</td>';
-        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addToSet('+set.id+')"><i class="material-icons">add</i></button></td>';
-        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="removeFromSet('+set.id+')"><i class="material-icons">remove</i></button></td>';
+        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addToSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">add</i></button></td>';
+        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="removeFromSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">remove</i></button></td>';
         content += '</tr>';
         totalItems += set.amount;
         totalPrice += set.amount*set.branch.price;
@@ -57,9 +81,9 @@ function showShoppingCart(){
     componentHandler.upgradeDom();
 }
 
-
 $(document).ready(function () {
-  showShoppingCart();
+  showShoppingCart(shoppingCartObj);
+  activateTab('tab-shopping-cart');
 });
 
 </script>
@@ -84,6 +108,7 @@ $(document).ready(function () {
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                   <thead>
                     <tr>
+                      <th>Code</th>
                       <th class="mdl-data-table__cell--non-numeric">Preview</th>
                       <th class="mdl-data-table__cell--non-numeric">Commodity</th>
                       <th>Quantity</th>

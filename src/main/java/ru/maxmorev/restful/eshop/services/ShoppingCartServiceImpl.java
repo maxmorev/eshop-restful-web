@@ -57,9 +57,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return null;
     }
 
-    @Override
-    public boolean addToShoppingCartSet(ShoppingCartSet shoppingCartSet) {
-
+    private void isValidShoppingCartSet(ShoppingCartSet shoppingCartSet){
+        if(Objects.isNull(shoppingCartSet)){
+            throw new IllegalArgumentException("Illegal argument: ShoppingCartSet is null");
+        }
         if(Objects.isNull(shoppingCartSet.getAmount()) || shoppingCartSet.getAmount()<=0){
             throw new IllegalArgumentException("Illegal argument amount="+shoppingCartSet.getAmount());
         }
@@ -71,24 +72,53 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if(Objects.isNull(shoppingCartSet.getShoppingCart())){
             throw new IllegalArgumentException("Illegal argument shoppingCart="+shoppingCartSet.getShoppingCart());
         }
+    }
+
+    @Override
+    public ShoppingCart addToShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
+
+        isValidShoppingCartSet(shoppingCartSet);
+        logger.info("======================================");
+        logger.info("addToShoppingCartSet : " + shoppingCartSet);
         CommodityBranch branch = shoppingCartSet.getBranch();
         ShoppingCart cart = shoppingCartSet.getShoppingCart();
-        if( shoppingCartSet.getAmount() > branch.getAmount() ){
-            throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
+
+        if( shoppingCartSet.getAmount()+amount > branch.getAmount() ){
+            return cart;
+            //throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
         }
-        if(Objects.nonNull(cart.getShoppingSet())) {
-            Optional<ShoppingCartSet> setExist = cart.getShoppingSet().stream().filter(set -> set.getBranch().getId().equals(branch.getId())).findFirst();
-            if (setExist.isPresent()) {
-                if (setExist.get().getAmount() + shoppingCartSet.getAmount() > branch.getAmount()) {
-                    return false;
-                }
-                ShoppingCartSet set = setExist.get();
-                set.setAmount(set.getAmount() + shoppingCartSet.getAmount());
-                shoppingCartSetRepository.save(set);
-                return true;
-            }
+        shoppingCartSet.setAmount(shoppingCartSet.getAmount() + amount);
+        shoppingCartRepository.save(cart);
+        return cart;
+    }
+
+    @Override
+    public ShoppingCart removeFromShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
+        isValidShoppingCartSet(shoppingCartSet);
+        logger.info("======================================");
+        logger.info("removeFromShoppingCartSet : "+ shoppingCartSet);
+        CommodityBranch branch = shoppingCartSet.getBranch();
+        ShoppingCart cart = shoppingCartSet.getShoppingCart();
+
+        //Optional<ShoppingCartSet> setExist = shoppingCartSetRepository.findByBranchAndShoppingCart(branch, cart);
+        if (shoppingCartSet.getAmount() - amount <=0) {
+            //remove set from cart
+            cart.getShoppingSet().remove(shoppingCartSet);
+        }else{
+            shoppingCartSet.setAmount(shoppingCartSet.getAmount() - amount);
         }
-        shoppingCartSetRepository.save(shoppingCartSet);
-        return true;
+        //update set cart
+        shoppingCartRepository.save(cart);
+        return cart;
+    }
+
+    @Override
+    public ShoppingCartSet findByBranchAndShoppingCart(CommodityBranch branch, ShoppingCart cart) {
+        Optional<ShoppingCartSet> oSCS = shoppingCartSetRepository.findByBranchAndShoppingCart(branch, cart);
+        if(oSCS.isPresent()){
+            return  oSCS.get();
+        }else {
+            return null;
+        }
     }
 }

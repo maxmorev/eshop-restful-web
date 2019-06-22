@@ -13,6 +13,7 @@
     <spring:message code="label_color" var="labelColor"/>
     <spring:message code="label_size" var="labelSize"/>
     <spring:message code="label_amount" var="labelAmount"/>
+    <spring:message code="label_VendorCode" var="labelVendorCode"/>
 
 
 <script type="text/javascript">
@@ -22,7 +23,7 @@ var branches = [];
 
 function findBranch(){
     var branchId = branches[0].id;
-    addToShoppingCartSet(shoppingCart, branchId, 1);
+    addToShoppingCartSet(shoppingCart, branchId, 1, showToast("Added to Shopping Cart"));
     //showToast( "SELECTED BRANCH : " + branchId );
 }
 
@@ -49,8 +50,8 @@ $(document).ready(function () {
     propertySet.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
     showAttributes(propertySet);
     showAmount(branches[0]);
-    var btnPropertyBack = document.querySelector('#btn-add-to-basket');
-    btnPropertyBack.addEventListener('click', findBranch);
+    var btnAddToBasket = document.querySelector('#btn-add-to-basket');
+    btnAddToBasket.addEventListener('click', findBranch);
 
 });
 </script>
@@ -81,6 +82,7 @@ $(document).ready(function () {
                 </div>
                 <div class="mdl-grid portfolio-copy">
                     <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name}</h3>
+                    <div id="vendor-code" class="mdl-cell mdl-cell--12-col mdl-typography--headline">${labelVendorCode}: ${commodity.codeIfSingle}</div>
                     <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ₽</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
@@ -98,6 +100,9 @@ $(document).ready(function () {
                             </div>
                             <div id="amount-container">
 
+                            </div>
+                            <div id="vendor-code-container">
+                            ${labelVendorCode}: ${commodity.codeIfSingle}
                             </div>
                         </div>
                         <div class="mdl-cell mdl-cell--4-col">

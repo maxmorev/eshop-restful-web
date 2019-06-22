@@ -14,6 +14,7 @@ import ru.maxmorev.restful.eshop.services.CommodityService;
 import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
 import java.util.Locale;
+import java.util.Objects;
 
 @RestController
 public class ShoppingCartController {
@@ -35,24 +36,45 @@ public class ShoppingCartController {
         this.commodityService = commodityService;
     }
 
+    @RequestMapping(path = "/shoppingCart/id/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ShoppingCart getShoppingCart( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
+        ShoppingCart sc = shoppingCartService.findShoppingCartById(id);
+        logger.info("getShoppingCart -> " + sc);
+        if(Objects.nonNull(sc)){
+            return sc;
+        }else {
+            //TODO
+            throw new IllegalArgumentException(messageSource.getMessage("shoppingCart.error.id", new Object[]{id}, locale));
+        }
+    }
+
     @RequestMapping(path = "/shoppingCart/", method= RequestMethod.POST)
     @ResponseBody
-    public Message addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
+    public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
         logger.info("POST:> RequestShoppingCartSet :> " + requestShoppingCartSet);
         //TODO Validation
-        ShoppingCartSet shoppingCartSet = new ShoppingCartSet();
+        //ShoppingCartSet shoppingCartSet = new ShoppingCartSet();
 
         CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId());
         ShoppingCart shoppingCart = shoppingCartService.findShoppingCartById(requestShoppingCartSet.getShoppingCartId());
-        shoppingCartSet.setShoppingCart(shoppingCart);
-        shoppingCartSet.setBranch(branch);
-        shoppingCartSet.setAmount(requestShoppingCartSet.getAmount());
-        if(shoppingCartService.addToShoppingCartSet(shoppingCartSet)){
-            return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
-        }
-        return new Message(Message.ERROR, messageSource.getMessage("message_error", new Object[]{}, locale));
+        ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);;
+        return shoppingCartService.addToShoppingCartSet(shoppingCartSet, requestShoppingCartSet.getAmount());
     }
     //
+
+    @RequestMapping(path = "/shoppingCart/", method= RequestMethod.DELETE)
+    @ResponseBody
+    public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
+        logger.info("DELETE:> RequestShoppingCartSet :> " + requestShoppingCartSet);
+        //TODO Validation
+
+        CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId());
+        ShoppingCart shoppingCart = shoppingCartService.findShoppingCartById(requestShoppingCartSet.getShoppingCartId());
+        ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);
+        return shoppingCartService.removeFromShoppingCartSet( shoppingCartSet, requestShoppingCartSet.getAmount() );
+    }
+
 
 
 }

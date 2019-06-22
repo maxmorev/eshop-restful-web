@@ -34,6 +34,14 @@ public class Commodity extends CommodityInfo {
                 return branches.stream().findFirst().get().getPrice();
         }
 
+        public String getCodeIfSingle(){
+                if(branches.size()==1){
+                        return branches.stream().findFirst().get().getCode();
+                }else{
+                        return "";
+                }
+        }
+
         @JsonIgnore
         public String getLastImageUri(){
                 int size = images.size();

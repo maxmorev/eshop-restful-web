@@ -20,7 +20,7 @@ public class ShoppingCart extends AbstractEntity{
     @Column(name="consumer_id")
     private Long consumerId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart", targetEntity=ShoppingCartSet.class, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart", targetEntity=ShoppingCartSet.class, fetch = FetchType.LAZY)
     private Set<ShoppingCartSet> shoppingSet;
 
     public Long getConsumerId() {

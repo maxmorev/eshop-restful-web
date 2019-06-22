@@ -40,7 +40,7 @@
                 </c:if>
                 <a class="mdl-navigation__link" href="#about">${labelAbout}</a>
                 <a class="mdl-navigation__link" href="#contacts">${labelContacts}</a>
-                <a class="mdl-navigation__link" href="${shoppingCartUrl}"><i class="material-icons">shopping_cart</i></a>
+                <a class="tab-shopping-cart mdl-navigation__link" href="${shoppingCartUrl}"><i class="material-icons">shopping_cart</i></a>
             </nav>
         </div>
     </header>
@@ -64,6 +64,6 @@
                 </c:if>
             <a class="mdl-navigation__link" href="#about">${labelAbout}</a>
             <a class="mdl-navigation__link" href="#contacts">${labelContacts}</a>
-            <a class="mdl-navigation__link" href="#shopping_cart"><i class="material-icons">shopping_cart</i></a>
+            <a class="tab-shopping-cart mdl-navigation__link" href="#shopping_cart"><i class="material-icons">shopping_cart</i></a>
         </nav>
     </div>

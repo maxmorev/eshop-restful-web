@@ -1,5 +1,5 @@
 select c.*, count(cb.id)  from commodity c left outer join commodity_branch cb on (c.id = cb.commodity_id) left outer join commodity_image ci on (c.id = ci.commodity_id)  group by c.id ;
-select * from commodity;
+select * from commodity order by id desc;
 select * from commodity_branch;
 select * from commodity_attribute;
 select * from commodity_attribute_value;

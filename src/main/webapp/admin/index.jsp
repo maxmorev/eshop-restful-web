@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!--<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">-->
     <link rel="stylesheet" href="../mdl/material.min.css">
-    <link rel="stylesheet" href="../styles/application.css">
+
    <!--
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -16,58 +16,20 @@
     <!--local scripts -->
     <link rel="stylesheet" href="../mdl/fonts.css">
     <link rel="stylesheet" href="../mdl/material.min.css">
+    <!-- shop css -->
+    <link rel="stylesheet" href="../styles/application.css">
+    <link rel="stylesheet" href="../styles/admin-page.css">
+
     <script defer src="../mdl/material.min.js"></script>
     <script src="../mdl/jquery.min.js"></script>
     <!-- commodity css -->
-    <style>
-    label.input-custom-file input[type=file] {
-        display: none;
-    }
-    .img-parent {
-        position: relative;
-        border: 1px solid gray;
-        width: 200px;
-        height: 200px;
-    }
-    .img-placeholder {
-        width: 200px;
-        height: 200px;
-    }
-    .img-upload-spinner {
-        position:absolute;
-        top:100px;
-        left:90px
-    }
-    .img-upload-btn {
-        position:relative;
-        top:-45px;
-        left:155px
-    }
-    .mdl-cell {
-        min-width:200px;
-
-    }
-
-    .btn-add-commodity{
-        position:relative;
-        top:10px;
-        left:650px;
-    }
-
-    .small-form-text {
-        width: 130px;
-    }
-    .attribute-table{
-        width: 250px;
-    }
-
-    </style>
     <!-- end of commodity css -->
     <script type="text/javascript">
 
     var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
     </script>
-    <script src="../scripts/commodity-type.js"></script>
+
+    <script src="../scripts/admin-page.js"></script>
 
 
 </head>
@@ -455,17 +417,27 @@
 
                 <div id="commodities-container">
 
-                        <button onclick="loadCreateCommodityForm();" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored btn-add-commodity">
-                            <i class="material-icons">add</i>
-                        </button>
+
 
                     <div class="mdl-grid">
 
-                        <div class="mdl-cell mdl-cell--8-col">
-                            <table class="mdl-data-table mdl-js-data-table">
+                        <div class="mdl-cell mdl-cell--4-col">
+                        <button id="navigate_before" onclick="loadBeforeListCommodity();" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-shadow--2dp"><i class="material-icons">navigate_before</i></button>
+                        <button id="navigate_next"   onclick="loadNextListCommodity();" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-shadow--2dp"><i class="material-icons">navigate_next</i></button>
+                        <button onclick="loadCreateCommodityForm();" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored 1btn-add-commodity mdl-shadow--2dp"><i class="material-icons">add</i></button>
+                        </div>
+                        <div class="mdl-cell mdl-cell--6-col">
+                        &nbsp;
+                        </div>
+                        <div class="mdl-cell mdl-cell--2-col">
+                        &nbsp;
+                        </div>
+                        <div class="mdl-cell mdl-cell--12-col">
+                            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                                 <thead>
                                 <tr>
-                                    <th class="mdl-data-table__cell--non-numeric">Commodity Name</th>
+                                    <th class="mdl-data-table__header--sorted-descending">Vendor code</th>
+                                    <th class="mdl-data-table__cell--non-numeric ">Commodity Name</th>
                                     <th class="mdl-data-table__cell--non-numeric">Type</th>
                                     <th class="mdl-data-table__cell--non-numeric">Properties</th>
                                     <th>Amount</th>

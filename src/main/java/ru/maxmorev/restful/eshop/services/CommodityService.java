@@ -1,5 +1,7 @@
 package ru.maxmorev.restful.eshop.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.Commodity;
@@ -39,6 +41,8 @@ public interface CommodityService {
     CommodityBranch findBranchById(Long branchId); //tested
 
     List<Commodity> findAllCommodities(); //tested
+    Page<Commodity> findAllCommoditiesByPage(Pageable pageable);
+
     List<Commodity> findAllCommoditiesByTypeName(String typeName);
     Commodity findCommodityById(Long id);
 

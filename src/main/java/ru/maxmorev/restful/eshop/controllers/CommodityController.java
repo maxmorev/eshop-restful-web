@@ -1,14 +1,18 @@
 package ru.maxmorev.restful.eshop.controllers;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.controllers.response.AbstractRestController;
+import ru.maxmorev.restful.eshop.controllers.response.CommodityGrid;
 import ru.maxmorev.restful.eshop.controllers.response.Message;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
@@ -66,10 +70,61 @@ public class CommodityController extends AbstractRestController {
         }
     }
 
-    @RequestMapping(path = "/commodities/", method = RequestMethod.GET)
+    @RequestMapping(path = "/commodities/", method = RequestMethod.GET, produces="application/json")
     @ResponseBody
-    public List<Commodity> listCommodity() throws Exception{
-        return commodityService.findAllCommodities();
+    public CommodityGrid listCommodity(
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "rows", required = false) Integer rows,
+            @RequestParam(value = "sort", required = false) String sortBy,
+            @RequestParam(value = "order", required = false) String order
+    ) throws Exception{
+        // Process order by
+        Sort sort = null;
+        String orderBy = sortBy;
+        if (orderBy != null && orderBy.equals("dateOfCreation")) {
+            orderBy = "dateOfCreation";
+        }else{
+            orderBy = "id";
+        }
+        if(Objects.isNull(order)){
+            order = "desc";
+        }
+        if(Objects.isNull(page)){
+            page = 1;
+        }
+        if(Objects.isNull(rows)){
+            rows = 10;
+        }
+
+        if (orderBy != null && order != null) {
+            if (order.equals("desc")) {
+                sort = new Sort(Sort.Direction.DESC, orderBy);
+            } else
+                sort = new Sort(Sort.Direction.ASC, orderBy);
+        }
+
+        // Constructs page request for current page
+        // Note: page number for Spring Data JPA starts with 0, while jqGrid starts with 1
+        PageRequest pageRequest = null;
+
+        if (sort != null) {
+            pageRequest =  PageRequest.of(page - 1, rows, sort);
+        } else {
+            pageRequest = PageRequest.of(page - 1, rows);
+        }
+
+        Page<Commodity> commoditiesByPage = commodityService.findAllCommoditiesByPage(pageRequest);
+
+        // Construct the grid data that will return as JSON data
+        CommodityGrid commodityGrid = new CommodityGrid();
+
+        commodityGrid.setCurrentPage(commoditiesByPage.getNumber() + 1);
+        commodityGrid.setTotalPages(commoditiesByPage.getTotalPages());
+        commodityGrid.setTotalRecords(commoditiesByPage.getTotalElements());
+
+        commodityGrid.setCommodityData(Lists.newArrayList(commoditiesByPage.iterator()));
+
+        return commodityGrid;
     }
 
     @RequestMapping( path = "/branches/", method = RequestMethod.GET)

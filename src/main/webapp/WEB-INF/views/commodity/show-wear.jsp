@@ -13,10 +13,12 @@
     <spring:message code="label_color" var="labelColor"/>
     <spring:message code="label_size" var="labelSize"/>
     <spring:message code="label_amount" var="labelAmount"/>
+    <spring:message code="label_VendorCode" var="labelVendorCode"/>
 
 
 <script type="text/javascript">
 const shoppingCart = ${ShoppingCartCookie};
+const commodityId = ${commodity.id};
 var BRANCHES = [];
 var content = "";
 var SELECTED_SIZE;
@@ -26,8 +28,19 @@ var AMOUNT;
 
 function addToShoppingCart(){
     //showToast( "shoppingCart: " + shoppingCart + " SELECTED BRANCH : " + SELECTED_BRANCH );
-    addToShoppingCartSet(shoppingCart, SELECTED_BRANCH, 1);
+    addToShoppingCartSet(shoppingCart, SELECTED_BRANCH, 1, showToast("Added to Shopping Cart"));
 
+}
+
+function showVendorCode(){
+    var content = '${labelVendorCode}: ' + commodityId +'-'+SELECTED_BRANCH;
+    $('#vendor-code-container').empty();
+    $('#vendor-code-container').append(content);
+    $('#vendor-code-container').show();
+
+    $('#vendor-code').empty();
+    $('#vendor-code').append(content);
+    $('#vendor-code').show();
 }
 
 function findBranch(){
@@ -36,6 +49,10 @@ function findBranch(){
     $('#amount-container').empty();
     $('#amount-container').append(content);
     $('#amount-container').show();
+
+    //show vendor code
+    showVendorCode();
+
     //showToast( "SELECTED BRANCH : " + SELECTED_BRANCH );
 };
 
@@ -54,10 +71,11 @@ function onColorClick(el){
     $('#action-container').show();
     findBranch();
     //showToast("SELECTED SIZE & COLOR : " +SELECTED_SIZE + " | " + SELECTED_COLOR);
+    componentHandler.upgradeDom();
 }
 
 function genColorContent(value, index){
-    content += '<div id="'+value+'" class="colorCircleSelect" style="background:#'+value+';" onclick="onColorClick(this);" value="'+value+'">&#160;&#160;&#160;&#160;&#160;</div>&#160;';
+    content += '<div id="color-'+value+'" class="colorCircleSelect" style="background:#'+value+';" onclick="onColorClick(this);" value="'+value+'">&#160;&#160;&#160;&#160;&#160;</div>&#160;';
 };
 
 function showColors(el){
@@ -70,9 +88,15 @@ function showColors(el){
     colors.reverse();
     content = "${labelColor}:&#160;";
     colors.forEach(genColorContent);
+
     $('#color-container').empty();
     $('#color-container').append(content);
     $('#color-container').show();
+    componentHandler.upgradeDom();
+
+    //find element auto select first color
+    var element = document.getElementById('color-'+colors[0]);
+    onColorClick(element);
 
 };
 
@@ -155,7 +179,8 @@ showSizes();
                     <strong>${commodity.type.name}</strong>&#160;<span>${commodity.shortDescription}</span>
                 </div>
                 <div class="mdl-grid portfolio-copy">
-                    <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name}</h3>
+                    <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name} </h3>
+                    <div id="vendor-code" class="mdl-cell mdl-cell--12-col mdl-typography--headline"></div>
                     <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ₽</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
@@ -175,6 +200,8 @@ showSizes();
                             </div>
                             </h3>
                             <div id="amount-container">
+                            </div>
+                            <div id="vendor-code-container">
                             </div>
                         </div>
                         <div class="mdl-cell mdl-cell--4-col">

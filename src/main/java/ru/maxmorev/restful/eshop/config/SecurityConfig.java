@@ -45,14 +45,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/login")
-                .loginPage("/singers")
+                .loginPage("/profile/")
                 .failureUrl("/security/loginfail")
-                .defaultSuccessUrl("/singers")
+                .defaultSuccessUrl("/commodity/")
                 .permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/singers")
+                .logoutSuccessUrl("/commodity")
                 .and()
                 .csrf().disable();
         //csrfTokenRepository(repo());

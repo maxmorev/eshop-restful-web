@@ -55,7 +55,7 @@
 
     <spring:url value="/" var="url_services" />
     <script type="text/javascript">
-        var URL_SERVICES = '${url_services}';
+        var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
     </script>
     <script src="${pageContext.request.contextPath}/scripts/application.js"></script>
     <style>

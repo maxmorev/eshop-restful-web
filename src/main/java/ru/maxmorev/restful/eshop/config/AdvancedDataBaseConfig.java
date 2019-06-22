@@ -71,7 +71,7 @@ public class AdvancedDataBaseConfig {
         Properties hibernateProp = new Properties();
         hibernateProp.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
         hibernateProp.put("hibernate.hbm2ddl.auto", "update");
-        hibernateProp.put("hibernate.format_sql", true);
+        hibernateProp.put("hibernate.format_sql", false);
         hibernateProp.put("hibernate.use_sql_comments", true);
         hibernateProp.put("hibernate.show_sql", true);
         hibernateProp.put("hibernate.max_fetch_depth", 3);

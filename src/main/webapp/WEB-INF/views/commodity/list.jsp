@@ -12,33 +12,32 @@
 
 <script type="text/javascript">
 
+
+
 function showWearAttributes(id, sizes, colors){
     var content='Sizes:';
-    sizes.forEach(function(size){ content+= '<div class="textCircle">&#160;'+size+'&#160;</div>&#160;';});
+    sizes.forEach(function(size){ content+= showSizeElement(size);});
     content += '<br/>';
     content += 'Colors:';
-    colors.forEach(function(color){ content+= '<div class="colorCircleSml" style="background: #'+color+'">&#160;&#160;&#160;&#160;</div>&#160;';});
+    colors.forEach(function(color){ content+= showColorElement(color);});
     $('#attribute-container-'+id).empty();
     $('#attribute-container-'+id).append(content);
 }
+
 
 function showAttributes(id, attributeSet){
 
     var content="";
     attributeSet.forEach(function(prop){
-        content += prop.attribute.name + ": " + prop.attributeValue.value + " " + prop.attribute.measure + "<br/>";
+        content += showCommodityAttribute(prop);
     });
     $('#attribute-container-'+id).empty();
     $('#attribute-container-'+id).append(content);
 
 }
 
-function isWear(name){
-    if( name=="size" || name=="color" ) {
-        return true;
-    }
-    return false;
-}
+
+
 
 $(document).ready(function () {
 
@@ -50,9 +49,9 @@ $(document).ready(function () {
     commodities.forEach( function(commodity) {
         //process commodity
         const attributes = commodity.branches[0].attributeSet;
-        var notWearAttributes = attributes.filter( function(a){return !isWear(a.attribute.name) ; });
+        var notWearAttributes = getNotWearAttributes(attributes);
         if(notWearAttributes.length>0){
-            notWearAttributes.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
+
             showAttributes(commodity.id, notWearAttributes);
         }else{
             //show attributes for wear
@@ -61,18 +60,20 @@ $(document).ready(function () {
             var sizes = [];
             commodity.branches.forEach( function(branch){
 
-                branch.attributeSet.forEach(function(a){
-                    if(a.attribute.name=="color"){
-                        if( !colors.includes(a.attributeValue.value) ){
-                            colors.push(a.attributeValue.value);
-                        }
-                    }
-                    if(a.attribute.name=="size"){
-                         if( !sizes.includes(a.attributeValue.value) ){
-                            sizes.push(a.attributeValue.value);
-                         }
-                    }
-                });
+                var wearAttributes = branch.attributeSet;
+
+                wearAttributes.forEach(function(a){
+                                        if(a.attribute.name=="color"){
+                                            if( !colors.includes(a.attributeValue.value) ){
+                                                colors.push(a.attributeValue.value);
+                                            }
+                                        }
+                                        if(a.attribute.name=="size"){
+                                             if( !sizes.includes(a.attributeValue.value) ){
+                                                sizes.push(a.attributeValue.value);
+                                             }
+                                        }
+                                    });
 
             });
             showWearAttributes(commodity.id, sizes, colors);
