@@ -58,7 +58,13 @@ public class ShoppingCartController {
 
         CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId());
         ShoppingCart shoppingCart = shoppingCartService.findShoppingCartById(requestShoppingCartSet.getShoppingCartId());
-        ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);;
+        ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);
+        if(Objects.isNull(shoppingCartSet)){
+            shoppingCartSet = new ShoppingCartSet();
+            shoppingCartSet.setAmount(requestShoppingCartSet.getAmount());
+            shoppingCartSet.setBranch(branch);
+            shoppingCartSet.setShoppingCart(shoppingCart);
+        }
         return shoppingCartService.addToShoppingCartSet(shoppingCartSet, requestShoppingCartSet.getAmount());
     }
     //
