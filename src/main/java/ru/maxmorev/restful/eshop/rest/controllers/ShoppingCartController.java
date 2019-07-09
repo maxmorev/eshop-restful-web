@@ -1,12 +1,11 @@
-package ru.maxmorev.restful.eshop.controllers;
+package ru.maxmorev.restful.eshop.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
-import ru.maxmorev.restful.eshop.controllers.request.RequestShoppingCartSet;
-import ru.maxmorev.restful.eshop.controllers.response.Message;
+import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;

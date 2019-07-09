@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers;
+package ru.maxmorev.restful.eshop.rest.controllers;
 
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -10,10 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
-import ru.maxmorev.restful.eshop.controllers.response.AbstractRestController;
-import ru.maxmorev.restful.eshop.controllers.response.CommodityGrid;
-import ru.maxmorev.restful.eshop.controllers.response.Message;
+import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
+import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
+import ru.maxmorev.restful.eshop.rest.response.CommodityGrid;
+import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.services.CommodityService;

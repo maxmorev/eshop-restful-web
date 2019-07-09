@@ -15,7 +15,7 @@ import ru.maxmorev.restful.eshop.services.ShoppingCartServiceImpl;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = {"ru.maxmorev.restful.eshop.repos"})
-@ComponentScan(basePackages = {"ru.maxmorev.restful.eshop.entities", "ru.maxmorev.restful.eshop.services", "ru.maxmorev.restful.eshop.controllers", "ru.maxmorev.restful.eshop.web"})
+@ComponentScan(basePackages = {"ru.maxmorev.restful.eshop.entities", "ru.maxmorev.restful.eshop.services", "ru.maxmorev.restful.eshop.rest.controllers", "ru.maxmorev.restful.eshop.web"})
 public class ServiceConfig {
 
     @Bean

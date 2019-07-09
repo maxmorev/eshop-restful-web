@@ -12,29 +12,59 @@
     <spring:message code="label_color" var="labelColor"/>
     <spring:message code="label_size" var="labelSize"/>
     <spring:message code="label_amount" var="labelAmount"/>
-     <spring:url value="/commodity" var="showCommodityUrl"/>
-<script type="text/javascript">
+    <spring:message code="label_shoppingCartWelcome" var="labelWelcome"/>
+    <spring:message code="label_choosePM" var="labelChoosePM"/>
+    <spring:url value="/commodity" var="showCommodityUrl"/>
 
+<script type="text/javascript">
 const shoppingCartJson = '${shoppingCart}';
 const showCommodityUrl = '${showCommodityUrl}';
 
 var shoppingCartObj = JSON.parse(shoppingCartJson);
+var currentBranchId; //current branchId for update
+var shoppingCartUpdate;
+var fromAmountName;
 
 function refreshShoppingCart(json){
+    shoppingCartUpdate = json;
     showShoppingCart(json);
+    var oldAmount = getAmountByBranch(shoppingCartObj, currentBranchId);
+    var newAmount = getAmountByBranch(shoppingCartUpdate, currentBranchId);
+        //update shoppingCart state
+    shoppingCartObj = shoppingCartUpdate;
+    //console.log("oldAmount="+oldAmount);
+    //console.log("newAmount="+newAmount);
+    if( oldAmount!=newAmount ){
+        showToast("Done!");
+    }else{
+        showToast("Total available: "+oldAmount +" " + fromAmountName);
+    }
+
+}
+
+function getAmountByBranch(shoppingCart, branchId){
+    var sets = shoppingCart.shoppingSet;
+    for(var i=0; i<sets.length; i++){
+        set = sets[i];
+        if(set.branch.id==branchId){
+            fromAmountName = set.commodityInfo.name;
+            return set.amount;
+        }
+    }
 }
 
 function addToSet(cartId, branchId, setId){
+    currentBranchId = branchId;
     addToShoppingCartSet(cartId, branchId, 1, refreshShoppingCart);
-    //refresh shoppingCart
 }
 
 function removeFromSet(cartId, branchId, setId){
+    currentBranchId = branchId;
     removeFromShoppingCartSet(cartId, branchId, 1, refreshShoppingCart);
 }
 
 function showShoppingCart(shoppingCart){
-    showToast("show cart id="+shoppingCart.id);
+
     var shoppingSet = shoppingCart.shoppingSet;
     var content = "";
     var totalItems = 0;
@@ -79,11 +109,13 @@ function showShoppingCart(shoppingCart){
     $('#total-cart-price').append('<b>£'+totalPrice+'</b>');
 
     componentHandler.upgradeDom();
+
 }
 
 $(document).ready(function () {
-  showShoppingCart(shoppingCartObj);
   activateTab('tab-shopping-cart');
+  showShoppingCart(shoppingCartObj);
+  showToast("Welcome to shopping cart!");
 });
 
 </script>
@@ -91,20 +123,20 @@ $(document).ready(function () {
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
         <c:if test="${not empty shoppingCart}">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text commodity-name">SHOPPING CART</b></h2>
+                <h2 class="mdl-card__title-text commodity-name">${labelWelcome}</b></h2>
             </div>
             <div class="mdl-card__media" style="background-color:white" >
 
             </div>
             <div class="mdl-card__supporting-text">
-            <strong>SHOPPING CART</strong>&#160;<span>${shoppingCart.id}</span>
+            <span>Comment for page</span>
             </div>
             <div class="mdl-grid">
 
                 <div class="mdl-cell mdl-cell--6-col">&nbsp;</div>
                 <div class="mdl-cell mdl-cell--6-col">Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£2</div></div>
 
-                <div class="mdl-cell mdl-cell--12-col">
+                <div id="shopping-cart" class="mdl-cell mdl-cell--12-col">
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                   <thead>
                     <tr>
@@ -123,13 +155,99 @@ $(document).ready(function () {
                   </tbody>
                 </table>
                 </div>
+
+                <div id="consumer-info" class="mdl-cell mdl-cell--12-col">
+                    <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--12-col">
+                    <span class="mdl-chip" id="chip-shopping-cart-delivery">
+                        <span class="mdl-chip__text">Fill in all fields and proceed to the choice of payment method.</span>
+                    </span>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="email">
+                        <label class="mdl-textfield__label" for="email">Email</label>
+                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="phone">
+                        <label class="mdl-textfield__label" for="email">Phone</label>
+                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="full-name">
+                        <label class="mdl-textfield__label" for="full-name">Full Name</label>
+                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="country">
+                        <label class="mdl-textfield__label" for="country">Country/Region</label>
+                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="postalCode">
+                        <label class="mdl-textfield__label" for="postalCode">Postal code</label>
+                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="city">
+                        <label class="mdl-textfield__label" for="city">Town/City</label>
+                    </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="address">
+                        <label class="mdl-textfield__label" for="address">Address</label>
+                    </div>
+                    </div>
+
+
+                    </div>
+                </div>
+
                 <div class="mdl-cell mdl-cell--6-col">&nbsp;</div>
                 <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
                 <div class="mdl-cell mdl-cell--4-col">
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">${labelCheckout}</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">${labelChoosePM}</button>
                 </div>
 
+                <div class="mdl-cell mdl-cell--6-col">&nbsp;</div>
+                <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
+                <div class="mdl-cell mdl-cell--4-col">
+                <div id="paypal-button-container"></div>
+                </div>
             </div>
+
         </c:if>
     </div>
 </div>
+
+<script
+        src="https://www.paypal.com/sdk/js?client-id=ATUN0RrjHgfPQ0zqd9H6SRSRcyhfSFe5zKLP6g_gS7Z8iHSFLfZ-SXK4MQjRJYh6ZgDij1PTBpRLSAas&currency=EUR">
+</script>
+
+<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '0.01'
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      // Capture the funds from the transaction
+      return actions.order.capture().then(function(details) {
+        // Show a success message to your buyer
+        alert('Transaction completed by ' + details.payer.name.given_name);
+      });
+    }
+  }).render('#paypal-button-container');
+</script>

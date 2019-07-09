@@ -2,15 +2,14 @@ package ru.maxmorev.restful.eshop.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
+import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
+import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CommodityService {
 

@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers;
+package ru.maxmorev.restful.eshop.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,16 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.controllers.response.AbstractRestController;
-import ru.maxmorev.restful.eshop.controllers.response.Message;
+import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
+import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
+import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 @RestController
 public class CommodityAttributeController extends AbstractRestController {

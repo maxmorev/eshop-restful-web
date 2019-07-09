@@ -1,6 +1,5 @@
 package ru.maxmorev.restful.eshop;
 
-import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.util.fileloader.XlsDataFileLoader;

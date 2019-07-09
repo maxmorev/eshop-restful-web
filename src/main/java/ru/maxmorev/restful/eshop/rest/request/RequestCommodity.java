@@ -1,13 +1,11 @@
-package ru.maxmorev.restful.eshop.controllers.request;
+package ru.maxmorev.restful.eshop.rest.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.maxmorev.restful.eshop.annotation.CheckAttributeValueDuplicationForType;
 import ru.maxmorev.restful.eshop.annotation.CheckCommodityBranchAttributes;
 
-import javax.validation.Payload;
 import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Objects;

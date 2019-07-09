@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers;
+package ru.maxmorev.restful.eshop.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.maxmorev.restful.eshop.controllers.response.Message;
+import ru.maxmorev.restful.eshop.rest.response.Message;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.maxmorev.restful.eshop.annotation.DataSets;
 import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
-import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
+import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
+import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.*;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
@@ -23,7 +23,6 @@ import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

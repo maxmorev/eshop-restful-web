@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers;
+package ru.maxmorev.restful.eshop.rest.controllers;
 
 
 import org.slf4j.Logger;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.maxmorev.restful.eshop.controllers.response.FileUploadResponse;
+import ru.maxmorev.restful.eshop.rest.response.FileUploadResponse;
 
 import java.io.InputStream;
 import java.nio.file.Files;

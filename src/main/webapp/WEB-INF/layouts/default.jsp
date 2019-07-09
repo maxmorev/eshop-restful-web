@@ -11,6 +11,7 @@
                   Material Design Lite
                   Copyright 2019. All rights reserved.
 
+
                   Licensed under the Apache License, Version 2.0 (the "License");
                   you may not use this file except in compliance with the License.
                   You may obtain a copy of the License at
@@ -31,14 +32,16 @@
     <spring:url value="/${app_css}" var="app_css_url" />
     <spring:url value="/${app_css_app}" var="app_css_app_url" />
     <spring:url value="/images" var="app_img_url" />
+    <spring:message code="application_name" var="app_name" htmlEscape="false"/>
+
 
     <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="description" content="A portfolio template that uses Material Design Lite."/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-    <spring:message code="application_name" var="app_name" htmlEscape="false"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
     <title><spring:message code="welcome_h3" arguments="${app_name}" /></title>
-    <!--<title>MDL-Static Website</title>-->
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.grey-pink.min.css" />
     <link rel="stylesheet" href="${app_css_url}" />
@@ -48,12 +51,11 @@
     <!-- Get the user locale from the page context (it was set by Spring MVC's locale resolver) -->
     <c:set var="userLocale">
         <c:set var="plocale">${pageContext.response.locale}</c:set>
-        <c:out value="${fn:replace(plocale, '_', '-')}" default="en" />
+        <c:out value="${fn:replace(plocale, '_', '-')}" default="en_US" />
     </c:set>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <spring:url value="/" var="url_services" />
     <script type="text/javascript">
         var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
     </script>

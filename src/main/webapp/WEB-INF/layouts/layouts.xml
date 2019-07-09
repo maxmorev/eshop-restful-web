@@ -4,8 +4,13 @@
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 
 <tiles-definitions>
+
     <definition name="default" template="/WEB-INF/layouts/default.jsp">
         <put-attribute name="header" value="/WEB-INF/views/header.jsp" />
         <put-attribute name="footer" value="/WEB-INF/views/footer.jsp" />
     </definition>
+
+    <definition name="admin" template="/WEB-INF/layouts/admin.jsp">
+    </definition>
+
 </tiles-definitions>

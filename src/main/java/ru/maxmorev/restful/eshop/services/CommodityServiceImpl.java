@@ -1,6 +1,5 @@
 package ru.maxmorev.restful.eshop.services;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
-import ru.maxmorev.restful.eshop.controllers.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.controllers.request.RequestCommodity;
+import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
+import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.*;
 import ru.maxmorev.restful.eshop.repos.*;
 

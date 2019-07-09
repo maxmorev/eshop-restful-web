@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers.request;
+package ru.maxmorev.restful.eshop.rest.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

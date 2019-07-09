@@ -36,7 +36,7 @@ function showToast(message){
     snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
 }
 
-var response;
+var responsesendDataAsJson;
 function sendDataAsJson(url, method, data, callBack){
 
     var options = {
@@ -50,23 +50,16 @@ function sendDataAsJson(url, method, data, callBack){
                 //showToast("Success");
                 callBack(json);
             }
-            console.log("json");
-            console.log(json);
-            console.log(JSON.stringify(json));
-            console.log("xhr");
-            console.log(xhr);
-            console.log(JSON.stringify(xhr));
-            response =  json;
+            //console.log(JSON.stringify(xhr));
+            responsesendDataAsJson =  json;
         },
         error: function( json, status ) {
             showToast("Error");
         }
     };
     $.ajax( options );
-    return response;
+    return responsesendDataAsJson;
 }
-
-
 
 function addToShoppingCartSet(cartId, branchId, amount, callBack){
     //showToast('URL SERVICES is '+URL_SERVICES)

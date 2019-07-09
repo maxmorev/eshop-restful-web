@@ -11,15 +11,12 @@ import ru.maxmorev.restful.eshop.init.DBInitializer;
 
 import javax.sql.DataSource;
 
-@Configuration
-@ComponentScan(basePackages={"ru.maxmorev.restful.eshop"},
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                        value = DBInitializer.class)
-        }
-
-        )
 @Profile("test")
+@Configuration
+@ComponentScan(
+        basePackages={"ru.maxmorev.restful.eshop"},
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DBInitializer.class)}
+        )
 public class ServiceTestConfig {
     private static Logger logger = LoggerFactory.getLogger(ServiceTestConfig.class);
 

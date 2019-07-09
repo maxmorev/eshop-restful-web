@@ -1,6 +1,9 @@
 package ru.maxmorev.restful.eshop.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,10 +11,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Created by maxim.morev on 05/06/19.
@@ -22,40 +27,45 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
+
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         try {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             auth
                     .inMemoryAuthentication()
-                    .passwordEncoder(passwordEncoder)
-                    .withUser("user").password(passwordEncoder.encode("user")).roles("USER");
+                    .passwordEncoder(passwordEncoder())
+                    .withUser("anon").password(passwordEncoder().encode("protected")).roles("ADMIN", "REMOTE");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Could not configure authentication!", e);
         }
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Autowired
+    WebApplicationContext ctx;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+
+                http
                 .authorizeRequests()
-                .antMatchers("/*").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/login")
-                .loginPage("/profile/")
-                .failureUrl("/security/loginfail")
-                .defaultSuccessUrl("/commodity/")
-                .permitAll()
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/commodity")
+                .loginPage("/security/in/")
+                .defaultSuccessUrl("/", false)
                 .and()
                 .csrf().disable();
-        //csrfTokenRepository(repo());
+
     }
 
     //@Bean

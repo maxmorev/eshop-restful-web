@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers.request;
+package ru.maxmorev.restful.eshop.rest.request;
 
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 

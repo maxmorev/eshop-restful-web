@@ -46,15 +46,6 @@ public class WebConfig implements WebMvcConfigurer {
         return new StandardServletMultipartResolver();
     }
 
-    /*@Bean
-    InternalResourceViewResolver viewResolver(){
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/WEB-INF/views/");
-        resolver.setSuffix(".jspx");
-        resolver.setRequestContextAttribute("requestContext");
-        return resolver;
-    }*/
-
     @Bean
     UrlBasedViewResolver tilesViewResolver() {
         UrlBasedViewResolver tilesViewResolver = new UrlBasedViewResolver();
@@ -163,10 +154,9 @@ public class WebConfig implements WebMvcConfigurer {
         configurer.enable();
     }
 
-   /* // <=> <mvc:view-controller .../>
+   // <=> <mvc:view-controller .../>
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        //registry.addViewController("/").setViewName("commodity/list");
-
-    }*/
+        registry.addViewController("/").setViewName("commodity/list");
+    }
 }

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.maxmorev.restful.eshop.controllers.CommodityAttributeController;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
@@ -83,11 +82,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CommodityBranch branch = shoppingCartSet.getBranch();
         ShoppingCart cart = shoppingCartSet.getShoppingCart();
 
-        if( shoppingCartSet.getAmount()+amount > branch.getAmount() ){
-            return cart;
-            //throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
+        if(Objects.isNull(shoppingCartSet.getId())){
+            //adding new set
+            if( shoppingCartSet.getAmount() > branch.getAmount() ){
+                return cart;
+            }
+            cart.getShoppingSet().add(shoppingCartSet);
+        }else{
+            if( shoppingCartSet.getAmount()+amount > branch.getAmount() ){
+                return cart;
+                //throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
+            }
+            shoppingCartSet.setAmount(shoppingCartSet.getAmount() + amount);
         }
-        shoppingCartSet.setAmount(shoppingCartSet.getAmount() + amount);
+
         shoppingCartRepository.save(cart);
         return cart;
     }

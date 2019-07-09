@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers.response;
+package ru.maxmorev.restful.eshop.rest.response;
 
 import ru.maxmorev.restful.eshop.entities.Commodity;
 

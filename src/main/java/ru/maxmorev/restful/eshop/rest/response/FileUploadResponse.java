@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.controllers.response;
+package ru.maxmorev.restful.eshop.rest.response;
 
 public class FileUploadResponse {
 
