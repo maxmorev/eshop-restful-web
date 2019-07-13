@@ -24,7 +24,7 @@
   <div class="mdl-cell mdl-cell--12-col"></div>
   <div class="mdl-cell mdl-cell--4-col"></div>
   <div class="mdl-cell mdl-cell--4-col">
-<form name='f' action='${app_url}login' method='POST'>
+<form name='f' action='${app_url} login' method='POST'>
 <div class="demo-card-square mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title mdl-card--expand">
   <h2 class="mdl-card__title-text">Security</h2>
