@@ -7,7 +7,7 @@ function deleteType(typeId){
     var snackbarContainer = document.querySelector('#demo-toast-example');
 
 
-    var url = URL_SERVICES + "/type/" + typeId;
+    var url = URL_SERVICES + "/private/type/" + typeId;
     $.ajax({
        url: url,
        type: 'DELETE',
@@ -31,7 +31,7 @@ function refreshTypes(){
 
      var typeContainer = document.querySelector('#container-types');
 
-     $.getJSON(URL_SERVICES + "/types/", function(json, status){
+     $.getJSON(URL_SERVICES + "/public/types/", function(json, status){
 
         var content = "";
         for(var i=0; i<json.length; i++){
@@ -59,7 +59,7 @@ function refreshTypes(){
 function deletePropertyValue(valueId){
 
     var snackbarContainer = document.querySelector('#demo-toast-example');
-    var url = URL_SERVICES + "/propertyValue/" + valueId;
+    var url = URL_SERVICES + "/private/attributeValue/" + valueId;
     $.ajax({
            url: url,
            type: 'DELETE',
@@ -87,7 +87,7 @@ function refreshProperties(typeId){
         return null;
      }
 
-     var propertiesURL = URL_SERVICES + "/properties/" + typeId;
+     var propertiesURL = URL_SERVICES + "/public/attributes/" + typeId;
      $.getJSON( propertiesURL, function(json, status){
 
         var content = "";
@@ -133,7 +133,7 @@ function getCommodityType(typeId){
 
     var snackbarContainer = document.querySelector('#demo-toast-example');
 
-    $.getJSON( URL_SERVICES + "/type/"+typeId, function(json, status){
+    $.getJSON( URL_SERVICES + "/public/type/"+typeId, function(json, status){
 
         //FIX set onFocus smthing at elements
 
@@ -155,7 +155,7 @@ function setDataType(el){
 
 function loadDataTypes(){
 
-    $.getJSON( URL_SERVICES + "/property/value/dataTypes/", function(json, status){
+    $.getJSON( URL_SERVICES + "/public/attribute/value/dataTypes/", function(json, status){
         var content = "";
         for(var i=0; i < json.length; i++){
             content += '<div mdl-cell mdl-cell--2-col><span class="mdl-list__item-primary-content">';
@@ -327,7 +327,7 @@ function showNavigationCaption(text){
 function addAttribute(data, errorTab, callback){
     //showToast(data.typeId);
     var options = {
-                    url: URL_SERVICES + "/property/",
+                    url: URL_SERVICES + "/private/attribute/",
                     type: 'post',
                     dataType: 'json',
                     contentType: "application/json; charset=utf-8",
@@ -363,7 +363,7 @@ $(document).ready(function () {
      };
 
      var options = {
-                url: URL_SERVICES + "/type/",
+                url: URL_SERVICES + "/private/type/",
                 type: 'post',
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
@@ -429,7 +429,7 @@ $(document).ready(function () {
         description: $( "#commodityTypeDescEdit" ).val()
      };
      var options = {
-                url: URL_SERVICES + "/type/",
+                url: URL_SERVICES + "/private/type/",
                 type: 'PUT',
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
@@ -495,7 +495,7 @@ function postFile(imageIndex){
         var file = document.getElementById("file"+imageIndex).files[0];
         fd.append('file',file);
         $.ajax({
-            url: URL_SERVICES + '/upload/',
+            url: URL_SERVICES + '/private/upload/',
             type: 'post',
             data: fd,
             contentType: false,
@@ -525,7 +525,7 @@ function postFile(imageIndex){
 
 function selectType(){
 
-     $.getJSON(URL_SERVICES + "/types/", function(json, status){
+     $.getJSON(URL_SERVICES + "/public/types/", function(json, status){
         var content = "";
         for(var i=0; i<json.length; i++){
             var typeid = "selectType-"+i;
@@ -578,7 +578,7 @@ var LOADED_ATTRIBUTES = [];
 
 function loadCreateCFProperties(typeId){
     var snackbarContainer = document.querySelector('#demo-toast-example');
-    var propertiesURL = "/properties/" + typeId;
+    var propertiesURL = "/public/attributes/" + typeId;
 
     $.getJSON( URL_SERVICES + propertiesURL, function(json, status){
         LOADED_ATTRIBUTES = json;
@@ -606,7 +606,7 @@ function loadCreateCFProperties(typeId){
                     content += "</td>";
                     content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].name + "</td>";
                     if(json[i].name=="color"){
-                        content += '<td><div class="mdl-data-table__cell--non-numeric colorCircleSml" style="background: #'+json[i].values[valIndex].value+'">&#160;' + json[i].values[valIndex].value + "&#160;</div></td>";
+                        content += '<td>'+showColorElement(json[i].values[valIndex].value)+'</td>';
                     }else{
                         content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].values[valIndex].value + "</td>";
                     }
@@ -672,6 +672,7 @@ function btnClickAddCommodity(branchId){
         overview: $( "#commodityOverview" ).val(),
         amount: $( "#commodityAmount" ).val(),
         price: $( "#commodityPrice" ).val(),
+        currencyCode: 'EUR',
         typeId: COMMODITY_TYPE,
         propertyValues: propertyList,
         images: imageList
@@ -679,7 +680,7 @@ function btnClickAddCommodity(branchId){
      };
 
 
-    var urlFunction = URL_SERVICES + "/commodity/";
+    var urlFunction = URL_SERVICES + "/private/commodity/";
     var method;
     if(branchId===undefined){
         method = "POST";
@@ -747,7 +748,7 @@ function loadCommodity(id){
 
     var snackbarContainer = document.querySelector('#demo-toast-example');
 
-    var getURL = "/commodity/id/" + id;
+    var getURL = "/public/commodity/id/" + id;
 
     $.getJSON( URL_SERVICES + getURL, function(json, status){
 
@@ -791,7 +792,7 @@ function loadCommodityBranch(branchId){
     window.location = '#branchId/' + BRANCH_ID;
 
 
-    var getURL = "/commodityBranch/" + BRANCH_ID;
+    var getURL = "/public/commodityBranch/" + BRANCH_ID;
 
     $.getJSON( URL_SERVICES + getURL, function(json, status){
 
@@ -878,7 +879,7 @@ function loadListCommodity(pageParam, rowsParam){
     }
 
     var snackbarContainer = document.querySelector('#demo-toast-example');
-    var getURL = "/commodities/?page="+page+"&rows="+rows;
+    var getURL = "/public/commodities/?page="+page+"&rows="+rows;
 
     $.getJSON( URL_SERVICES + getURL, function(json, status){
 
@@ -901,7 +902,7 @@ function loadListCommodity(pageParam, rowsParam){
                 var properties = branch.attributeSet;
                 for(var pi = 0; pi < properties.length; pi++){
                     if(properties[pi].attribute.name=="color"){
-                        content += properties[pi].attribute.name+'<div class="colorCircleSml" style="background: #'+properties[pi].attributeValue.value+'">&#160;' + properties[pi].attributeValue.value + "&#160;</div><br/>";
+                        content += properties[pi].attribute.name + ":" + showColorElement(properties[pi].attributeValue.value) + "<br/>";
                     }else{
                         content += properties[pi].attribute.name + ' : ' + properties[pi].attributeValue.value + '<br/>';
                     }

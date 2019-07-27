@@ -6,10 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "commodity_branch")
@@ -28,6 +25,9 @@ public class CommodityBranch extends AbstractEntity{
     private Integer amount; //amount of items in branch
 
     private Float price; //price for 1 item in branch
+
+    @Column(nullable = false)
+    private Currency currency; //current price currency
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.EAGER)
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
@@ -70,6 +70,14 @@ public class CommodityBranch extends AbstractEntity{
 
     public void setAttributeSet(Set<CommodityBranchAttributeSet> attributeSet) {
         this.attributeSet = attributeSet;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     @Override public String toString() {

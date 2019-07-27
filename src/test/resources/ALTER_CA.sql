@@ -1,0 +1,1 @@
+ALTER TABLE commodity_attribute ALTER COLUMN data_type TYPE VARCHAR(8);

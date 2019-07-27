@@ -23,8 +23,9 @@ public class CommodityInfo extends AbstractEntity {
     @Column(nullable = false, length = 2048)
     protected String overview;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name="date_of_creation", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="date_of_creation", nullable = false, updatable = false)
+    @org.hibernate.annotations.CreationTimestamp
     protected Date dateOfCreation;
 
     @ManyToOne(optional=false)

@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.CommodityGrid;
@@ -40,7 +41,7 @@ public class CommodityController extends AbstractRestController {
         this.messageSource = messageSource;
     }
 
-    @RequestMapping(path = "/commodity/", method=RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI+"commodity/", method=RequestMethod.POST)
     @ResponseBody
     public Message createCommodityFromRequset(@RequestBody @Valid RequestCommodity requestCommodity, BindingResult bindingResult, Locale locale){
         logger.info("POST -> createCommodityFromRequset");
@@ -49,7 +50,7 @@ public class CommodityController extends AbstractRestController {
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
-    @RequestMapping(path = "/commodity/", method = RequestMethod.PUT)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI+"commodity/", method = RequestMethod.PUT)
     @ResponseBody
     public Message updateCommodity(@RequestBody @Valid RequestCommodity requestCommodity, BindingResult bindingResult, Locale locale){
         logger.info("PUT -> updateCommodity");
@@ -58,7 +59,7 @@ public class CommodityController extends AbstractRestController {
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
-    @RequestMapping(path = "/commodity/id/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"commodity/id/{id}", method = RequestMethod.GET, produces="application/json")
     @ResponseBody
     public Commodity getCommodity( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
         Commodity cm = commodityService.findCommodityById(id);
@@ -70,7 +71,7 @@ public class CommodityController extends AbstractRestController {
         }
     }
 
-    @RequestMapping(path = "/commodities/", method = RequestMethod.GET, produces="application/json")
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + "commodities/", method = RequestMethod.GET, produces="application/json")
     @ResponseBody
     public CommodityGrid listCommodity(
             @RequestParam(value = "page", required = false) Integer page,
@@ -127,13 +128,13 @@ public class CommodityController extends AbstractRestController {
         return commodityGrid;
     }
 
-    @RequestMapping( path = "/branches/", method = RequestMethod.GET)
+    @RequestMapping( path = Constants.REST_PUBLIC_URI + "branches/", method = RequestMethod.GET)
     @ResponseBody
     public List<CommodityBranch> getBranches() throws Exception{
         return commodityService.findAllBranches();
     }
 
-    @RequestMapping(path = "/commodityBranch/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + "commodityBranch/{id}", method = RequestMethod.GET)
     @ResponseBody
     public CommodityBranch getCommodityBranch( @PathVariable(name="id", required = true) Long branchId, Locale locale ) throws Exception{
         CommodityBranch branch = commodityService.findBranchById(branchId);

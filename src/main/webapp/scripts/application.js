@@ -36,7 +36,7 @@ function showToast(message){
     snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
 }
 
-var responsesendDataAsJson;
+
 function sendDataAsJson(url, method, data, callBack){
 
     var options = {
@@ -47,23 +47,19 @@ function sendDataAsJson(url, method, data, callBack){
         data: JSON.stringify(data), // Our valid JSON string
         success: function( json, status, xhr ) {
             if (callBack) {
-                //showToast("Success");
                 callBack(json);
             }
-            //console.log(JSON.stringify(xhr));
-            responsesendDataAsJson =  json;
         },
         error: function( json, status ) {
             showToast("Error");
         }
     };
     $.ajax( options );
-    return responsesendDataAsJson;
 }
 
 function addToShoppingCartSet(cartId, branchId, amount, callBack){
     //showToast('URL SERVICES is '+URL_SERVICES)
-    var urlService = URL_SERVICES + "/shoppingCart/";
+    var urlService = URL_SERVICES + "/public/shoppingCart/";
     var data = {
             shoppingCartId: cartId,
             branchId: branchId,
@@ -74,7 +70,7 @@ function addToShoppingCartSet(cartId, branchId, amount, callBack){
 
 function removeFromShoppingCartSet(cartId, branchId, amount, callBack){
     //showToast('URL SERVICES is '+URL_SERVICES)
-    var urlService = URL_SERVICES + "/shoppingCart/";
+    var urlService = URL_SERVICES + "/public/shoppingCart/";
     var data = {
             shoppingCartId: cartId,
             branchId: branchId,
@@ -96,7 +92,7 @@ function activateTab(className){
 
 //commodity fiches
 function showColorElement(color){
-    return '<div class="colorCircleSml" style="background: #'+color+'">&#160;&#160;&#160;&#160;</div>&#160;';
+    return '<div class="colorCircleSml" style="background: '+color+'">&#160;&#160;&#160;&#160;</div>&#160;';
 }
 
 function showSizeElement(size){

@@ -12,7 +12,7 @@ import java.io.Serializable;
 public abstract class AbstractEntity implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(generator = Constants.ID_GENERATOR)
 	@Column(updatable = false)
 	protected Long id;
 

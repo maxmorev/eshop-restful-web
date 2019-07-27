@@ -203,6 +203,7 @@ public class CommodityServiceImpl implements CommodityService {
         commodityBranch.setAmount( requestCommodity.getAmount() );
         commodityBranch.setPrice( requestCommodity.getPrice() );
         commodityBranch.setCommodity(commodity);
+        commodityBranch.setCurrency( Currency.getInstance(requestCommodity.getCurrencyCode()));
         //commodityBranchRepository.save( commodityBranch );
         createBranchPropertySet(requestCommodity.getPropertyValues(), commodityBranch);
         commodity.getBranches().add(commodityBranch);

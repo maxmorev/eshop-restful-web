@@ -75,7 +75,7 @@ function onColorClick(el){
 }
 
 function genColorContent(value, index){
-    content += '<div id="color-'+value+'" class="colorCircleSelect" style="background:#'+value+';" onclick="onColorClick(this);" value="'+value+'">&#160;&#160;&#160;&#160;&#160;</div>&#160;';
+    content += '<div id="color-'+value+'" class="colorCircleSelect" style="background:'+value+';" onclick="onColorClick(this);" value="'+value+'">&#160;&#160;&#160;&#160;&#160;</div>&#160;';
 };
 
 function showColors(el){

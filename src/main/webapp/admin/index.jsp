@@ -26,11 +26,11 @@
     <!-- end of commodity css -->
     <script type="text/javascript">
 
-    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
+    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
     </script>
 
     <script src="../scripts/admin-page.js"></script>
-
+    <script src="../scripts/application.js"></script>
 
 </head>
 
@@ -343,9 +343,12 @@
                             <span class="mdl-textfield__error">Input is not a number!</span>
                         </div>
                         <!-- Numeric Textfield with Floating Label -->
+                        <span class="mdl-chip">
+                            <span class="mdl-chip__text">Price in Euro per item</span>
+                        </span>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="commodityPrice">
-                            <label class="mdl-textfield__label" for="commodityAmount">Price per item</label>
+                            <label class="mdl-textfield__label" for="commodityAmount">Price per item in Euro</label>
                             <span class="mdl-textfield__error">Input is not a number!</span>
                         </div>
 

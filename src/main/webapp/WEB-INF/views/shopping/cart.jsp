@@ -39,7 +39,6 @@ function refreshShoppingCart(json){
     }else{
         showToast("Total available: "+oldAmount +" " + fromAmountName);
     }
-
 }
 
 function getAmountByBranch(shoppingCart, branchId){

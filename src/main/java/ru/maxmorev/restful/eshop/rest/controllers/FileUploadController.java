@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.response.FileUploadResponse;
 
 import java.io.InputStream;
@@ -26,7 +27,7 @@ public class FileUploadController {
 
     private ApplicationContext applicationContext;
 
-    @PostMapping("/upload/")
+    @PostMapping(Constants.REST_PRIVATE_URI+"upload/")
     public ResponseEntity<FileUploadResponse> uploadData(@RequestParam("file") MultipartFile file) throws Exception {
 
         if (file == null) {

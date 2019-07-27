@@ -19,7 +19,6 @@ public class AbstractRestController {
                 logger.info(error.getDefaultMessage());
             }
             throw new RuntimeException( errorContent );
-            //return new Message(Message.ERROR, "Error create commodity");
         }
     }
 }

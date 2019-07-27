@@ -1,8 +1,13 @@
 # Java restful-eshop
 A comprehensive guide on how to write applications using Spring 5:
 «Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools 5th ed. Edition»
+
 https://www.apress.com/gp/book/9781484228074
 
+The most comprehensive book about Hibernate Persistence:
+«Java Persistence with Hibernate, Second Edition»
+
+https://www.manning.com/books/java-persistence-with-hibernate-second-edition
 
 #### Key Features
 ~~~~
@@ -11,6 +16,7 @@ https://www.apress.com/gp/book/9781484228074
 ⚫ Java-based container configuration
 ⚫ Spring RESTful Web Service
 ⚫ Spring Web MVC framework + Apache Tiles + JSTL
+⚫ Spring Security
 ⚫ Spring Bean Validation (JSR-349)
 ⚫ Support for the parameterization and internationalization of the messages
 Web interface: 

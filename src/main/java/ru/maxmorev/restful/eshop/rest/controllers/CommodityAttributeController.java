@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.Message;
@@ -34,7 +35,7 @@ public class CommodityAttributeController extends AbstractRestController {
         this.messageSource = messageSource;
     }
 
-    @RequestMapping(path = "/property/", method = RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI+"attribute/", method = RequestMethod.POST)
     @ResponseBody
     public Message createProperty(@RequestBody @Valid RequestAttributeValue property, BindingResult bindingResult, Locale locale ){
         //to prevent duplicated properties
@@ -45,19 +46,19 @@ public class CommodityAttributeController extends AbstractRestController {
     }
 
 
-    @RequestMapping(path = "/properties/{typeId}", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"attributes/{typeId}", method = RequestMethod.GET)
     @ResponseBody
     public List<CommodityAttribute> getProperties(@PathVariable(name = "typeId", required = true) Long typeId){
         return commodityService.findPropertiesByTypeId(typeId);
     }
 
-    @RequestMapping(path = "/property/value/dataTypes/", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"/attribute/value/dataTypes/", method = RequestMethod.GET)
     @ResponseBody
     public List<String> getAvailebleAttributeDataTypes(){
         return commodityService.getAvailebleAttributeDataTypes();
     }
 
-    @RequestMapping(path = "/propertyValue/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI+"attributeValue/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public Message deletePropertyValue(@PathVariable(name = "id", required = true) Long valueId, Locale locale){
         commodityService.deletePropertyValueById(valueId);

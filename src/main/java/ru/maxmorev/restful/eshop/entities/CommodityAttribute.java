@@ -20,7 +20,8 @@ public class CommodityAttribute extends AbstractEntity{
     @Column(updatable = false, length = 64)
     private String name;
 
-    @Column(name = "data_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "data_type", nullable = false, length = 8)
     AttributeDataType dataType;
 
     @Column(name = "attribute_measure")

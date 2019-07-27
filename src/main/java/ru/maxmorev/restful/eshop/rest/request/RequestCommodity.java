@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.maxmorev.restful.eshop.annotation.CheckCommodityBranchAttributes;
 
 import javax.validation.constraints.*;
+import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +33,8 @@ public class RequestCommodity {
     private Integer amount;
     @NotNull(message = "{validation.commodity.price.NotNull.message}")
     private Float price;
+    @NotNull
+    private String currencyCode;
     @NotNull(message = "{validation.commodity.typeId.NotNull.message}")
     private Long typeId;
     @NotNull(message = "{validation.commodity.propertyValues.NotNull.message}")
@@ -46,6 +49,15 @@ public class RequestCommodity {
     @AssertTrue(message = "{validation.commodity.price.gt.zero}")
     public boolean isPriceGreaterZero(){
         if(Objects.nonNull(price) && price>0.0f){
+            return true;
+        }
+        return false;
+    }
+
+    @JsonIgnore
+    @AssertTrue(message = "{validation.commodity.currencyCode.exist}")
+    public boolean isValidCurrencyCode(){
+        if(Currency.getAvailableCurrencies().stream().anyMatch( c-> c.getCurrencyCode().equals(currencyCode))){
             return true;
         }
         return false;
@@ -89,6 +101,14 @@ public class RequestCommodity {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     public Long getTypeId() {

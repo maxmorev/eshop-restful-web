@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
@@ -35,7 +36,7 @@ public class ShoppingCartController {
         this.commodityService = commodityService;
     }
 
-    @RequestMapping(path = "/shoppingCart/id/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/id/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ShoppingCart getShoppingCart( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
         ShoppingCart sc = shoppingCartService.findShoppingCartById(id);
@@ -48,7 +49,7 @@ public class ShoppingCartController {
         }
     }
 
-    @RequestMapping(path = "/shoppingCart/", method= RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.POST)
     @ResponseBody
     public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
         logger.info("POST:> RequestShoppingCartSet :> " + requestShoppingCartSet);
@@ -68,7 +69,7 @@ public class ShoppingCartController {
     }
     //
 
-    @RequestMapping(path = "/shoppingCart/", method= RequestMethod.DELETE)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.DELETE)
     @ResponseBody
     public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
         logger.info("DELETE:> RequestShoppingCartSet :> " + requestShoppingCartSet);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
@@ -33,7 +34,7 @@ public class CommodityTypeController extends AbstractRestController {
         this.messageSource = messageSource;
     }
 
-    @RequestMapping(path = "/types/", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"types/", method = RequestMethod.GET)
     @ResponseBody
     public List<CommodityType> getCommodityTypes() throws Exception{
 
@@ -41,7 +42,7 @@ public class CommodityTypeController extends AbstractRestController {
 
     }
 
-    @RequestMapping(path = "/type/", method = RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/", method = RequestMethod.POST)
     @ResponseBody
     public Message createCommodityType(@RequestBody @Valid CommodityType type, BindingResult bindingResult, Locale locale){
         logger.info("type : " + type);
@@ -50,7 +51,7 @@ public class CommodityTypeController extends AbstractRestController {
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
-    @RequestMapping(path = "/type/", method = RequestMethod.PUT)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/", method = RequestMethod.PUT)
     @ResponseBody
     public Message updateCommodityType(@RequestBody @Valid CommodityType type, BindingResult bindingResult, Locale locale ){
         processBindingResult(bindingResult);
@@ -59,14 +60,14 @@ public class CommodityTypeController extends AbstractRestController {
     }
 
 
-    @RequestMapping(path = "/type/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public Message deleteCommodityType(@PathVariable(name = "id", required = true) Long id, Locale locale){
         commodityService.deleteTypeById(id);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
-    @RequestMapping(path = "/type/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+"type/{id}", method = RequestMethod.GET)
     @ResponseBody
     public CommodityType getCommodityType(@PathVariable(name = "id", required = true) Long id, Locale locale){
         CommodityType cmType = commodityService.findTypeById(id);
