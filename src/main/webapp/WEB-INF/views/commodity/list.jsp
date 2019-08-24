@@ -102,7 +102,7 @@ $(document).ready(function () {
                     </div>
                     <div class="mdl-card__actions mdl-card--border" style="height:50px">
                         <div class="portfolio-list-action">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="${showCommodityUrl}/${commodity.id}">${labelPrice} &#160; ${commodity.price} ₽</a>
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="${showCommodityUrl}/${commodity.id}">${labelPrice} &#160; ${commodity.price} ${commodity.currencyCode}</a>
                         </div>
                     </div>
                 </div>

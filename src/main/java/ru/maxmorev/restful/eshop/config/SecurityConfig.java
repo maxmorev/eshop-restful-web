@@ -11,12 +11,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.web.context.WebApplicationContext;
+import ru.maxmorev.restful.eshop.rest.Constants;
 
 /**
  * Created by maxim.morev on 05/06/19.
@@ -29,33 +29,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
+    private UserDetailsService userDetailsService;
 
+    @Autowired public void setUserDetailsService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    //protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         try {
-            auth
-                    .inMemoryAuthentication()
-                    .passwordEncoder(passwordEncoder())
-                    .withUser("anon").password(passwordEncoder().encode("protected")).roles("ADMIN", "REMOTE");
+            auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         } catch (Exception e) {
             logger.error("Could not configure authentication!", e);
         }
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    WebApplicationContext ctx;
+    //@Autowired
+    //WebApplicationContext ctx;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-                http
+                http.httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers(Constants.REST_PRIVATE_URI+"**").hasAuthority("ADMIN")
+                .antMatchers("/shopping/cart/checkout/").hasAuthority("CUSTOMER")
+                .antMatchers("/customer/account/update/").hasAuthority("CUSTOMER")
+                .antMatchers(Constants.REST_CUSTOMER_URI+"**").hasAuthority("CUSTOMER")
                 .and()
                 .formLogin()
                 .usernameParameter("username")
@@ -65,7 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/", false)
                 .and()
                 .csrf().disable();
-
     }
 
     //@Bean

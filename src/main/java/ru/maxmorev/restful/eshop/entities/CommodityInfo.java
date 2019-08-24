@@ -32,7 +32,8 @@ public class CommodityInfo extends AbstractEntity {
     @JoinColumn(name="type_id", referencedColumnName="id")
     protected CommodityType type;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
+    @org.hibernate.annotations.OrderBy(clause = "image_order asc")
     protected List<CommodityImage> images = new ArrayList<>();
 
     public int getVersion() {

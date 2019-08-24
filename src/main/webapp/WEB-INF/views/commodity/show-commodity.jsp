@@ -83,7 +83,7 @@ $(document).ready(function () {
                 <div class="mdl-grid portfolio-copy">
                     <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name}</h3>
                     <div id="vendor-code" class="mdl-cell mdl-cell--12-col mdl-typography--headline">${labelVendorCode}: ${commodity.codeIfSingle}</div>
-                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ₽</b></div>
+                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ${commodity.currencyCode}</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
                     </div>

@@ -73,8 +73,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
     }
 
-    @Override
-    public ShoppingCart addToShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
+    //@Override
+    protected ShoppingCart addToShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
 
         isValidShoppingCartSet(shoppingCartSet);
         logger.info("======================================");
@@ -98,6 +98,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         shoppingCartRepository.save(cart);
         return cart;
+    }
+
+    @Override
+    public ShoppingCart addBranchToShoppingCart(Long branchId, Integer amount, Long shoppingCartId) {
+        if(branchId==null) throw new IllegalArgumentException("branchId can not be null");
+        if(amount==null) throw new IllegalArgumentException("amount can not be null");
+        if(shoppingCartId==null) throw new IllegalArgumentException("shoppingCartId can not be null");
+
+        CommodityBranch branch = commodityService.findBranchById(branchId);
+        ShoppingCart shoppingCart = this.findShoppingCartById(shoppingCartId);
+        ShoppingCartSet shoppingCartSet = this.findByBranchAndShoppingCart(branch, shoppingCart);
+        if(Objects.isNull(shoppingCartSet)){
+            shoppingCartSet = new ShoppingCartSet();
+            shoppingCartSet.setAmount(amount);
+            shoppingCartSet.setBranch(branch);
+            shoppingCartSet.setShoppingCart(shoppingCart);
+        }
+        return this.addToShoppingCartSet(shoppingCartSet, amount);
     }
 
     @Override
@@ -128,5 +146,26 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }else {
             return null;
         }
+    }
+
+    @Override
+
+    public ShoppingCart update(ShoppingCart sc) {
+        return shoppingCartRepository.save(sc);
+    }
+
+    @Override
+    public ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to) {
+        if(from!=null && to!=null && !Objects.equals(from, to)) {
+            for (ShoppingCartSet set : from.getShoppingSet()) {
+                try {
+                    this.addBranchToShoppingCart(set.getBranch().getId(), set.getAmount(), to.getId());
+                } catch (Exception ex) {
+                    logger.error("Error in merge: " + ex);
+                }
+            }
+            shoppingCartRepository.delete(from);
+        }
+        return to;
     }
 }

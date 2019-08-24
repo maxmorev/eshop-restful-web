@@ -33,7 +33,7 @@ dependencies {
     testCompile 'com.h2database:h2'
 
     compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
-
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
     compile group: 'org.apache.poi', name: 'poi', version: '3.16'
     compile group: 'org.apache.tiles', name: 'tiles-jsp', version: '3.0.8'

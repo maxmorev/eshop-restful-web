@@ -15,31 +15,32 @@ import java.util.*;
 public class Commodity extends CommodityInfo {
 
         @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityBranch.class, fetch = FetchType.LAZY)
-        private Set<CommodityBranch> branches = new HashSet<>();
+        private List<CommodityBranch> branches = new ArrayList<>();
 
         public Commodity(){
                 super();
                 this.dateOfCreation = new Date();
         }
 
-        public Set<CommodityBranch> getBranches() {
+        public List<CommodityBranch> getBranches() {
                 return branches;
         }
 
-        public void setBranches(Set<CommodityBranch> branches) {
+        public void setBranches(List<CommodityBranch> branches) {
                 this.branches = branches;
         }
 
         public Float getPrice(){
-                return branches.stream().findFirst().get().getPrice();
+                return branches.isEmpty()? 0.0f : branches.get(0).getPrice();
         }
 
         public String getCodeIfSingle(){
-                if(branches.size()==1){
-                        return branches.stream().findFirst().get().getCode();
-                }else{
-                        return "";
-                }
+                return branches.size()==1? branches.get(0).getCode() : "";
+        }
+
+        @JsonIgnore
+        public String getCurrencyCode(){
+                return branches.isEmpty()? "": branches.get(0).getCurrency().getCurrencyCode();
         }
 
         @JsonIgnore

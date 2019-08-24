@@ -6,6 +6,8 @@
         <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <spring:url value="/" var="app_url" />
+<spring:url value="/customer/account/create/checkout/" var="createAccountUrl"/>
+
 <!-- Square card -->
 <style>
 .demo-card-square.mdl-card {
@@ -17,7 +19,17 @@
   background: #ea38ff;
 }
 </style>
+<script type="text/javascript">
+$(document).ready(function () {
+  showToast("Please login or create account!");
 
+  var btnCreateAcc = document.querySelector('#btn-create-account');
+  btnCreateAcc.addEventListener('click', function() {
+    window.location.href = "${createAccountUrl}";
+  } );
+
+});
+</script>
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--12-col"></div>
   <div class="mdl-cell mdl-cell--12-col"></div>
@@ -49,6 +61,14 @@
   </div>
 </div>
 </form>
+  </div>
+  <div class="mdl-cell mdl-cell--4-col"></div>
+  <div class="mdl-cell mdl-cell--12-col"></div>
+  <div class="mdl-cell mdl-cell--4-col"></div>
+  <div class="mdl-cell mdl-cell--4-col">
+  <button id="btn-create-account" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+  CREATE ACCOUNT
+  </button>
   </div>
   <div class="mdl-cell mdl-cell--4-col"></div>
   <div class="mdl-cell mdl-cell--12-col"></div>

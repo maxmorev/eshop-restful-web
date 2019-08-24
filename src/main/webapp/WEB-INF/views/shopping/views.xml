@@ -7,5 +7,8 @@
         <put-attribute name="body" value="/WEB-INF/views/shopping/cart.jsp" />
     </definition>
 
+    <definition extends="default" name="shopping/proceedToCheckout">
+        <put-attribute name="body" value="/WEB-INF/views/shopping/proceedCheckout.jsp" />
+    </definition>
 
 </tiles-definitions>

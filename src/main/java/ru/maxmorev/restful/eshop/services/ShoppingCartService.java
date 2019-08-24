@@ -8,8 +8,10 @@ public interface ShoppingCartService {
 
     ShoppingCart createEmptyShoppingCart();
     ShoppingCart findShoppingCartById(Long id);
-    ShoppingCart addToShoppingCartSet(ShoppingCartSet set, Integer amount);
     ShoppingCart removeFromShoppingCartSet(ShoppingCartSet set, Integer amount);
     ShoppingCartSet findByBranchAndShoppingCart(CommodityBranch branch, ShoppingCart cart);
+    ShoppingCart update(ShoppingCart sc);
+    ShoppingCart addBranchToShoppingCart(Long branchId, Integer amount, Long shoppingCartId);
+    ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to);
 
 }

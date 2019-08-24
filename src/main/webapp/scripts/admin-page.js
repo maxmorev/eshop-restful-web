@@ -97,7 +97,7 @@ function refreshProperties(typeId){
                     content += "<tr>";
                     content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].name + "</td>";
                     if(json[i].name=="color"){
-                        content += '<td><div class="colorCircleSml" style="background: #'+json[i].values[valIndex].value+'">&#160;' + json[i].values[valIndex].value + "&#160;</div></td>";
+                        content += '<td>' + showColorElement(json[i].values[valIndex].value) + '</td>';
                     }else{
                         content += "<td>" + json[i].values[valIndex].value + "</td>";
                     }

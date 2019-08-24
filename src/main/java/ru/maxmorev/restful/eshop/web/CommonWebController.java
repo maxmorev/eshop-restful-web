@@ -3,6 +3,10 @@ package ru.maxmorev.restful.eshop.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
@@ -41,8 +45,7 @@ public abstract class CommonWebController {
         uiModel.addAttribute("types", typeList);
     }
 
-    private ShoppingCart setCookie(HttpServletResponse response){
-        ShoppingCart shoppingCart = shoppingCartService.createEmptyShoppingCart();
+    protected ShoppingCart setShoppingCartCookie(ShoppingCart shoppingCart, HttpServletResponse response){
         Cookie newCartCookie = new Cookie(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId().toString());
         newCartCookie.setComment("Shopping cart id for usability of our web shop UI. Thank you.");
         newCartCookie.setMaxAge(60*60*24*15);//15 days in seconds
@@ -58,7 +61,7 @@ public abstract class CommonWebController {
         ShoppingCart shoppingCart;
         if(Objects.isNull(cartCookie)){
             // create new shopping cart and save cookie
-            shoppingCart = setCookie(response);
+            shoppingCart = setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response);
         }else{
             // load shopping cart from shoppingCart service and add to uiModel
             logger.info("Load existing shopping cart: " + cartCookie.getValue());
@@ -66,11 +69,24 @@ public abstract class CommonWebController {
             shoppingCart = shoppingCartService.findShoppingCartById(cartId);
             if(Objects.isNull( shoppingCart )){
                 //logger.info("Recreate shopping cart: " + cartCookie.getValue());
-                shoppingCart = setCookie(response);
+                shoppingCart = setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response);
                 logger.info("Recreate shopping cart: " + shoppingCart.getId() );
             }
         }
         return  shoppingCart;
+    }
+
+    public String getAuthenticationCustomerId(){
+        String id = null;
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+
+        if (authentication != null)
+            if (authentication.getPrincipal() instanceof UserDetails)
+                id = ((UserDetails) authentication.getPrincipal()).getUsername();
+            else if (authentication.getPrincipal() instanceof String)
+                id = (String) authentication.getPrincipal();
+        return id;
     }
 
 }

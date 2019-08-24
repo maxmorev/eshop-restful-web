@@ -51,7 +51,7 @@ public class CommodityBranchAttributesValidator implements ConstraintValidator<C
             */
             List<Long> values = value.getPropertyValues();
             //Collections.sort(values);
-            Set<CommodityBranch> branches = commodityExist.get().getBranches();
+            List<CommodityBranch> branches = commodityExist.get().getBranches();
             boolean eq;
              //check only if add new branch
 

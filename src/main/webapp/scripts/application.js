@@ -37,21 +37,26 @@ function showToast(message){
 }
 
 
-function sendDataAsJson(url, method, data, callBack){
+function sendDataAsJson(url, method, data, callBack, errorCallBack){
 
     var options = {
         url: url,
         type: method,
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data), // Our valid JSON string
+        data: JSON.stringify(data), //Our valid JSON string
         success: function( json, status, xhr ) {
             if (callBack) {
                 callBack(json);
             }
         },
         error: function( json, status ) {
-            showToast("Error");
+            if(errorCallBack){
+               errorCallBack(json);
+            }else{
+                showToast("Error");
+            }
+
         }
     };
     $.ajax( options );
@@ -128,4 +133,15 @@ function showWearAttrubute(attr){
     return attributesContent;
 }
 
+function updateCustomerAccount(data, callBack, errorCallBack){
+    var urlService = URL_SERVICES + "/customer/update/";
+
+    return sendDataAsJson(urlService, 'PUT', data, callBack, errorCallBack);
+}
+
+function showErrorMessage(message){
+    $('#error-message').empty();
+    $('#error-message').append(message);
+    $('#error-container').show();
+}
 

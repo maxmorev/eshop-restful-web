@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,9 +13,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "commodity_image")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityImage extends AbstractEntity {
-
-    @Column(nullable = false)
+public class CommodityImage {
+    @Id
+    @Column(name="uri", nullable = false, unique = true)
     private String uri;
 
     @ManyToOne(optional=false)
@@ -23,8 +24,10 @@ public class CommodityImage extends AbstractEntity {
     private Commodity commodity;
 
     private Integer width;
-
     private Integer height;
+
+    @Column(nullable = false, name="image_order")
+    private Short imageOrder;
 
     public Commodity getCommodity() {
         return commodity;
@@ -58,9 +61,17 @@ public class CommodityImage extends AbstractEntity {
         this.height = height;
     }
 
+    public Short getImageOrder() {
+        return imageOrder;
+    }
+
+    public void setImageOrder(Short imageOrder) {
+        this.imageOrder = imageOrder;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(uri);
+        return Objects.hash(uri, commodity);
     }
 
     @Override

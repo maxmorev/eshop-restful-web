@@ -185,13 +185,17 @@ public class CommodityServiceImpl implements CommodityService {
         //commodityRepository.save( commodity );
 
         //create images of commodity
-        List<CommodityImage> commodityImages = new ArrayList<>(4);
+        List<CommodityImage> commodityImages = new ArrayList<>(requestCommodity.getImages().size());
+        logger.info("requestCommodity.getImages() > " + requestCommodity.getImages());
+        Short imageIndex = 0;
         for(String imageUrl: requestCommodity.getImages()){
             CommodityImage image = new CommodityImage();
+            image.setImageOrder(imageIndex);
             image.setUri(imageUrl);
             image.setCommodity(commodity);
             //commodityImageRepository.save( image );
             commodityImages.add( image );
+            imageIndex++;
         }
         commodity.setImages(commodityImages);
         return commodity;

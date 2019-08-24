@@ -21,8 +21,7 @@
 
     <script defer src="${mdl_url}/material.min.js"></script>
     <script src="${mdl_url}/jquery.min.js"></script>
-    <!-- commodity css -->
-    <!-- end of commodity css -->
+    <script src="${pageContext.request.contextPath}/scripts/application.js"></script>
     <script type="text/javascript">
 
     var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
@@ -32,5 +31,11 @@
 
 <body>
 <tiles:insertAttribute name="body"/>
+<!-- Toast place -->
+<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+<div class="mdl-snackbar__text"></div>
+<button class="mdl-snackbar__action" type="button"></button>
+</div>
+<!-- end Toast place -->
 </body>
 </html>

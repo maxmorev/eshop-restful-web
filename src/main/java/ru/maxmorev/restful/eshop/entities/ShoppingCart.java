@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,19 +18,13 @@ public class ShoppingCart extends AbstractEntity{
     @Column(name = "VERSION")
     private int version;
 
-    @Column(name="consumer_id")
-    private Long consumerId;
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="customer_id", referencedColumnName = "id")
+    private Customer customer;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart", targetEntity=ShoppingCartSet.class, fetch = FetchType.LAZY)
     private Set<ShoppingCartSet> shoppingSet;
-
-    public Long getConsumerId() {
-        return consumerId;
-    }
-
-    public void setConsumerId(Long consumerId) {
-        this.consumerId = consumerId;
-    }
 
     public Set<ShoppingCartSet> getShoppingSet() {
         return shoppingSet;
@@ -37,6 +32,15 @@ public class ShoppingCart extends AbstractEntity{
 
     public void setShoppingSet(Set<ShoppingCartSet> shoppingSet) {
         this.shoppingSet = shoppingSet;
+    }
+
+    @JsonIgnore
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
