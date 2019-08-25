@@ -28,15 +28,6 @@ function addToBasket(errorMessage, successMessage){
     showToast("SELECTED COLOR : " + colorId);
 }
 
-
-
-function showToast(message){
-    var snackbarContainer = document.querySelector('#demo-toast-example');
-    var toastMessage = {message: message };
-    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-}
-
-
 function sendDataAsJson(url, method, data, callBack, errorCallBack){
 
     var options = {
@@ -95,15 +86,6 @@ function activateTab(className){
     componentHandler.upgradeDom();
 }
 
-//commodity fiches
-function showColorElement(color){
-    return '<div class="colorCircleSml" style="background: '+color+'">&#160;&#160;&#160;&#160;</div>&#160;';
-}
-
-function showSizeElement(size){
-    return '<div class="textCircle">&#160;'+size+'&#160;</div>&#160;';
-}
-
 function isWear(name){
     if( name=="size" || name=="color" ) {
         return true;
@@ -145,3 +127,10 @@ function showErrorMessage(message){
     $('#error-container').show();
 }
 
+function showShoppingCartIconDataBadge(itemsAmount){
+    if(itemsAmount>0)
+        $( ".shopping-cart-nav" ).attr( "data-badge", itemsAmount );
+    else
+        $( ".shopping-cart-nav" ).removeAttr("data-badge");
+
+}

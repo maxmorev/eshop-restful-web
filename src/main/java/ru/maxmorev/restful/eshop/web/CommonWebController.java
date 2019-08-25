@@ -45,6 +45,16 @@ public abstract class CommonWebController {
         uiModel.addAttribute("types", typeList);
     }
 
+    protected void addShoppingCartAttributesToModel(
+            Cookie cartCookie,
+            HttpServletResponse response,
+            Model uiModel
+    ){
+        ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount());
+    }
+
     protected ShoppingCart setShoppingCartCookie(ShoppingCart shoppingCart, HttpServletResponse response){
         Cookie newCartCookie = new Cookie(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId().toString());
         newCartCookie.setComment("Shopping cart id for usability of our web shop UI. Thank you.");

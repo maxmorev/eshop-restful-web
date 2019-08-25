@@ -1,3 +1,10 @@
+function showToast(message){
+    var snackbarContainer = document.querySelector('#demo-toast-example');
+    var toastMessage = {message: message };
+    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
+}
+
+
 function sendDataAsJson(url, method, data, successCallback, errorCallback){
 
     var options = {
@@ -18,4 +25,12 @@ function sendDataAsJson(url, method, data, successCallback, errorCallback){
         }
     };
     $.ajax( options );
+}
+
+function showColorElement(color){
+    return '<div class="colorCircleSml" style="background: '+color+'">&#160;&#160;&#160;&#160;</div>&#160;';
+}
+
+function showSizeElement(size){
+    return '<div class="textCircle">&#160;'+size+'&#160;</div>&#160;';
 }

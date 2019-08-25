@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "shopping_cart")
@@ -37,6 +38,10 @@ public class ShoppingCart extends AbstractEntity{
     @JsonIgnore
     public Customer getCustomer() {
         return customer;
+    }
+
+    public int getItemsAmount(){
+        return shoppingSet.stream().collect(Collectors.summingInt(s->s.getAmount()));
     }
 
     public void setCustomer(Customer customer) {

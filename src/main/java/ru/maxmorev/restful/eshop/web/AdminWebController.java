@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AdminWebController {
 
     @GetMapping(path = {"/security/in/"})
-    public String commodityList(Model uiModel){
+    public String securityPage(Model uiModel){
         return "admin/login";
+    }
+
+    @GetMapping(path = {"/adm/"})
+    public String mainPage(Model uiModel){
+        return "admin/page";
     }
 }

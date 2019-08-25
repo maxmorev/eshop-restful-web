@@ -110,7 +110,7 @@ function showShoppingCart(shoppingCart){
 
     $('#total-cart-price').empty();
     $('#total-cart-price').append('<b>£'+totalPrice+'</b>');
-
+    showShoppingCartIconDataBadge(totalItems);
     componentHandler.upgradeDom();
 
 }

@@ -1,6 +1,4 @@
-/* COMMODITY_TYPE */
-//var URL_SERVICES = "http://localhost:8080/restful-eshop";
-//URL_SERVICES = "http://localhost:8888";
+
 
 function deleteType(typeId){
 
@@ -17,7 +15,6 @@ function deleteType(typeId){
             snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
        },
        error: function( json, status, error ) {
-            //...
             showError(json);
             var toastMessage = {message: 'Error deleteType' + JSON.stringify( json ) };
             snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
@@ -130,22 +127,15 @@ function refreshProperties(typeId){
 };
 
 function getCommodityType(typeId){
-
     var snackbarContainer = document.querySelector('#demo-toast-example');
-
     $.getJSON( URL_SERVICES + "/public/type/"+typeId, function(json, status){
-
-        //FIX set onFocus smthing at elements
-
         $('#commodityTypeNameEdit').val( json.name );
         $('#commodityTypeDescEdit').val( json.description );
-
 	 })
 	 .fail(function(json, status) {
         var toastMessage = {message: 'Error: ' + json.message };
         snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
 	 });
-
 };
 
 var DATA_TYPE;
@@ -179,26 +169,17 @@ function loadDataTypes(){
             var toastMessage = {message: 'Error: ' + json.message };
             snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
     });
-
-
-
 }
 
 function onEditTypeClick(typeId) {
         var snackbarContainer = document.querySelector('#demo-toast-example');
-        //var currentURL = btn.getAttribute("href");
-        //var splited = currentURL.split("#");
         var toastMessage = {message: 'Hide -> typeId= ' + typeId };
         snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
         if( typeId ){
-            //var params = splited[1].split("/");
-            //get type -> set params
-            //currentTypeId = typeId;
             showEditType();
             getCommodityType(typeId);
             loadDataTypes();
             refreshProperties(typeId);
-
         }
 };
 
@@ -325,7 +306,6 @@ function showNavigationCaption(text){
    }
 
 function addAttribute(data, errorTab, callback){
-    //showToast(data.typeId);
     var options = {
                     url: URL_SERVICES + "/private/attribute/",
                     type: 'post',
@@ -340,12 +320,32 @@ function addAttribute(data, errorTab, callback){
                         //...
                         showToast('Error while creating attribute');
                         showError(json, errorTab);
-
                    }
         };
     $.ajax( options );
 }
 
+function addTypeSuccess(json){
+    showToast('Success');
+    refreshTypes();
+    cleanCreateType()
+}
+
+function addTypeError(json){
+    showToast("Error create type");
+    showError(json);
+    refreshTypes();
+    cleanCreateType()
+}
+
+function updateTypeSuccess(json){
+    getCommodityType( getTypeIdFromUrl() );
+    showToast('Update Type Success');
+}
+function updateTypeError(json){
+    showError(json);
+    showToast('Error');
+}
 
 $(document).ready(function () {
 
@@ -356,36 +356,11 @@ $(document).ready(function () {
   var showToastButton = document.querySelector('#btn-createtype');
 
   showToastButton.addEventListener('click', function() {
-    //'use strict';
     var data = {
         name: $( "#commodityTypeName" ).val(),
         description: $( "#commodityTypeDesc" ).val()
      };
-
-     var options = {
-                url: URL_SERVICES + "/private/type/",
-                type: 'post',
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(data), // Our valid JSON string
-
-                success: function( data, status, xhr ) {
-                    //...
-
-                    var toastMessage = {message: 'Success' };
-                    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-                    refreshTypes();
-                    cleanCreateType()
-               },
-               error: function( json, status, error ) {
-                    //...
-                    showToast("Error create type");
-                    showError(json);
-                    refreshTypes();
-                    cleanCreateType()
-               }
-    };
-    $.ajax( options );
+     sendDataAsJson(URL_SERVICES + "/private/type/", 'POST', data, addTypeSuccess, addTypeError);
   });
 
   var createPropertyButton = document.querySelector('#btn-create-attribute');
@@ -399,7 +374,6 @@ $(document).ready(function () {
             measure = $( "#attributeMeasure" ).val();
         }
     }
-
     var data = {
         typeId: typeId,
         dataType: DATA_TYPE,
@@ -428,50 +402,14 @@ $(document).ready(function () {
         name: $( "#commodityTypeNameEdit" ).val(),
         description: $( "#commodityTypeDescEdit" ).val()
      };
-     var options = {
-                url: URL_SERVICES + "/private/type/",
-                type: 'PUT',
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(data), // Our valid JSON string
-
-                success: function( data, status, xhr ) {
-                    //...
-                    getCommodityType( typeId );
-                    var toastMessage = {message: 'Success ' + data.status };
-                    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-
-               },
-               error: function( json, status ) {
-                    //error handling
-                    showError(json);
-                    var toastMessage = { message: 'Error'  };
-                    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-               }
-    };
-    $.ajax( options );
-
+     sendDataAsJson(URL_SERVICES + "/private/type/", 'PUT', data, updateTypeSuccess, updateTypeError);
   });
-
-
 
 });
 
 /****
-
     section tab2 COMMODITY
-
 ****/
-
-function showToast(message){
-    var snackbarContainer = document.querySelector('#demo-toast-example');
-    var toastMessage = {message: message };
-    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-}
-
 var IMAGE_COUNT = 4;
 
 function loadCreateCommodityForm() {
@@ -503,12 +441,8 @@ function postFile(imageIndex){
             success: function(data){
                 if(data != 0){
                     var image = document.getElementById("img"+imageIndex);
-                    //$("#status").val(data.uri);
                     image.src = data.uri;
-                    //$("#img").attr("src", data.uri);
-                    //$(".preview img").show(); // Display image element
                 }else{
-                    //$("#status").val( "Error in file upload" );
                     //error handling
                 }
                 $("#img-spinner-" + imageIndex).hide();
@@ -646,6 +580,15 @@ function loadCreateCFProperties(typeId){
 };
 
 
+function addCommoditySuccess(json){
+    showToast('Operation with Commodity Success');
+}
+
+function addCommodityError(json){
+    showError(json, 2);
+    showToast('Error in operation with Commodity' );
+}
+
 function btnClickAddCommodity(branchId){
 
     var snackbarContainer = document.querySelector('#demo-toast-example');
@@ -688,37 +631,7 @@ function btnClickAddCommodity(branchId){
         method = "PUT";
         data["branchId"] = branchId;
     }
-
-    //$('#test-data').empty();
-    //$('#test-data').append(  JSON.stringify(data) );
-
-    var options = {
-                url: urlFunction,
-                type: method,
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(data), // Our valid JSON string
-
-                success: function( data, status, xhr ) {
-                    //...
-
-                    var toastMessage = {message: method + ' Commodity Success' };
-                    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-                    //refreshTypes();
-                    //cleanCreateType()
-               },
-               error: function( json, status, error ) {
-                    //...
-                    //ERROR COMMODITY
-                    showError(json, 2);
-                    var toastMessage = {message: 'Error in '+method+' Commodity' };
-                    snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-                    //refreshTypes();
-                    //cleanCreateType()
-               }
-    };
-    $.ajax( options );
-
+    sendDataAsJson(urlFunction, method, data, addCommoditySuccess, addCommodityError);
 
 };
 
@@ -730,7 +643,6 @@ function btnClickUpdateCommodity(){
 
 
 function showCommodityForm(){
-
     for(var i=0; i < IMAGE_COUNT; i++){
         $("#img-spinner-" + i).hide();
     }
@@ -741,7 +653,6 @@ function showCommodityForm(){
     $('#btn-createupdate-back').show();
     $('#error-container-2').hide();
     componentHandler.upgradeDom();
-
 };
 
 function loadCommodity(id){
@@ -764,8 +675,6 @@ function loadCommodity(id){
         //end load images
         $('#commodityName').val( json.name );
         //$('#commodityName').attr("class", "mdl-textfield mdl-js-textfield is-upgraded");
-        //$('#commodityName').attr("data-upgraded", ",MaterialTextfield");
-
         $('#commodityShortDesc').val( json.shortDescription );
         $('#commodityOverview').val( json.overview );
 

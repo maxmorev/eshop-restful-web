@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
                 http.httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/adm/**").hasAuthority("ADMIN")
                 .antMatchers(Constants.REST_PRIVATE_URI+"**").hasAuthority("ADMIN")
                 .antMatchers("/shopping/cart/checkout/").hasAuthority("CUSTOMER")
                 .antMatchers("/customer/account/update/").hasAuthority("CUSTOMER")

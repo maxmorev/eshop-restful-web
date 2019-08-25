@@ -1,6 +1,7 @@
 package ru.maxmorev.restful.eshop.annotation;
 
-public class ShoppingCookie {
+public interface ShoppingCookie {
 
-    public final static String SHOPPiNG_CART_NAME = "ShoppingCartCookie";
+    String SHOPPiNG_CART_NAME = "ShoppingCartCookie";
+    String SHOPPiNG_CART_ITEMS_AMOUNT = "shoppingCartItemsAmount";
 }

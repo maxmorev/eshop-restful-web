@@ -35,8 +35,10 @@ public class ShoppingCartWebController extends CommonWebController {
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             Model uiModel) throws IOException {
         logger.info("Listing shopping cart");
-        ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
         addCommonAttributesToModel(uiModel);
+        ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount());
         uiModel.addAttribute("shoppingCart", shoppingCart );
         return "shopping/cart";
     }
@@ -74,6 +76,7 @@ public class ShoppingCartWebController extends CommonWebController {
         addCommonAttributesToModel(uiModel);
         uiModel.addAttribute("customer", customer);
         uiModel.addAttribute("shoppingCart", shoppingCart );
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount() );
         return "shopping/proceedToCheckout";
     }
 

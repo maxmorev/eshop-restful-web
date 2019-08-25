@@ -14,18 +14,30 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="${mdl_url}/material.min.css">
-    <!--local scripts -->
-    <link rel="stylesheet" href="${mdl_url}/fonts.css">
-    <link rel="stylesheet" href="${mdl_url}/material.min.css">
+        <!--<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">-->
+        <link rel="stylesheet" href="../mdl/material.min.css">
 
-    <script defer src="${mdl_url}/material.min.js"></script>
-    <script src="${mdl_url}/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/scripts/application.js"></script>
+       <!--
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        -->
+        <!--local scripts -->
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/fonts.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/material.min.css">
+        <!-- shop css -->
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/application.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin-page.css">
+
+        <script defer src="${pageContext.request.contextPath}/mdl/material.min.js"></script>
+        <script src="${pageContext.request.contextPath}/mdl/jquery.min.js"></script>
+        <!-- commodity css -->
+        <!-- end of commodity css -->
     <script type="text/javascript">
-
-    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>";
+    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
     </script>
+     <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
+     <script src="${pageContext.request.contextPath}/scripts/admin-page.js"></script>
+
 
 </head>
 
@@ -37,5 +49,6 @@
 <button class="mdl-snackbar__action" type="button"></button>
 </div>
 <!-- end Toast place -->
+<script defer src="${mdl_url}/material.min.js"></script>
 </body>
 </html>

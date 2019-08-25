@@ -24,7 +24,11 @@ public class CommodityWebController extends CommonWebController{
 
 
     @GetMapping(path = {"/commodity/","/"})
-    public String commodityList(Model uiModel){
+    public String commodityList(
+            HttpServletResponse response,
+            @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
+            Model uiModel){
+
         logger.info("Listing branches");
         List<Commodity> commodities = commodityService.findAllCommodities();
         if(Objects.isNull(commodities)){
@@ -32,13 +36,19 @@ public class CommodityWebController extends CommonWebController{
             return "commodity/error";
         }
         addCommonAttributesToModel(uiModel);
+        addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         uiModel.addAttribute("commodities", commodities );
         logger.info("No. of commodities: " + commodities.size());
         return "commodity/list";
     }
 
     @GetMapping(path = {"/commodity/type/{name}"})
-    public String commodityListByType(@PathVariable(value = "name", required = true) String name, Model uiModel) {
+    public String commodityListByType(
+            HttpServletResponse response,
+            @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
+            @PathVariable(value = "name", required = true) String name,
+            Model uiModel) {
+
         logger.info("Listing commodity by typeName");
         List<Commodity> commodities = commodityService.findAllCommoditiesByTypeName(name);
         if(Objects.isNull(commodities)){
@@ -50,6 +60,7 @@ public class CommodityWebController extends CommonWebController{
             uiModel.addAttribute("currentType", type);
         }
         addCommonAttributesToModel(uiModel);
+        addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         uiModel.addAttribute("commodities", commodities);
         logger.info("No. of commodities: " + commodities.size());
         return "commodity/list";
@@ -60,19 +71,20 @@ public class CommodityWebController extends CommonWebController{
     public String commodity(
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
-            @PathVariable(value = "id", required = true) Long id, Model uiModel) {
+            @PathVariable(value = "id", required = true) Long id,
+            Model uiModel) {
         logger.info("Get commodity by id="+id);
         Commodity cm = commodityService.findCommodityById(id);
         if(Objects.isNull(cm)){
             //TODO message like "The product you are looking for no longer exists."
             return "commodity/error-item";
         }
-        ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
 
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
+
         uiModel.addAttribute("currentType", cm.getType());
         uiModel.addAttribute("commodity", cm);
         addCommonAttributesToModel(uiModel);
+        addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         //TODO improve this part and remove from the code the definition of special type of commodity "wear" t-shirt
         if(cm.getType().getName().toLowerCase().equals("t-shirt")){
             return "commodity/show-wear";
