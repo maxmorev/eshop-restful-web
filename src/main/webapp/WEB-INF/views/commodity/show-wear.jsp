@@ -14,6 +14,7 @@
     <spring:message code="label_size" var="labelSize"/>
     <spring:message code="label_amount" var="labelAmount"/>
     <spring:message code="label_VendorCode" var="labelVendorCode"/>
+    <spring:url value="/shopping/cart/checkout/" var="proceedToCheckoutUrl"/>
 
 
 <script type="text/javascript">
@@ -25,11 +26,17 @@ var SELECTED_SIZE;
 var SELECTED_COLOR;
 var SELECTED_BRANCH;
 var AMOUNT;
+var shoppingCartObj;
+
+function addToShoppingCartSuccess(json){
+    shoppingCartObj = json;
+    var shoppingCartReview = getAmountItemsInShoppingCart(shoppingCartObj);
+    showShoppingCartIconDataBadge(shoppingCartReview.amount);
+    showToast("Added to Shopping Cart");
+}
 
 function addToShoppingCart(){
-    //showToast( "shoppingCart: " + shoppingCart + " SELECTED BRANCH : " + SELECTED_BRANCH );
-    addToShoppingCartSet(shoppingCart, SELECTED_BRANCH, 1, showToast("Added to Shopping Cart"));
-
+    addToShoppingCartSet(shoppingCart, SELECTED_BRANCH, 1, addToShoppingCartSuccess);
 }
 
 function showVendorCode(){
@@ -148,7 +155,11 @@ for(var i=0; i<objJson.length; i++){
 var btnPropertyBack = document.querySelector('#btn-add-to-basket');
 btnPropertyBack.addEventListener('click', addToShoppingCart);
 showSizes();
-//showToast("Branches loaded " + BRANCHES.length);
+
+var btnProceed = document.querySelector('#btn-proceed');
+btnProceed.addEventListener('click', function() {
+    window.location.href = "${proceedToCheckoutUrl}";
+} );
 
 });
 
@@ -212,7 +223,7 @@ showSizes();
                                 <button id="btn-add-to-basket" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                                 ${labelBasket}
                                 </button>&#160;<br/><br/>
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                <button id="btn-proceed" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                                   ${labelCheckout}
                                 </button>
                             </div>

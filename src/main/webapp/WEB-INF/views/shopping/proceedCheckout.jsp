@@ -15,8 +15,6 @@
     <spring:message code="label_back" var="labelBack"/>
     <spring:message code="label_checkout" var="labelWelcome"/>
     <spring:message code="label_verify_email" var="labelVerifyEmail"/>
-
-
     <spring:url value="/shopping/cart/" var="backUrl"/>
 
 <script type="text/javascript">

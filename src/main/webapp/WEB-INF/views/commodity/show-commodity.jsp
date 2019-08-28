@@ -15,16 +15,26 @@
     <spring:message code="label_amount" var="labelAmount"/>
     <spring:message code="label_VendorCode" var="labelVendorCode"/>
 
+    <spring:url value="/shopping/cart/checkout/" var="proceedToCheckoutUrl"/>
+
+
 
 <script type="text/javascript">
 
 const shoppingCart = ${ShoppingCartCookie};
 var branches = [];
+var shoppingCartObj;
+
+function addToShoppingCartSuccess(json){
+    shoppingCartObj = json;
+    var shoppingCartReview = getAmountItemsInShoppingCart(shoppingCartObj);
+    showShoppingCartIconDataBadge(shoppingCartReview.amount);
+    showToast("Added to Shopping Cart");
+}
 
 function findBranch(){
     var branchId = branches[0].id;
-    addToShoppingCartSet(shoppingCart, branchId, 1, showToast("Added to Shopping Cart"));
-    //showToast( "SELECTED BRANCH : " + branchId );
+    addToShoppingCartSet(shoppingCart, branchId, 1, addToShoppingCartSuccess);
 }
 
 function showAttributes(propertySet){
@@ -52,6 +62,10 @@ $(document).ready(function () {
     showAmount(branches[0]);
     var btnAddToBasket = document.querySelector('#btn-add-to-basket');
     btnAddToBasket.addEventListener('click', findBranch);
+    var btnProceed = document.querySelector('#btn-proceed');
+    btnProceed.addEventListener('click', function() {
+        window.location.href = "${proceedToCheckoutUrl}";
+    } );
 
 });
 </script>
@@ -113,7 +127,7 @@ $(document).ready(function () {
                                 <button id="btn-add-to-basket" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                                 ${labelBasket}
                                 </button>&#160;<br/><br/>
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                <button id="btn-proceed" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                                   ${labelCheckout}
                                 </button>
                             </div>

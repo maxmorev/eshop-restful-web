@@ -49,7 +49,6 @@ public class CommodityWebController extends CommonWebController{
             @PathVariable(value = "name", required = true) String name,
             Model uiModel) {
 
-        logger.info("Listing commodity by typeName");
         List<Commodity> commodities = commodityService.findAllCommoditiesByTypeName(name);
         if(Objects.isNull(commodities)){
             //TODO error handling
@@ -62,7 +61,6 @@ public class CommodityWebController extends CommonWebController{
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         uiModel.addAttribute("commodities", commodities);
-        logger.info("No. of commodities: " + commodities.size());
         return "commodity/list";
     }
 
@@ -73,14 +71,11 @@ public class CommodityWebController extends CommonWebController{
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             @PathVariable(value = "id", required = true) Long id,
             Model uiModel) {
-        logger.info("Get commodity by id="+id);
         Commodity cm = commodityService.findCommodityById(id);
         if(Objects.isNull(cm)){
             //TODO message like "The product you are looking for no longer exists."
             return "commodity/error-item";
         }
-
-
         uiModel.addAttribute("currentType", cm.getType());
         uiModel.addAttribute("commodity", cm);
         addCommonAttributesToModel(uiModel);

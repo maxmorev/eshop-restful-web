@@ -28,31 +28,6 @@ function addToBasket(errorMessage, successMessage){
     showToast("SELECTED COLOR : " + colorId);
 }
 
-function sendDataAsJson(url, method, data, callBack, errorCallBack){
-
-    var options = {
-        url: url,
-        type: method,
-        dataType: 'json',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data), //Our valid JSON string
-        success: function( json, status, xhr ) {
-            if (callBack) {
-                callBack(json);
-            }
-        },
-        error: function( json, status ) {
-            if(errorCallBack){
-               errorCallBack(json);
-            }else{
-                showToast("Error");
-            }
-
-        }
-    };
-    $.ajax( options );
-}
-
 function addToShoppingCartSet(cartId, branchId, amount, callBack){
     //showToast('URL SERVICES is '+URL_SERVICES)
     var urlService = URL_SERVICES + "/public/shoppingCart/";
@@ -132,5 +107,20 @@ function showShoppingCartIconDataBadge(itemsAmount){
         $( ".shopping-cart-nav" ).attr( "data-badge", itemsAmount );
     else
         $( ".shopping-cart-nav" ).removeAttr("data-badge");
+}
 
+function getAmountItemsInShoppingCart(shoppingCart){
+
+    var shoppingSet = shoppingCart.shoppingSet;
+    var totalItems = 0;
+    var totalPrice = 0;
+    shoppingSet.forEach(function(set){
+        totalItems += set.amount;
+        totalPrice += set.amount*set.branch.price;
+    });
+    var data = {
+        amount: totalItems,
+        price: totalPrice
+            };
+    return data;
 }
