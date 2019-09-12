@@ -107,7 +107,6 @@ $(document).ready(function () {
 
                     <div class="mdl-grid mdl-cell--12-col">
                         <div class="mdl-cell mdl-cell--8-col">
-
                             <h3 class="mdl-typography--headline">Attributes:</h3>
                             <h3 class="mdl-typography--headline">
                             <div id="attribute-container">

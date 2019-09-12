@@ -13,5 +13,6 @@ public interface ShoppingCartService {
     ShoppingCart update(ShoppingCart sc);
     ShoppingCart addBranchToShoppingCart(Long branchId, Integer amount, Long shoppingCartId);
     ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to);
+    ShoppingCart checkAvailability(ShoppingCart sc);
 
 }

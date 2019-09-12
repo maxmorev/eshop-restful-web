@@ -17,16 +17,29 @@
     <spring:message code="label_verify_email" var="labelVerifyEmail"/>
     <spring:url value="/shopping/cart/" var="backUrl"/>
 
+    <spring:url value="/commodity" var="showCommodityUrl"/>
+
 <script type="text/javascript">
 const shoppingCartJson = '${shoppingCart}';
+const showCommodityUrl = '${showCommodityUrl}';
 const customerId = '${customer.id}';
-var shoppingCartObj = JSON.parse(shoppingCartJson);
+var shoppingCartObj;
 
 $(document).ready(function () {
+    if(shoppingCartJson.length>0){
+        shoppingCartObj = JSON.parse(shoppingCartJson);
+        showShoppingCart(shoppingCartObj);
+        showToast("Please pay for selected items!");
+    }else{
+        showToast("Shopping cart is empty");
+        //show message
+    }
+    activateTab('tab-shopping-cart');
+
 
 });
-
 </script>
+
 <div class="mdl-grid portfolio-max-width">
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
         <c:if test="${not empty shoppingCart}">
@@ -41,8 +54,7 @@ $(document).ready(function () {
             </div>
             <div class="mdl-grid">
 
-                <div class="mdl-cell mdl-cell--6-col">&nbsp;</div>
-                <div class="mdl-cell mdl-cell--6-col">Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div></div>
+                <tiles:insertAttribute name="cart-container"/>
 
                 <div id="payment-info" class="mdl-cell mdl-cell--12-col">
                     <div class="mdl-grid">

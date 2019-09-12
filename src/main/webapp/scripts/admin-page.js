@@ -674,10 +674,12 @@ function loadCommodity(id){
         }
         //end load images
         $('#commodityName').val( json.name );
+            $('#commodityName').parent().addClass("is-dirty");
         //$('#commodityName').attr("class", "mdl-textfield mdl-js-textfield is-upgraded");
         $('#commodityShortDesc').val( json.shortDescription );
+            $('#commodityShortDesc').parent().addClass("is-dirty");
         $('#commodityOverview').val( json.overview );
-
+            $('#commodityOverview').parent().addClass("is-dirty");
         componentHandler.upgradeDom();
 
     })
@@ -715,7 +717,9 @@ function loadCommodityBranch(branchId){
         }
 
         $('#commodityAmount').val( json.amount );
+            $('#commodityAmount').parent().addClass("is-dirty");
         $('#commodityPrice').val( json.price );
+            $('#commodityPrice').parent().addClass("is-dirty");
         var toastMessage = {message: 'Load Commodity Branch id = ' + branchId };
         snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
 

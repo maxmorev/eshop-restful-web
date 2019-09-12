@@ -5,10 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import ru.maxmorev.restful.eshop.services.CommodityService;
-import ru.maxmorev.restful.eshop.services.CommodityServiceImpl;
-import ru.maxmorev.restful.eshop.services.ShoppingCartService;
-import ru.maxmorev.restful.eshop.services.ShoppingCartServiceImpl;
+import ru.maxmorev.restful.eshop.services.*;
 
 /**
  * Created by maxim.morev on 04/30/19.
@@ -26,4 +23,6 @@ public class ServiceConfig {
     @Bean
     ShoppingCartService getShoppingCartService(){ return new ShoppingCartServiceImpl(); }
 
+    @Bean(name = { "customerService", "userDetailsService" })
+    public CustomerService getCustomerService(){ return new CustomerServiceImpl();}
 }

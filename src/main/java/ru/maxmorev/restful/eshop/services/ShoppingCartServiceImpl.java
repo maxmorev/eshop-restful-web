@@ -11,8 +11,10 @@ import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.repos.ShoppingCartRepository;
 import ru.maxmorev.restful.eshop.repos.ShoppingCartSetRepository;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service("shoppingCartService")
 @Transactional
@@ -139,6 +141,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ShoppingCartSet findByBranchAndShoppingCart(CommodityBranch branch, ShoppingCart cart) {
         Optional<ShoppingCartSet> oSCS = shoppingCartSetRepository.findByBranchAndShoppingCart(branch, cart);
         if(oSCS.isPresent()){
@@ -167,5 +170,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCartRepository.delete(from);
         }
         return to;
+    }
+
+    @Override
+    public ShoppingCart checkAvailability(ShoppingCart sc) {
+        Set<ShoppingCartSet> removeFromCart = new HashSet<>();
+        for(ShoppingCartSet set: sc.getShoppingSet()){
+            if(set.getBranch().getAmount()==0){
+                //remove set from shopping cart
+                removeFromCart.add(set);
+            }else {
+                if (set.getBranch().getAmount() < set.getAmount()) {
+                    set.setAmount(set.getBranch().getAmount());
+                }
+            }
+        }
+        for(ShoppingCartSet remove: removeFromCart){
+            sc.getShoppingSet().remove(remove);
+        }
+        return shoppingCartRepository.save(sc);
     }
 }

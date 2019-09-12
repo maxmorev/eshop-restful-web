@@ -16,10 +16,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <!--<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">-->
 
-       <!--
-        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        -->
         <!--local scripts -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/fonts.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/material.min.css">
@@ -35,8 +31,6 @@
     var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
     </script>
      <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
-     <script src="${pageContext.request.contextPath}/scripts/admin-page.js"></script>
-
 
 </head>
 

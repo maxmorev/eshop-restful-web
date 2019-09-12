@@ -2,7 +2,8 @@
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
-    <definition extends="admin" name="admin/login">
+
+    <definition extends="login" name="admin/login">
         <put-attribute name="body" value="/WEB-INF/views/admin/login.jsp" />
     </definition>
 

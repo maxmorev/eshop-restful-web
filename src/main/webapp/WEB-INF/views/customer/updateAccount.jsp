@@ -38,16 +38,24 @@ function updateAccount(){
 function loadForm(customerObj){
     $('#password').val( customerObj.password );
     $('#password').prop('disabled', true);
+        $('#password').parent().addClass("is-dirty");
     $('#email').val( customerObj.email );
     $('#email').prop('disabled', true);
+        $('#email').parent().addClass("is-dirty");
     $('#fullName').val( customerObj.fullName );
+        $('#fullName').parent().addClass("is-dirty");
     $('#country').val( customerObj.country );
+        $('#country').parent().addClass("is-dirty");
     $('#postcode').val( customerObj.postcode );
+        $('#postcode').parent().addClass("is-dirty");
     $('#city').val( customerObj.city );
+        $('#city').parent().addClass("is-dirty");
     $('#address').val( customerObj.address );
+        $('#address').parent().addClass("is-dirty");
 }
 
 $(document).ready(function () {
+    activateTab('tab-account-update');
     $('#error-container').hide();
     loadForm(customerObj);
     var btnUpdate = document.querySelector('#btn-update-account');

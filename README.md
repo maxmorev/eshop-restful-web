@@ -46,3 +46,9 @@ https://en.wikipedia.org/wiki/Entity%E2%80%93attribute%E2%80%93value_model
 
 PostgreSQL
 https://www.postgresql.org/
+
+Tomcat 9 
+https://www.digitalocean.com/community/tutorials/install-tomcat-9-ubuntu-1804
+
+https://www.digitalocean.com/community/tutorials/how-to-encrypt-tomcat-8-connections-with-apache-or-nginx-on-ubuntu-16-04
+

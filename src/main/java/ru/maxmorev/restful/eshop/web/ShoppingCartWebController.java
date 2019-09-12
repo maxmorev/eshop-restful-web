@@ -39,7 +39,7 @@ public class ShoppingCartWebController extends CommonWebController {
         ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount());
-        uiModel.addAttribute("shoppingCart", shoppingCart );
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
         return "shopping/cart";
     }
 
@@ -73,9 +73,11 @@ public class ShoppingCartWebController extends CommonWebController {
             customerAuth.setShoppingCart(shoppingCart);
             customerService.update(customer);
         }
+        shoppingCart = shoppingCartService.checkAvailability(shoppingCart);
         addCommonAttributesToModel(uiModel);
         uiModel.addAttribute("customer", customer);
-        uiModel.addAttribute("shoppingCart", shoppingCart );
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
+
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount() );
         return "shopping/proceedToCheckout";
     }

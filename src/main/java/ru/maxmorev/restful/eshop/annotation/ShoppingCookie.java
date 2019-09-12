@@ -4,4 +4,5 @@ public interface ShoppingCookie {
 
     String SHOPPiNG_CART_NAME = "ShoppingCartCookie";
     String SHOPPiNG_CART_ITEMS_AMOUNT = "shoppingCartItemsAmount";
+    String SHOPPiNG_CART = "shoppingCart";
 }

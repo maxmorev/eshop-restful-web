@@ -13,4 +13,7 @@
     <definition name="admin" template="/WEB-INF/layouts/admin.jsp">
     </definition>
 
+    <definition name="login" template="/WEB-INF/layouts/login.jsp">
+    </definition>
+
 </tiles-definitions>

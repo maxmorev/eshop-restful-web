@@ -4,11 +4,19 @@
 <tiles-definitions>
 
     <definition extends="default" name="shopping/cart">
-        <put-attribute name="body" value="/WEB-INF/views/shopping/cart.jsp" />
+        <put-attribute name="body">
+            <definition template="/WEB-INF/views/shopping/cart.jsp">
+                <put-attribute name="cart-container" value="/WEB-INF/views/shopping/cart-container.jsp"/>
+            </definition>
+        </put-attribute>
     </definition>
 
     <definition extends="default" name="shopping/proceedToCheckout">
-        <put-attribute name="body" value="/WEB-INF/views/shopping/proceedCheckout.jsp" />
+        <put-attribute name="body">
+            <definition template="/WEB-INF/views/shopping/proceedCheckout.jsp">
+                <put-attribute name="cart-container" value="/WEB-INF/views/shopping/cart-container.jsp"/>
+            </definition>
+        </put-attribute>
     </definition>
 
 </tiles-definitions>

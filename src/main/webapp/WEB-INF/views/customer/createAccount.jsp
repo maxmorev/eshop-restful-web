@@ -17,8 +17,6 @@
 
 <script type="text/javascript">
 const fromPage = '${fromPage}';
-const shoppingCartJson = '${shoppingCart}';
-var shoppingCartObj = JSON.parse(shoppingCartJson);
 var customer;
 var customerId;
 const verifyPrefix = "verify";
@@ -170,7 +168,7 @@ $(document).ready(function () {
 </script>
 <div class="mdl-grid portfolio-max-width">
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
-        <c:if test="${not empty shoppingCart}">
+
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text commodity-name"></b></h2>
             </div>
@@ -242,6 +240,5 @@ $(document).ready(function () {
 
             </div>
 
-        </c:if>
     </div>
 </div>
