@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import ru.maxmorev.restful.eshop.rest.Constants;
+import ru.maxmorev.restful.eshop.services.CustomerServiceImpl;
 
 /**
  * Created by maxim.morev on 05/06/19.
@@ -30,22 +31,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-    private UserDetailsService userDetailsService;
-
-    @Autowired public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
-    //protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         try {
-            auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+            auth.userDetailsService( getUserDetailsService() ).passwordEncoder(passwordEncoder());
         } catch (Exception e) {
             logger.error("Could not configure authentication!", e);
         }
     }
 
+    @Bean(name = { "userDetailsService" })
+    public UserDetailsService getUserDetailsService(){ return new CustomerServiceImpl();}
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,6 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+                http.headers().httpStrictTransportSecurity()
+                .maxAgeInSeconds(0)
+                .includeSubDomains(true);
+
                 http.httpBasic().and()
                 .authorizeRequests()
                 .antMatchers("/adm/**").hasAuthority("ADMIN")

@@ -16,17 +16,21 @@
     <spring:url value="/shopping/cart/checkout/" var="checkOutUrl"/>
 
 <script type="text/javascript">
-const fromPage = '${fromPage}';
+const shoppingCartJson = '${shoppingCart}';
+var shoppingCartObj;
+const fromPage = '${fromPage}';``
 var customer;
 var customerId;
 const verifyPrefix = "verify";
 
 function createAccountSuccess(json){
+
     customer = json;
     customerId = json.id;
     $('#error-message').hide();
     $('#consumer-verify-email').show();
     $('#customer-info').hide();
+    $('#customer-buttons').hide();
     componentHandler.upgradeDom();
     window.location.href += "#" + verifyPrefix +"/" + customer.id;
     showToast("Thank you! Please Verify Email.");
@@ -41,6 +45,7 @@ function createAccountError(json){
 
 function createAccount(){
     $('#error-container').hide();
+
     var urlService = URL_SERVICES + "/public/customer/";
     var data = {
             email:    $( "#email" ).val(),
@@ -136,6 +141,12 @@ function verifyAccount(){
 }
 
 $(document).ready(function () {
+  if( shoppingCartJson.length>0 ){
+    shoppingCartObj = JSON.parse(shoppingCartJson);
+    showShoppingCart(shoppingCartObj);
+    showToast("Please create account!");
+  }
+
 
   checkUrl();
 

@@ -36,10 +36,7 @@ public class ShoppingCartWebController extends CommonWebController {
             Model uiModel) throws IOException {
         logger.info("Listing shopping cart");
         addCommonAttributesToModel(uiModel);
-        ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount());
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
+        addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         return "shopping/cart";
     }
 

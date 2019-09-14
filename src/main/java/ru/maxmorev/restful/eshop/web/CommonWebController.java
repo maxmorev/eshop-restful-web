@@ -53,6 +53,7 @@ public abstract class CommonWebController {
         ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount());
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
     }
 
     protected ShoppingCart setShoppingCartCookie(ShoppingCart shoppingCart, HttpServletResponse response){

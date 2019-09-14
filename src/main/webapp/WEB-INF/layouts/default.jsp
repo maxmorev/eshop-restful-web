@@ -57,7 +57,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-        const URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
+        const URL_SERVICES = "<%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
         var SHOPPING_CART_ITEMS_AMOUNT = ${shoppingCartItemsAmount};
     </script>
     <script src="${pageContext.request.contextPath}/scripts/common.js"></script>

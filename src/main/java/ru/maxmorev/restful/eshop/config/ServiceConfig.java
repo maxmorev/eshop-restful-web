@@ -23,6 +23,6 @@ public class ServiceConfig {
     @Bean
     ShoppingCartService getShoppingCartService(){ return new ShoppingCartServiceImpl(); }
 
-    @Bean(name = { "customerService", "userDetailsService" })
+    @Bean(name = { "customerService" })
     public CustomerService getCustomerService(){ return new CustomerServiceImpl();}
 }

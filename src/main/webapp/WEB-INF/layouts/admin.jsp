@@ -32,7 +32,7 @@
         <!-- commodity css -->
         <!-- end of commodity css -->
     <script type="text/javascript">
-    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
+    var URL_SERVICES = "<%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
     </script>
      <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
      <script src="${pageContext.request.contextPath}/scripts/admin-page.js"></script>

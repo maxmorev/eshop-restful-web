@@ -321,8 +321,6 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.2</version>
         <configuration>
-         <source>1.8</source>
-         <target>1.8</target>
          <failOnMissingWebXml>false</failOnMissingWebXml>
           <!--
             Exclude JCL and LOG4J since all logging should go through SLF4J.
