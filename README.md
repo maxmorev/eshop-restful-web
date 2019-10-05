@@ -52,3 +52,9 @@ https://www.digitalocean.com/community/tutorials/install-tomcat-9-debian-9
 
 https://www.digitalocean.com/community/tutorials/how-to-encrypt-tomcat-8-connections-with-apache-or-nginx-on-ubuntu-16-04
 
+Migrating to Java 11
+https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9
+
+update java version in linux
+
+update-alternatives --config java

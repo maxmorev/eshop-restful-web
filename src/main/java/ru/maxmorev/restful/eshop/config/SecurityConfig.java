@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.config;
 
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +33,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final static Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         try {
-            auth.userDetailsService( getUserDetailsService() ).passwordEncoder(passwordEncoder());
+            auth.userDetailsService( userDetailsService ).passwordEncoder(passwordEncoder());
         } catch (Exception e) {
             logger.error("Could not configure authentication!", e);
         }
     }
 
-    @Bean(name = { "userDetailsService" })
+    /*@Bean(name = { "userDetailsService" })
     public UserDetailsService getUserDetailsService(){ return new CustomerServiceImpl();}
-
+*/
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,2 +1,2 @@
 #!/bin/bash
-mvn -T1C -DskipTests -P dev clean package
+mvn -T1C -DskipTests -P standalone clean package

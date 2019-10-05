@@ -20,6 +20,7 @@ import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -99,9 +100,9 @@ public class CommodityController extends AbstractRestController {
 
         if (orderBy != null && order != null) {
             if (order.equals("desc")) {
-                sort = new Sort(Sort.Direction.DESC, orderBy);
+                sort = Sort.by(Sort.Direction.DESC, orderBy);
             } else
-                sort = new Sort(Sort.Direction.ASC, orderBy);
+                sort = Sort.by(Sort.Direction.ASC, orderBy);
         }
 
         // Constructs page request for current page

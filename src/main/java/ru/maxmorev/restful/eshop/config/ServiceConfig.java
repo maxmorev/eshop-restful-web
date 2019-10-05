@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.maxmorev.restful.eshop.services.*;
 
 /**
@@ -25,4 +26,7 @@ public class ServiceConfig {
 
     @Bean(name = { "customerService" })
     public CustomerService getCustomerService(){ return new CustomerServiceImpl();}
+
+    @Bean(name = {"userDetailsService"})
+    UserDetailsService getUserDetailsService(){ return new CustomerServiceImpl();}
 }
