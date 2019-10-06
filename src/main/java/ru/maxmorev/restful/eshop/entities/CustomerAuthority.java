@@ -19,7 +19,6 @@ public class CustomerAuthority implements GrantedAuthority {
         this.authority = authority.name();
     }
 
-
     @Override
     public String getAuthority() {
         return authority;
@@ -30,11 +29,11 @@ public class CustomerAuthority implements GrantedAuthority {
         if (this == o) return true;
         if (!(o instanceof CustomerAuthority)) return false;
         CustomerAuthority that = (CustomerAuthority) o;
-        return authority.equals(that.authority);
+        return authority.equals(that.getAuthority());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(authority);
+        return Objects.hash(getAuthority());
     }
 }

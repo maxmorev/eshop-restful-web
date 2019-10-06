@@ -62,30 +62,17 @@ public class CommodityBranchAttributeSet extends AbstractEntity {
         }
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        if (!super.equals(o))
-            return false;
-        CommodityBranchAttributeSet that = (CommodityBranchAttributeSet) o;
-        if (!branch.equals(that.branch))
-            return false;
-        if(!Objects.equals(attribute, that.attribute))
-            return false;
-        return Objects.equals(attributeValue, that.attributeValue);
-
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CommodityBranchAttributeSet)) return false;
+        if (!super.equals(object)) return false;
+        CommodityBranchAttributeSet that = (CommodityBranchAttributeSet) object;
+        return getBranch().equals(that.getBranch()) &&
+                getAttribute().equals(that.getAttribute()) &&
+                getAttributeValue().equals(that.getAttributeValue());
     }
 
-    @Override public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (branch != null ? branch.hashCode() : 0);
-        result = 31 * result + (attribute != null ? attribute.hashCode() : 0);
-        result = 31 * result + (attributeValue != null ? attributeValue.hashCode() : 0);
-        return result;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getBranch(), getAttribute(), getAttributeValue());
     }
-
-
-
 }

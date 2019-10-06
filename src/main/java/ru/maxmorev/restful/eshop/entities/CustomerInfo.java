@@ -85,25 +85,6 @@ public class CustomerInfo extends AbstractEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CustomerInfo)) return false;
-        if (!super.equals(o)) return false;
-        CustomerInfo that = (CustomerInfo) o;
-        return email.equals(that.email) &&
-                fullName.equals(that.fullName) &&
-                country.equals(that.country) &&
-                postcode.equals(that.postcode) &&
-                city.equals(that.city) &&
-                address.equals(that.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), email, fullName, country, postcode, city, address);
-    }
-
-    @Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -113,4 +94,20 @@ public class CustomerInfo extends AbstractEntity {
         }
     }
 
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CustomerInfo)) return false;
+        if (!super.equals(object)) return false;
+        CustomerInfo that = (CustomerInfo) object;
+        return getEmail().equals(that.getEmail()) &&
+                getFullName().equals(that.getFullName()) &&
+                getCountry().equals(that.getCountry()) &&
+                getPostcode().equals(that.getPostcode()) &&
+                getCity().equals(that.getCity()) &&
+                getAddress().equals(that.getAddress());
+    }
+
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getEmail(), getFullName(), getCountry(), getPostcode(), getCity(), getAddress());
+    }
 }

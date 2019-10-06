@@ -10,6 +10,7 @@ import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -32,9 +33,11 @@ public class CommodityAttribute extends AbstractEntity{
     @JsonIgnore
     private CommodityType commodityType;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "attribute", targetEntity= CommodityAttributeValue.class, fetch = FetchType.EAGER)
+    @org.hibernate.annotations.BatchSize(size=5)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "attribute", targetEntity= CommodityAttributeValue.class, fetch = FetchType.LAZY)
     private Set<CommodityAttributeValue> values = new HashSet<>();
 
+    @org.hibernate.annotations.BatchSize(size=10)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
@@ -98,30 +101,18 @@ public class CommodityAttribute extends AbstractEntity{
         }
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        if (!super.equals(o))
-            return false;
-        CommodityAttribute that = (CommodityAttribute) o;
-        if (!name.equals(that.name))
-            return false;
-        if (!dataType.equals(that.dataType))
-            return false;
-        if (!measure.equals(that.measure))
-            return false;
-        return true;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CommodityAttribute)) return false;
+        if (!super.equals(object)) return false;
+        CommodityAttribute that = (CommodityAttribute) object;
+        return getName().equals(that.getName()) &&
+                getDataType().equals(that.getDataType()) &&
+                java.util.Objects.equals(getMeasure(), that.getMeasure()) &&
+                getCommodityType().equals(that.getCommodityType());
     }
 
-    @Override public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (dataType != null ? dataType.hashCode() : 0);
-        result = 31 * result + (measure != null ? measure.hashCode() : 0);
-        return result;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getName(), getDataType(), getCommodityType());
     }
-
-
 }

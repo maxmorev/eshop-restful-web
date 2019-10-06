@@ -125,29 +125,19 @@ public class CommodityAttributeValue extends AbstractEntity{
         }
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        if (!super.equals(o))
-            return false;
-        CommodityAttributeValue that = (CommodityAttributeValue) o;
-        if (!Objects.equals(string, that.string))
-            return false;
-        if (!Objects.equals(text, that.text))
-            return false;
-        if (!Objects.equals(real, that.real))
-            return false;
-        return Objects.equals(integer, that.integer);
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CommodityAttributeValue)) return false;
+        if (!super.equals(object)) return false;
+        CommodityAttributeValue that = (CommodityAttributeValue) object;
+        return java.util.Objects.equals(getString(), that.getString()) &&
+                java.util.Objects.equals(getText(), that.getText()) &&
+                java.util.Objects.equals(getReal(), that.getReal()) &&
+                java.util.Objects.equals(getInteger(), that.getInteger()) &&
+                getAttribute().equals(that.getAttribute());
     }
 
-    @Override public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (string != null ? string.hashCode() : 0);
-        result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (real != null ? real.hashCode() : 0);
-        result = 31 * result + (integer != null ? integer.hashCode() : 0);
-        return result;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getString(), getText(), getReal(), getInteger(), getAttribute());
     }
 }

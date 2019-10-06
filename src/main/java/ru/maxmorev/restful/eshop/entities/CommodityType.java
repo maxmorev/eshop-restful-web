@@ -9,7 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -30,6 +30,7 @@ public class CommodityType extends AbstractEntity {
     @Column(nullable = false, length = 128)
     private String description;
 
+    @org.hibernate.annotations.BatchSize(size=5)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodityType", targetEntity= CommodityAttribute.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<CommodityAttribute> attributes = new HashSet<>();
@@ -80,28 +81,18 @@ public class CommodityType extends AbstractEntity {
         }
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        if (!super.equals(o))
-            return false;
-        CommodityType that = (CommodityType) o;
-        if (!name.equals(that.name))
-            return false;
-        if (!description.equals(that.description))
-            return false;
-        return true;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CommodityType)) return false;
+        if (!super.equals(object)) return false;
+        CommodityType that = (CommodityType) object;
+        return version == that.version &&
+                getName().equals(that.getName()) &&
+                getDescription().equals(that.getDescription());
     }
 
-    @Override public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), version, getName(), getDescription());
     }
-
-
 }
 

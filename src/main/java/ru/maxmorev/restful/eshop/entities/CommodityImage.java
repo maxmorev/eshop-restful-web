@@ -74,25 +74,11 @@ public class CommodityImage {
         return Objects.hash(uri, commodity);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CommodityImage that = (CommodityImage) o;
-        if(!uri.equals(that.uri)){
-           return false;
-        }
-        return commodity.equals(that.commodity);
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CommodityImage)) return false;
+        if (!super.equals(object)) return false;
+        CommodityImage that = (CommodityImage) object;
+        return getUri().equals(that.getUri());
     }
-
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            return e.getMessage();
-        }
-    }
-
 }

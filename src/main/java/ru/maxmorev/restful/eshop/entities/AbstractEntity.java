@@ -2,6 +2,7 @@ package ru.maxmorev.restful.eshop.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by recommendation of iuliana.cosmina from the book
@@ -40,18 +41,14 @@ public abstract class AbstractEntity implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
+		if (this == o) return true;
+		if (!(o instanceof AbstractEntity)) return false;
 		AbstractEntity that = (AbstractEntity) o;
-		if (id != null ? !id.equals(that.id) : that.id != null)
-			return false;
-		return true;
+		return getId().equals(that.getId());
 	}
 
 	@Override
 	public int hashCode() {
-		return id != null ? id.hashCode() : 0;
+		return Objects.hash(getId());
 	}
 }

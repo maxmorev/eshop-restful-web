@@ -15,6 +15,7 @@ import java.util.*;
 public class Commodity extends CommodityInfo {
 
         @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityBranch.class, fetch = FetchType.LAZY)
+        @org.hibernate.annotations.BatchSize(size=10)
         private List<CommodityBranch> branches = new ArrayList<>();
 
         public Commodity(){
@@ -65,8 +66,7 @@ public class Commodity extends CommodityInfo {
         @Override public boolean equals(Object o) {
                 if (this == o)
                         return true;
-                if (o == null || getClass() != o.getClass())
-                        return false;
+                if (!(o instanceof Commodity)) return false;
                 if (!super.equals(o))
                         return false;
                 return true;

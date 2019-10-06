@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
@@ -34,6 +35,7 @@ public class CommodityInfo extends AbstractEntity {
 
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
     @org.hibernate.annotations.OrderBy(clause = "image_order asc")
+    @org.hibernate.annotations.BatchSize(size=10)
     protected List<CommodityImage> images = new ArrayList<>();
 
     public int getVersion() {
@@ -92,26 +94,20 @@ public class CommodityInfo extends AbstractEntity {
         this.images = images;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        if (!super.equals(o))
-            return false;
-        Commodity that = (Commodity) o;
-        if (!name.equals(that.name))
-            return false;
-        return true;
+    @Override public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CommodityInfo)) return false;
+        if (!super.equals(object)) return false;
+        CommodityInfo that = (CommodityInfo) object;
+        return getVersion() == that.getVersion() &&
+                getName().equals(that.getName()) &&
+                getShortDescription().equals(that.getShortDescription()) &&
+                getOverview().equals(that.getOverview()) &&
+                getDateOfCreation().equals(that.getDateOfCreation()) &&
+                getType().equals(that.getType());
     }
 
     @Override public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
-        result = 31 * result + (overview != null ? overview.hashCode() : 0);
-        result = 31 * result + (dateOfCreation != null ? dateOfCreation.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), getName(), getShortDescription(), getOverview(), getType());
     }
-
 }

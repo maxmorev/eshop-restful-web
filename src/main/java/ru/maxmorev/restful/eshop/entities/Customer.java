@@ -43,8 +43,6 @@ public class Customer extends CustomerInfo implements UserDetails {
     @Transient
     private Long shoppingCartId;
 
-
-
     public String getVerifyCode() {
         return verifyCode;
     }
@@ -146,8 +144,6 @@ public class Customer extends CustomerInfo implements UserDetails {
         return verified;
     }
 
-
-
     @Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();
@@ -158,22 +154,19 @@ public class Customer extends CustomerInfo implements UserDetails {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Customer)) return false;
-        if (!super.equals(o)) return false;
-        Customer customer = (Customer) o;
-        return password.equals(customer.password) &&
-                verifyCode.equals(customer.verifyCode) &&
-                dateOfCreation.equals(customer.dateOfCreation) &&
-                verified.equals(customer.verified) &&
-                Objects.equals(shoppingCart, customer.shoppingCart) &&
-                authorities.equals(customer.authorities);
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Customer)) return false;
+        if (!super.equals(object)) return false;
+        Customer customer = (Customer) object;
+        return getPassword().equals(customer.getPassword()) &&
+                java.util.Objects.equals(getVerifyCode(), customer.getVerifyCode()) &&
+                getDateOfCreation().equals(customer.getDateOfCreation()) &&
+                java.util.Objects.equals(getVerified(), customer.getVerified()) &&
+                java.util.Objects.equals(getAuthorities(), customer.getAuthorities());
     }
 
-    @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), password, verifyCode, dateOfCreation, verified, shoppingCart, authorities);
+        return Objects.hash(super.hashCode(), getPassword(), getVerifyCode(), getDateOfCreation(), getVerified());
     }
 }

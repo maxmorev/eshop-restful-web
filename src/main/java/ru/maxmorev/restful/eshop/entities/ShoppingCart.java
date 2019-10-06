@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class ShoppingCart extends AbstractEntity{
     @JoinColumn(name="customer_id", referencedColumnName = "id")
     private Customer customer;
 
+    @org.hibernate.annotations.BatchSize(size=5)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart", targetEntity=ShoppingCartSet.class, fetch = FetchType.LAZY)
     private Set<ShoppingCartSet> shoppingSet;
 
@@ -56,5 +58,18 @@ public class ShoppingCart extends AbstractEntity{
         } catch (JsonProcessingException e) {
             return e.getMessage();
         }
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof ShoppingCart)) return false;
+        if (!super.equals(object)) return false;
+        ShoppingCart that = (ShoppingCart) object;
+        return version == that.version &&
+                java.util.Objects.equals(getCustomer(), that.getCustomer());
+    }
+
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), version, getCustomer());
     }
 }
