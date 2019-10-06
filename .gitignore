@@ -5,3 +5,5 @@
 /target/
 /.idea/
 /restful-eshop.iml
+/gradlew
+/gradlew.bat
