@@ -30,9 +30,8 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group 'ru.maxmorev.restful.eshop'
-
 war {
-    archiveName 'core'
+    baseName = 'core'
 }
 
 sourceCompatibility = 1.11
@@ -62,8 +61,8 @@ dependencies {
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     compile group: 'javax.servlet', name: 'jstl', version: '1.2'
     compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-jasper', version: '9.0.20'
-
-    //spring boot
+    
+    //spring boot starter
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBoot}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: "${springBoot}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBoot}"
@@ -73,8 +72,6 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-web', version: "${springVersion}"
     compile group: 'org.springframework.security', name: 'spring-security-config', version: "${springVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: "${springBoot}"
-    //spring mail
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: "${springBoot}"
     
     //db
     compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.5.0'

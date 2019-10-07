@@ -17,8 +17,6 @@
 
 <script type="text/javascript">
 const shoppingCartJson = '${shoppingCart}';
-const showCommodityUrl = '${showCommodityUrl}';
-
 var shoppingCartObj;
 const fromPage = '${fromPage}';``
 var customer;

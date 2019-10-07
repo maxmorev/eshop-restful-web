@@ -31,9 +31,6 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     private CustomerRepository customerRepository;
     private PasswordEncoder bcryptEncoder;
     private MessageSource messageSource;
-    private MailService mailService;
-
-    @Autowired public void setMailService(MailService mailService) { this.mailService = mailService; }
 
     @Autowired public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -53,11 +50,6 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
         customer.setPassword(bcryptEncoder.encode(customer.getPassword()));
         customer.removeAllAuthorities();
         customer.addAuthority(AuthorityValues.CUSTOMER);
-        mailService.sendEmail(
-                customer.getEmail(),
-                messageSource.getMessage("message.verifyEmail.subject", new Object[]{customer.getVerifyCode()}, LocaleContextHolder.getLocale() ),
-                messageSource.getMessage("message.verifyEmail.text", new Object[]{customer.getVerifyCode()}, LocaleContextHolder.getLocale() )
-        );
         return customerRepository.save(customer);
     }
 

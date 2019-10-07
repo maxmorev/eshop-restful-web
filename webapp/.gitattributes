@@ -1,5 +1,0 @@
-#Use the linguist-vendored attribute to vendor or un-vendor paths:
-*.html linguist-vendored
-*.jsp linguist-vendored
-src/main/webapp/* linguist-vendored
-
