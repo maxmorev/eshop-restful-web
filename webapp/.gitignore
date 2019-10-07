@@ -1,0 +1,9 @@
+/.gradle/
+/build/
+/gradle/
+/out/
+/target/
+/.idea/
+/restful-eshop.iml
+/gradlew
+/gradlew.bat
