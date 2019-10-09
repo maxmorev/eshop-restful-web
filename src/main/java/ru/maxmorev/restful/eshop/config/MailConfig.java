@@ -13,7 +13,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:mail.properties")
+@PropertySource("file:/opt/mail.properties")
 public class MailConfig {
     private final static Logger logger = LoggerFactory.getLogger(MailConfig.class);
 

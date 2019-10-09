@@ -17,6 +17,8 @@
 
 <script type="text/javascript">
 const shoppingCartJson = '${shoppingCart}';
+const showCommodityUrl = '${showCommodityUrl}';
+
 var shoppingCartObj;
 const fromPage = '${fromPage}';``
 var customer;
@@ -220,7 +222,13 @@ $(document).ready(function () {
                 <div class="mdl-grid">
                     <div class="mdl-cell mdl-cell--4-col">&nbsp;</div>
                     <div class="mdl-cell mdl-cell--4-col">
-                    <h2 class="mdl-card__title-text">Verify email</h2>
+                    <h2 class="mdl-card__title-text">Check your mail to get a verification code.</h2>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">&nbsp;</div>
+
+                    <div class="mdl-cell mdl-cell--4-col">&nbsp;</div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                    <h2 class="mdl-card__title-text">Verify your email</h2>
                     </div>
                     <div class="mdl-cell mdl-cell--4-col">&nbsp;</div>
 

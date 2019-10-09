@@ -6,6 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import ru.maxmorev.restful.eshop.domain.Mail;
 
 @Component("mailService")
 public class MailServiceImpl implements MailService{
@@ -22,14 +23,14 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
-    public Boolean sendEmail(String to, String subject, String text) {
+    public Boolean sendPlainEmail(Mail mail) {
 
         // Create a Simple MailMessage.
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom( environment.getProperty("mymail.user") );
-        message.setTo(to);
-        message.setSubject( subject);
-        message.setText(text);
+        message.setTo(mail.getTo());
+        message.setSubject( mail.getSubject() );
+        message.setText( mail.getText() );
         javaMailSender.send(message);
 
         return true;

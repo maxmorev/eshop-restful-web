@@ -9,8 +9,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.domain.Mail;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
@@ -19,12 +21,15 @@ import ru.maxmorev.restful.eshop.rest.request.CustomerVerify;
 import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.CustomerDTO;
 import ru.maxmorev.restful.eshop.services.CustomerService;
+import ru.maxmorev.restful.eshop.services.FutureRunner;
+import ru.maxmorev.restful.eshop.services.MailService;
 import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 import javax.validation.Valid;
 import java.util.Locale;
 import java.util.Objects;
 
 @RestController
+@Transactional
 public class CustomerController  extends AbstractRestController {
 
     private final static Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
@@ -32,6 +37,9 @@ public class CustomerController  extends AbstractRestController {
     private ShoppingCartService shoppingCartService;
     private CustomerService customerService;
     private MessageSource messageSource;
+    private FutureRunner futureRunner;
+    private MailService mailService;
+
 
     @Autowired public void setShoppingCartService(ShoppingCartService shoppingCartService) {
         this.shoppingCartService = shoppingCartService;
@@ -41,9 +49,13 @@ public class CustomerController  extends AbstractRestController {
         this.customerService = customerService;
     }
 
-    public void setMessageSource(MessageSource messageSource) {
+    @Autowired public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
+
+    @Autowired public void setFutureRunner(FutureRunner fr){ this.futureRunner = fr; }
+
+    @Autowired public void setMailService(MailService ms){ this.mailService = ms; }
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/", method = RequestMethod.POST)
     @ResponseBody
@@ -60,6 +72,11 @@ public class CustomerController  extends AbstractRestController {
         }
 
         created = customerService.createCustomer(customer);
+        Mail mail = new Mail()
+                    .to(created.getEmail())
+                    .subject(messageSource.getMessage("mail.plain.subject", new Object[]{}, locale))
+                    .text(messageSource.getMessage("mail.plain.text", new Object[]{created.getFullName(), created.getVerifyCode()}, locale));
+        Boolean isMailSend = mailService.sendPlainEmail(mail);
         if(Objects.nonNull(customer.getShoppingCartId())) {
             ShoppingCart sc = shoppingCartService.findShoppingCartById(customer.getShoppingCartId());
             created.setShoppingCart(sc);
