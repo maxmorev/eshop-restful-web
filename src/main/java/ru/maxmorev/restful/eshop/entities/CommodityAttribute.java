@@ -37,7 +37,7 @@ public class CommodityAttribute extends AbstractEntity{
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "attribute", targetEntity= CommodityAttributeValue.class, fetch = FetchType.LAZY)
     private Set<CommodityAttributeValue> values = new HashSet<>();
 
-    @org.hibernate.annotations.BatchSize(size=10)
+    @org.hibernate.annotations.BatchSize(size=5)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();

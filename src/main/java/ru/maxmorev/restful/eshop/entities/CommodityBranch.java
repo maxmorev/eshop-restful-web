@@ -11,6 +11,7 @@ import java.util.*;
 @Entity
 @Table(name = "commodity_branch")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@org.hibernate.annotations.BatchSize(size=10)
 public class CommodityBranch extends AbstractEntity{
 
     @Version
@@ -29,7 +30,8 @@ public class CommodityBranch extends AbstractEntity{
     @Column(nullable = false)
     private Currency currency; //current price currency
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size=10)
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
 
     public Long getCommodityId(){
