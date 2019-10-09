@@ -19,6 +19,8 @@
 
     <spring:url value="/commodity" var="showCommodityUrl"/>
 
+<script src="https://www.paypal.com/sdk/js?client-id=AVRbl-fPq6BdBNUQwGwHW0SLMZdIvO03PRJt_bPz71lBT9a1OaR690V6oe_AUdlNPxiWMkinjAlMdsE0&currency=EUR"></script>
+
 <script type="text/javascript">
 const shoppingCartJson = '${shoppingCart}';
 const showCommodityUrl = '${showCommodityUrl}';
@@ -40,6 +42,8 @@ $(document).ready(function () {
 });
 </script>
 
+
+
 <div class="mdl-grid portfolio-max-width">
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
         <c:if test="${not empty shoppingCart}">
@@ -59,12 +63,10 @@ $(document).ready(function () {
                 <div id="payment-info" class="mdl-cell mdl-cell--12-col">
                     <div class="mdl-grid">
                         <div class="mdl-cell mdl-cell--12-col">
-                        <h4>
-                        Payment transaction start
-                        </h4>
                         </div>
                         <div class="mdl-cell mdl-cell--12-col">
                         PayPal form
+                        <div id="paypal-button-container"></div>
                         </div>
                     </div>
                 </div>
@@ -74,3 +76,30 @@ $(document).ready(function () {
         </c:if>
     </div>
 </div>
+
+    <script>
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '0.01'
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    // Show a success message to the buyer
+                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                });
+            }
+
+
+        }).render('#paypal-button-container');
+    </script>

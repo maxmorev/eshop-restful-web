@@ -66,7 +66,9 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBoot}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: "${springBoot}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBoot}"
-    
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: "${springBoot}"
+
+
     //spring security
     compile group: 'org.springframework.security', name: 'spring-security-core', version: "${springVersion}"
     compile group: 'org.springframework.security', name: 'spring-security-web', version: "${springVersion}"

@@ -21,7 +21,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         -->
         <!--local scripts -->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/fonts.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/material.min.css">
         <!-- shop css -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/application.css">
