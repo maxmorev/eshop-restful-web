@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.services.CommodityService;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 @RestController
-public class CommodityAttributeController extends AbstractRestController {
+public class CommodityAttributeController {
 
     private final static Logger logger = LoggerFactory.getLogger(CommodityAttributeController.class);
 
@@ -37,10 +36,9 @@ public class CommodityAttributeController extends AbstractRestController {
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"attribute/", method = RequestMethod.POST)
     @ResponseBody
-    public Message createProperty(@RequestBody @Valid RequestAttributeValue property, BindingResult bindingResult, Locale locale ){
+    public Message createProperty(@RequestBody @Valid RequestAttributeValue property, Locale locale ){
         //to prevent duplicated properties
         logger.info("&&& -> RA is " + property);
-        processBindingResult(bindingResult);
         commodityService.addProperty(property);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }

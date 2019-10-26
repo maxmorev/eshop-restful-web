@@ -108,8 +108,8 @@ public class CommodityAttribute extends AbstractEntity{
         CommodityAttribute that = (CommodityAttribute) object;
         return getName().equals(that.getName()) &&
                 getDataType().equals(that.getDataType()) &&
-                java.util.Objects.equals(getMeasure(), that.getMeasure()) &&
-                getCommodityType().equals(that.getCommodityType());
+                Objects.equals(getMeasure(), that.getMeasure()) &&
+                Objects.equals(getCommodityType().getId(), that.getCommodityType().getId());
     }
 
     public int hashCode() {

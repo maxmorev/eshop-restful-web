@@ -96,12 +96,6 @@ function updateCustomerAccount(data, callBack, errorCallBack){
     return sendDataAsJson(urlService, 'PUT', data, callBack, errorCallBack);
 }
 
-function showErrorMessage(message){
-    $('#error-message').empty();
-    $('#error-message').append(message);
-    $('#error-container').show();
-}
-
 function showShoppingCartIconDataBadge(itemsAmount){
     if(itemsAmount>0)
         $( ".shopping-cart-nav" ).attr( "data-badge", itemsAmount );
@@ -210,5 +204,26 @@ function showShoppingCart(shoppingCart){
     $('#total-cart-price').append('<b>£'+totalPrice+'</b>');
     showShoppingCartIconDataBadge(totalItems);
     componentHandler.upgradeDom();
+
+}
+
+function confirmPaymentOrder(orderId, paymentId, paymentProvider, successCallback, errorCallback){
+    var urlService = URL_SERVICES + "/customer/order/confirm/";
+    var confirmReq = {
+        orderId: orderId,
+        paymentId: paymentId,
+        paymentProvider: paymentProvider
+    };
+    console.log("> " + confirmReq);
+
+    sendDataAsJson(urlService, "POST", confirmReq, successCallback, errorCallback)
+}
+
+function showSpinner(){
+    $('#spinner').show();
+}
+
+function hideSpinner(){
+    var timeoutID = window.setTimeout(function(){ $('#spinner').hide(); }, 500);
 
 }

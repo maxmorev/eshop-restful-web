@@ -1,6 +1,4 @@
-package ru.maxmorev.restful.eshop.annotation;
-
-import ru.maxmorev.restful.eshop.validators.CommodityBranchAttributesValidator;
+package ru.maxmorev.restful.eshop.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -8,9 +6,9 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Constraint(validatedBy = CommodityBranchAttributesValidator.class)
+@Constraint(validatedBy = CommodityTypeIdValidator.class)
 @Documented
-public @interface CheckCommodityBranchAttributes {
+public @interface CheckCommodityTypeId {
     String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

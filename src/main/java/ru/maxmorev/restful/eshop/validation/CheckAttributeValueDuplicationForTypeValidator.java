@@ -1,9 +1,8 @@
-package ru.maxmorev.restful.eshop.validators;
+package ru.maxmorev.restful.eshop.validation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.maxmorev.restful.eshop.annotation.CheckAttributeValueDuplicationForType;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.entities.CommodityType;

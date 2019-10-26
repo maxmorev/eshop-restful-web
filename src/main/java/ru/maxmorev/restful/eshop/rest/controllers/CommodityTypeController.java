@@ -7,7 +7,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.rest.Constants;
-import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.services.CommodityService;
@@ -18,7 +17,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 @RestController
-public class CommodityTypeController extends AbstractRestController {
+public class CommodityTypeController {
 
     private final static Logger logger = LoggerFactory.getLogger(CommodityTypeController.class);
 
@@ -44,17 +43,15 @@ public class CommodityTypeController extends AbstractRestController {
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/", method = RequestMethod.POST)
     @ResponseBody
-    public Message createCommodityType(@RequestBody @Valid CommodityType type, BindingResult bindingResult, Locale locale){
+    public Message createCommodityType(@RequestBody @Valid CommodityType type, Locale locale){
         logger.info("type : " + type);
-        processBindingResult(bindingResult);
         commodityService.addType(type);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/", method = RequestMethod.PUT)
     @ResponseBody
-    public Message updateCommodityType(@RequestBody @Valid CommodityType type, BindingResult bindingResult, Locale locale ){
-        processBindingResult(bindingResult);
+    public Message updateCommodityType(@RequestBody @Valid CommodityType type, Locale locale ){
         commodityService.addType(type);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }

@@ -23,8 +23,9 @@ public class CommodityBranch extends AbstractEntity{
     @JsonIgnore
     private Commodity commodity;
 
+    @Column(nullable = false)
     private Integer amount; //amount of items in branch
-
+    @Column(nullable = false)
     private Float price; //price for 1 item in branch
 
     @Column(nullable = false)

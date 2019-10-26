@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
 import ru.maxmorev.restful.eshop.entities.Customer;
+import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.services.CustomerService;
+import ru.maxmorev.restful.eshop.services.OrderPurchaseService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,11 @@ public class ShoppingCartWebController extends CommonWebController {
     private static final Logger logger = LoggerFactory.getLogger(ShoppingCartWebController.class);
 
     private CustomerService customerService;
+    private OrderPurchaseService orderPurchaseService;
+
+    @Autowired public void setOrderPurchaseService(OrderPurchaseService orderPurchaseService) {
+        this.orderPurchaseService = orderPurchaseService;
+    }
 
     @Autowired public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
@@ -76,6 +83,11 @@ public class ShoppingCartWebController extends CommonWebController {
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
 
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount() );
+
+        //TODO create transaction order and hold items for 10 minutes
+        CustomerOrder order = orderPurchaseService.createOrderFor(customer);
+        uiModel.addAttribute("orderId", order.getId());
+
         return "shopping/proceedToCheckout";
     }
 

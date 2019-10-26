@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
-import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.CommodityGrid;
 import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.entities.Commodity;
@@ -20,13 +19,12 @@ import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 @RestController
-public class CommodityController extends AbstractRestController {
+public class CommodityController {
 
     private final static Logger logger = LoggerFactory.getLogger(CommodityController.class);
 
@@ -44,18 +42,16 @@ public class CommodityController extends AbstractRestController {
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"commodity/", method=RequestMethod.POST)
     @ResponseBody
-    public Message createCommodityFromRequset(@RequestBody @Valid RequestCommodity requestCommodity, BindingResult bindingResult, Locale locale){
+    public Message createCommodityFromRequset(@RequestBody @Valid RequestCommodity requestCommodity, Locale locale){
         logger.info("POST -> createCommodityFromRequset");
-        processBindingResult(bindingResult);
         commodityService.addCommodity(requestCommodity);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"commodity/", method = RequestMethod.PUT)
     @ResponseBody
-    public Message updateCommodity(@RequestBody @Valid RequestCommodity requestCommodity, BindingResult bindingResult, Locale locale){
+    public Message updateCommodity(@RequestBody @Valid RequestCommodity requestCommodity, Locale locale){
         logger.info("PUT -> updateCommodity");
-        processBindingResult(bindingResult);
         commodityService.updateCommodity(requestCommodity);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }

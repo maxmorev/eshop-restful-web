@@ -34,3 +34,19 @@ function showColorElement(color){
 function showSizeElement(size){
     return '<div class="textCircle">&#160;'+size+'&#160;</div>&#160;';
 }
+
+function showErrorMessage(message){
+    $('#error-message').empty();
+    $('#error-message').append(message);
+    $('#error-container').show();
+}
+
+function showErrorFromJson(json){
+
+    var errorContent = json.responseJSON.message.replace(/\n/g, "<br/>");
+    if(json.responseJSON.errors && json.responseJSON.errors.length>0){
+        errorContent = "";
+        json.responseJSON.errors.forEach(function(val){ errorContent += val.message + "<br/>"});
+    }
+    showErrorMessage(errorContent);
+}

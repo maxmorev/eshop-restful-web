@@ -54,11 +54,8 @@ public class ShoppingCartController {
     public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
         logger.info("POST:> RequestShoppingCartSet :> " + requestShoppingCartSet);
         //TODO Validation
-        //ShoppingCartSet shoppingCartSet = new ShoppingCartSet();
-
         return shoppingCartService.addBranchToShoppingCart(requestShoppingCartSet.getBranchId(), requestShoppingCartSet.getAmount(), requestShoppingCartSet.getShoppingCartId());
     }
-    //
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.DELETE)
     @ResponseBody

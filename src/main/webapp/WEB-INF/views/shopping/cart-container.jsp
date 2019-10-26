@@ -1,3 +1,4 @@
+
 <div class="mdl-cell mdl-cell--6-col">&nbsp;</div>
 <div class="mdl-cell mdl-cell--6-col">Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div></div>
 

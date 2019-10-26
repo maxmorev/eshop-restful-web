@@ -1,9 +1,8 @@
-package ru.maxmorev.restful.eshop.validators;
+package ru.maxmorev.restful.eshop.validation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.maxmorev.restful.eshop.annotation.CheckCommodityBranchAttributes;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;

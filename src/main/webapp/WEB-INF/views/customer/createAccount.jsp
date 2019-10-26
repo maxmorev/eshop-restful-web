@@ -39,10 +39,7 @@ function createAccountSuccess(json){
 }
 
 function createAccountError(json){
-    var errorContent = json.responseJSON.message;
-    errorContent = json.responseJSON.message.replace(/\n/g, "<br/>")
-    var message = errorContent;
-    showErrorMessage(message);
+    showErrorFromJson(json);
 }
 
 function createAccount(){

@@ -1,7 +1,6 @@
-package ru.maxmorev.restful.eshop.validators;
+package ru.maxmorev.restful.eshop.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.maxmorev.restful.eshop.annotation.CheckCommodityTypeId;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.repos.CommodityTypeRepository;
 

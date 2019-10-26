@@ -1,5 +1,8 @@
 package ru.maxmorev.restful.eshop.rest.response;
 
+import java.util.List;
+import java.util.Arrays;
+
 public class Message {
 
     public final static String SUCCES="success";
@@ -8,11 +11,37 @@ public class Message {
     private final String status;
     private final String url;
     private final String message;
+    private List<ErrorDetail> errors;
 
-    public Message(String status, String url, Exception message) {
+    public static class ErrorDetail{
+        final String field;
+        final String message;
+        public ErrorDetail(String f, String m){
+            this.field = f;
+            this.message = m;
+        }
+
+        public String getField() {
+            return field;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
+    public Message(String status, String url, Exception message, List<ErrorDetail> errors) {
         this.status = status;
         this.url = url;
         this.message = message.getMessage();
+        this.errors = errors;
+    }
+
+    public Message(String status, String url, String message, List<ErrorDetail> errors) {
+        this.status = status;
+        this.url = url;
+        this.message = message;
+        this.errors = errors;
     }
 
     public Message(String status, String message){
@@ -32,4 +61,9 @@ public class Message {
     public String getMessage() {
         return message;
     }
+
+    public List<ErrorDetail> getErrors() {
+        return errors;
+    }
+
 }

@@ -55,13 +55,18 @@
     </c:set>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/application.js"></script>
 
     <script type="text/javascript">
         const URL_SERVICES = "<%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
         var SHOPPING_CART_ITEMS_AMOUNT = ${shoppingCartItemsAmount};
+        window.onload = function() {
+            showSpinner();
+        }
     </script>
-    <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
-    <script src="${pageContext.request.contextPath}/scripts/application.js"></script>
+
     <style>
     .portfolio-header {
       position: relative;
@@ -84,6 +89,10 @@
 </head>
 
 <body>
+<!-- MDL Spinner Component -->
+<div id="spinner" class="overlaySpinner">
+<div style="left:50%;top:40%" class="mdl-spinner mdl-js-spinner is-active"></div>
+</div>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
         <tiles:insertAttribute name="header"/>
@@ -100,11 +109,12 @@
         </div>
         <!-- end Toast place -->
     </div>
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script type="text/javascript">
         window.addEventListener('load', function() {
             //
             showShoppingCartIconDataBadge(SHOPPING_CART_ITEMS_AMOUNT);
+
+            hideSpinner();
         });
     </script>
 </body>

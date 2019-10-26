@@ -6,4 +6,7 @@ import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 
 @Repository
 public interface ShoppingCartRepository extends CrudRepository<ShoppingCart, Long> {
+
+
+
 }

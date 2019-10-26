@@ -18,7 +18,6 @@ import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.CustomerVerify;
-import ru.maxmorev.restful.eshop.rest.response.AbstractRestController;
 import ru.maxmorev.restful.eshop.rest.response.CustomerDTO;
 import ru.maxmorev.restful.eshop.services.CustomerService;
 import ru.maxmorev.restful.eshop.services.FutureRunner;
@@ -30,7 +29,7 @@ import java.util.Objects;
 
 @RestController
 @Transactional
-public class CustomerController  extends AbstractRestController {
+public class CustomerController {
 
     private final static Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
 
@@ -59,10 +58,8 @@ public class CustomerController  extends AbstractRestController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/", method = RequestMethod.POST)
     @ResponseBody
-    public Customer createCustomer(@RequestBody @Valid Customer customer, BindingResult bindingResult, Locale locale){
+    public Customer createCustomer(@RequestBody @Valid Customer customer, Locale locale){
         logger.info("Customer : " + customer);
-
-        processBindingResult(bindingResult);
 
         Customer created = null;
 
@@ -102,9 +99,8 @@ public class CustomerController  extends AbstractRestController {
 
     @RequestMapping(path = Constants.REST_CUSTOMER_URI + "update/", method = RequestMethod.PUT)
     @ResponseBody
-    public CustomerDTO updateCustomer(@RequestBody @Valid CustomerInfo customer, BindingResult bindingResult, Locale locale){
+    public CustomerDTO updateCustomer(@RequestBody @Valid CustomerInfo customer, Locale locale){
         logger.info("Customer update : " + customer);
-        processBindingResult(bindingResult);
         String id = getAuthenticationCustomerId();
         if(id==null)
             throw new IllegalAccessError("Not Authenticated");
@@ -125,9 +121,8 @@ public class CustomerController  extends AbstractRestController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/verify/", method = RequestMethod.POST)
     @ResponseBody
-    public CustomerVerify verifyCustomer(@RequestBody @Valid CustomerVerify customerVerify, BindingResult bindingResult, Locale locale){
+    public CustomerVerify verifyCustomer(@RequestBody @Valid CustomerVerify customerVerify, Locale locale){
         logger.info("CustomerVerify : " + customerVerify);
-        processBindingResult(bindingResult);
         Customer customer = customerService.verify(customerVerify.getId(), customerVerify.getVerifyCode());
         if(Objects.nonNull(customer)){
             customerVerify.setVerified(customer.getVerified());

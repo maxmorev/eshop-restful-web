@@ -267,7 +267,13 @@ function showNavigationCaption(text){
 
 
   function showError(json, errorTab){
-    var errorContent = json.responseJSON.message;//json.responseJSON.message.replace(/\n/g, "<br/>");
+    console.log(json);
+    var errorContent = json.responseJSON.message.replace(/\n/g, "<br/>");
+    if(json.responseJSON.errors && json.responseJSON.errors.length>0){
+        errorContent = "";
+        json.responseJSON.errors.forEach(function(val){ console.log(val.field); errorContent += val.message +"<br/>"});
+    }
+
     var message = "<b>" + json.responseJSON.status +"</b>:&nbsp;" + errorContent;
     if(errorTab===undefined){
         $('#error-message-content-1').empty();

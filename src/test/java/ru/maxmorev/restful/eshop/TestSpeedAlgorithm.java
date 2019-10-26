@@ -8,16 +8,29 @@ import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
 import java.util.*;
 //Algorithm
 
+class TestService{
+    public String getString(){
+        return "ANOTHER";
+    }
+
+}
+
 public class TestSpeedAlgorithm {
 
     private final static Logger logger = LoggerFactory.getLogger(TestSpeedAlgorithm.class);
 
     public static void main(String... args){
+
+        TestService testService = new TestService();
+
         String rndStr = RandomStringUtils.randomAlphabetic(5);
         System.out.println(rndStr);
 
         String auth = "CUSTOMER";
         System.out.println( "Auth: "+  auth.split(",").length + auth.split(",") );
+        Optional<String> test = Optional.ofNullable(auth);
+        String res = test.filter( val -> val.equals("CUSTOMER")).orElse( testService.getString() );
+        System.out.println(res);
 
         /*Random random = new Random();
         List<Long> values = new ArrayList<Long>(10000000);

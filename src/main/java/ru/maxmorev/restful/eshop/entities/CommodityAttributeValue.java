@@ -130,11 +130,11 @@ public class CommodityAttributeValue extends AbstractEntity{
         if (!(object instanceof CommodityAttributeValue)) return false;
         if (!super.equals(object)) return false;
         CommodityAttributeValue that = (CommodityAttributeValue) object;
-        return java.util.Objects.equals(getString(), that.getString()) &&
-                java.util.Objects.equals(getText(), that.getText()) &&
-                java.util.Objects.equals(getReal(), that.getReal()) &&
-                java.util.Objects.equals(getInteger(), that.getInteger()) &&
-                getAttribute().equals(that.getAttribute());
+        return Objects.equals( getString(), that.getString()) &&
+                Objects.equals( getText(), that.getText()) &&
+                Objects.equals( getReal(), that.getReal()) &&
+                Objects.equals( getInteger(), that.getInteger()) &&
+                Objects.equals( getAttribute().getId(), that.getAttribute().getId() );
     }
 
     public int hashCode() {

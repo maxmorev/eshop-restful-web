@@ -67,8 +67,8 @@ public class CommodityBranchAttributeSet extends AbstractEntity {
         if (!(object instanceof CommodityBranchAttributeSet)) return false;
         if (!super.equals(object)) return false;
         CommodityBranchAttributeSet that = (CommodityBranchAttributeSet) object;
-        return getBranch().equals(that.getBranch()) &&
-                getAttribute().equals(that.getAttribute()) &&
+        return Objects.equals( getBranch().getId(), that.getBranch().getId() ) &&
+                Objects.equals( getAttribute().getId(), that.getAttribute().getId()) &&
                 getAttributeValue().equals(that.getAttributeValue());
     }
 

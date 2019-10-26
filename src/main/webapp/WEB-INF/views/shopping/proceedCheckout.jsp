@@ -15,35 +15,99 @@
     <spring:message code="label_back" var="labelBack"/>
     <spring:message code="label_checkout" var="labelWelcome"/>
     <spring:message code="label_verify_email" var="labelVerifyEmail"/>
-    <spring:url value="/shopping/cart/" var="backUrl"/>
 
+    <spring:url value="/shopping/cart/" var="backUrl"/>
+    <spring:url value="/customer/account/update/" var="profileUrl"/>
     <spring:url value="/commodity" var="showCommodityUrl"/>
 
-<script src="https://www.paypal.com/sdk/js?client-id=AVRbl-fPq6BdBNUQwGwHW0SLMZdIvO03PRJt_bPz71lBT9a1OaR690V6oe_AUdlNPxiWMkinjAlMdsE0&currency=EUR"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AZLBDto98XnkWuOsGr78XH78ohzsHneaQY9vzVdWu9w5xSKRhv1HQl2KSCBvtIDoEEQpXzLcCvJ8d9BG&currency=USD"></script>
 
 <script type="text/javascript">
 const shoppingCartJson = '${shoppingCart}';
 const showCommodityUrl = '${showCommodityUrl}';
+const orderId = '${orderId}';
 const customerId = '${customer.id}';
 var shoppingCartObj;
 
+function paymentConfirm(json){
+    $('#order-id').empty();
+    $('#order-id').append(orderId);
+    showPaymentConfirmed();
+    $('#spinner').hide();
+    showToast("Order #" + orderId +" successfully paid" );
+}
+
+function paymentConfirmError(json){
+    $('#error-container').hide();
+    $('#payment-confirmed').hide();
+    $('#shopping-cart').hide();
+    $('#payment-info').hide();
+    showErrorFromJson(json);
+    $('#spinner').hide();
+}
+
+function showPaymentContent(){
+    $('#error-container').hide();
+    $('#payment-confirmed').hide();
+    $('#shopping-cart').show();
+    $('#payment-info').show();
+}
+
+function showPaymentConfirmed(){
+    $('#shopping-cart').hide();
+    $('#payment-info').hide();
+    $('#error-container').hide();
+    $('#payment-confirmed').show();
+}
+
 $(document).ready(function () {
-    if(shoppingCartJson.length>0){
-        shoppingCartObj = JSON.parse(shoppingCartJson);
+
+    showPaymentContent();
+    shoppingCartObj = JSON.parse(shoppingCartJson);
+    if(shoppingCartObj.itemsAmount>0){
         showShoppingCart(shoppingCartObj);
-        showToast("Please pay for selected items!");
+        showToast("Please checkout for selected items!");
     }else{
         showToast("Shopping cart is empty");
-        //show message
     }
     activateTab('tab-shopping-cart');
 
+    paypal.Buttons({
+                // Set up the transaction
+                createOrder: function(data, actions) {
+                    var price = getAmountItemsInShoppingCart(shoppingCartObj).price;
+                    price = 1.0; //test
+                    return actions.order.create({
+                        purchase_units: [
+                        {
+                            amount: {
+                                value: ''+ price +'',
+                                currency_code: 'USD'
+                            },
+                            description: "titsonfire.store Payment for order #" + orderId + " "
+                        }
+                        ]
+                    });
+                },
+
+                // Finalize the transaction
+                onApprove: function(data, actions) {
+                    console.log( "DATA" );
+                    console.log( data );
+                    return actions.order.capture().then(function(details) {
+                        // Show a success message to the buyer
+                        $('#spinner').show();
+                        console.log("Order id = " + data.orderID);
+                        console.log("Inner orderId " + orderId);
+                        showToast('Transaction '+ orderId +' completed by ' + details.payer.name.given_name + '!');
+                        confirmPaymentOrder(orderId, data.orderID, "Paypal", paymentConfirm, paymentConfirmError);
+                        //confirmOrder
+                    });
+                }
+            }).render('#paypal-button-container');
 
 });
 </script>
-
-
-
 <div class="mdl-grid portfolio-max-width">
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
         <c:if test="${not empty shoppingCart}">
@@ -57,17 +121,35 @@ $(document).ready(function () {
             <span>Comment for page</span>
             </div>
             <div class="mdl-grid">
+                <div id="error-container" class="mdl-cell mdl-cell--12-col">
+                    <h4>Error</h4>
+                    <p id="error-message"></p>
+                </div>
 
                 <tiles:insertAttribute name="cart-container"/>
 
                 <div id="payment-info" class="mdl-cell mdl-cell--12-col">
                     <div class="mdl-grid">
-                        <div class="mdl-cell mdl-cell--12-col">
+                        <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
+                        <div class="mdl-cell mdl-cell--8-col">
+                            <div id="paypal-button-container"></div>
                         </div>
-                        <div class="mdl-cell mdl-cell--12-col">
-                        PayPal form
-                        <div id="paypal-button-container"></div>
+                        <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
+
+                    </div>
+                </div>
+
+                <div id="payment-confirmed" class="mdl-cell mdl-cell--12-col">
+                    <div class="mdl-grid">
+                        <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
+                        <div class="mdl-cell mdl-cell--8-col">
+                        Thank you for your purchase!<br/>
+                        Order #<b id="order-id"></b> confirmed<br/>
+                        You can track the order status in your <a href="${profileUrl}">profile</a>:
+                        You will receive order status updates by mail.<br/>
+                        Estimated time of dispatch:
                         </div>
+                        <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
                     </div>
                 </div>
 
@@ -76,30 +158,3 @@ $(document).ready(function () {
         </c:if>
     </div>
 </div>
-
-    <script>
-        // Render the PayPal button into #paypal-button-container
-        paypal.Buttons({
-
-            // Set up the transaction
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '0.01'
-                        }
-                    }]
-                });
-            },
-
-            // Finalize the transaction
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    // Show a success message to the buyer
-                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
-                });
-            }
-
-
-        }).render('#paypal-button-container');
-    </script>

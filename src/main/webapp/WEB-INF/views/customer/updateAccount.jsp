@@ -11,10 +11,7 @@ const customer = '${customer}';
 var customerObj = JSON.parse(customer);
 
 function errorUpdate(json){
-    var errorContent = json.responseJSON.message;
-    errorContent = json.responseJSON.message.replace(/\n/g, "<br/>");
-    var message = errorContent;
-    showErrorMessage(message);
+    showErrorFromJson(json);
 }
 
 function successUpdateAccount(json){

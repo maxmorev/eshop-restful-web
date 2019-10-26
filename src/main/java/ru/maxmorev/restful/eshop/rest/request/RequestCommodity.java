@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.maxmorev.restful.eshop.annotation.CheckCommodityBranchAttributes;
+import ru.maxmorev.restful.eshop.validation.CheckCommodityBranchAttributes;
 
 import javax.validation.constraints.*;
 import java.util.Currency;

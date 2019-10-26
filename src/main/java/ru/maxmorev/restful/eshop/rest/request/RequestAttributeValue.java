@@ -6,8 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Enums;
 import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
-import ru.maxmorev.restful.eshop.annotation.CheckAttributeValueDuplicationForType;
-import ru.maxmorev.restful.eshop.annotation.CheckCommodityTypeId;
+import ru.maxmorev.restful.eshop.validation.CheckAttributeValueDuplicationForType;
+import ru.maxmorev.restful.eshop.validation.CheckCommodityTypeId;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
@@ -35,11 +35,7 @@ public class RequestAttributeValue {
     @JsonIgnore
     @AssertTrue(message = "{validation.CommodityAttribute.dataType.valid}")
     public boolean isCommodityAttributeDataTypeValid(){
-        if(Enums.getIfPresent(AttributeDataType.class, dataType).isPresent()){
-            return true;
-        }else{
-            return false;
-        }
+        return Enums.getIfPresent(AttributeDataType.class, dataType).isPresent();
     }
 
     public Long getTypeId() {
