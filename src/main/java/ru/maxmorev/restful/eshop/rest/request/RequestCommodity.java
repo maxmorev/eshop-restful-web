@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import ru.maxmorev.restful.eshop.validation.CheckCommodityBranchAttributes;
 
 import javax.validation.constraints.*;
@@ -15,6 +16,7 @@ import java.util.Objects;
  * Proxy POJO for creation commodity
  * this class will be extracted into classes: Commodity, CommodityBranch
  */
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @CheckCommodityBranchAttributes(message = "{validation.commodity.attribute.values}")
 public class RequestCommodity {
@@ -61,86 +63,6 @@ public class RequestCommodity {
             return true;
         }
         return false;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
-    }
-
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
-
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-    }
-
-    public Long getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Long typeId) {
-        this.typeId = typeId;
-    }
-
-    public List<Long> getPropertyValues() {
-        return propertyValues;
-    }
-
-    public void setPropertyValues(List<Long> propertyValues) {
-        this.propertyValues = propertyValues;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    public Long getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
     }
 
     @Override

@@ -1,10 +1,12 @@
 package ru.maxmorev.restful.eshop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+@Data
 @Entity
 @Table(name = "purchase")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,30 +26,14 @@ public class Purchase {
     @JoinColumn(name="order_id", referencedColumnName="id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "FK_PURCHASE_CUSTOMER_ORDER"))
     private CustomerOrder customerOrder;
 
+    protected Purchase() {
+    }
+
     public Purchase(CommodityBranch branch, CustomerOrder customerOrder, Integer amount){
         this.id = new PurchaseId(branch, customerOrder);
         this.amount = amount;
         this.branch = branch;
         this.customerOrder = customerOrder;
-    }
-
-    protected Purchase() {
-    }
-
-    public PurchaseId getId() {
-        return id;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public CommodityBranch getBranch() {
-        return branch;
-    }
-
-    public CustomerOrder getCustomerOrder() {
-        return customerOrder;
     }
 
     @Override

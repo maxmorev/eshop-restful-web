@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.domain.Mail;
 import ru.maxmorev.restful.eshop.entities.Customer;
@@ -116,7 +115,7 @@ public class CustomerController {
         findByEmail.setCountry(customer.getCountry());
         findByEmail.setFullName(customer.getFullName());
         customerService.update(findByEmail);
-        return CustomerDTO.build(findByEmail);
+        return CustomerDTO.of(findByEmail);
     }
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/verify/", method = RequestMethod.POST)

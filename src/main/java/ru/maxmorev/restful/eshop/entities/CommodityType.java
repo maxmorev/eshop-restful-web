@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "commodity_type")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -38,38 +40,6 @@ public class CommodityType extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "type", targetEntity=Commodity.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Commodity> commodities = new HashSet<>();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<CommodityAttribute> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Set<CommodityAttribute> attributes) {
-        this.attributes = attributes;
-    }
-
-    public Set<Commodity> getCommodities() {
-        return commodities;
-    }
-
-    public void setCommodities(Set<Commodity> commodities) {
-        this.commodities = commodities;
-    }
 
     @Override
     public String toString() {

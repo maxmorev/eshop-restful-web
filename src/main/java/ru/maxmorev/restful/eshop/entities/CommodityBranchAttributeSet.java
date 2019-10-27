@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-
+@Data
 @Entity
 @Table(name = "commodity_branch_attribute_set")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -27,31 +28,6 @@ public class CommodityBranchAttributeSet extends AbstractEntity {
     @ManyToOne(optional=false)
     @JoinColumn(name="attribute_value_id", referencedColumnName="id")
     private CommodityAttributeValue attributeValue;
-
-    public CommodityBranch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(CommodityBranch branch) {
-        this.branch = branch;
-    }
-
-    public CommodityAttributeValue getAttributeValue() {
-        return attributeValue;
-    }
-
-    public void setAttributeValue(CommodityAttributeValue attributeValue) {
-        this.attributeValue = attributeValue;
-    }
-
-    public CommodityAttribute getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(CommodityAttribute attribute) {
-        this.attribute = attribute;
-    }
-
 
     @Override public String toString() {
         ObjectMapper mapper = new ObjectMapper();

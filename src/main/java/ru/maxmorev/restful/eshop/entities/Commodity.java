@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.*;
 
+@Data
 @Entity
 @Table(name = "commodity")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -17,19 +19,6 @@ public class Commodity extends CommodityInfo {
         @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityBranch.class, fetch = FetchType.LAZY)
         @org.hibernate.annotations.BatchSize(size=10)
         private List<CommodityBranch> branches = new ArrayList<>();
-
-        public Commodity(){
-                super();
-                this.dateOfCreation = new Date();
-        }
-
-        public List<CommodityBranch> getBranches() {
-                return branches;
-        }
-
-        public void setBranches(List<CommodityBranch> branches) {
-                this.branches = branches;
-        }
 
         public Float getPrice(){
                 return branches.isEmpty()? 0.0f : branches.get(0).getPrice();

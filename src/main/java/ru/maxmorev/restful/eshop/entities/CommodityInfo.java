@@ -1,13 +1,14 @@
 package ru.maxmorev.restful.eshop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
 public class CommodityInfo extends AbstractEntity {
@@ -37,63 +38,7 @@ public class CommodityInfo extends AbstractEntity {
     @org.hibernate.annotations.OrderBy(clause = "image_order asc")
     @org.hibernate.annotations.BatchSize(size=10)
     protected List<CommodityImage> images = new ArrayList<>();
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public Date getDateOfCreation() {
-        return dateOfCreation;
-    }
-
-    public void setDateOfCreation(Date dateOfCreation) {
-        this.dateOfCreation = dateOfCreation;
-    }
-
-    public CommodityType getType() {
-        return type;
-    }
-
-    public void setType(CommodityType type) {
-        this.type = type;
-    }
-
-    public List<CommodityImage> getImages() {
-        return images;
-    }
-
-    public void setImages(List<CommodityImage> images) {
-        this.images = images;
-    }
-
+    
     @Override public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityInfo)) return false;

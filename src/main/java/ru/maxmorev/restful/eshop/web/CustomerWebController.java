@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
-import ru.maxmorev.restful.eshop.entities.Customer;
-import ru.maxmorev.restful.eshop.entities.CustomerInfo;
-import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.rest.response.CustomerDTO;
 import ru.maxmorev.restful.eshop.services.CustomerService;
 
@@ -56,7 +53,7 @@ public class CustomerWebController extends CommonWebController {
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         String id = getAuthenticationCustomerId();
-        CustomerDTO customerDTO = CustomerDTO.build(customerService.findByEmail(id));
+        CustomerDTO customerDTO = CustomerDTO.of(customerService.findByEmail(id));
         logger.info("CUSTOMER: " + customerDTO);
         uiModel.addAttribute("customer", customerDTO );
         return "customer/updateAccount";

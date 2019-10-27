@@ -1,6 +1,7 @@
 package ru.maxmorev.restful.eshop;
 
 
+import com.google.common.collect.ImmutableList;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +31,10 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by maxim.morev on 05/01/19.
  */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {ServiceTestConfig.class, ServiceConfig.class})
-
-@TestExecutionListeners({ServiceTestExecutionListener.class})
 @ActiveProfiles("test")
+@RunWith(SpringRunner.class)
+@TestExecutionListeners({ServiceTestExecutionListener.class})
+@ContextConfiguration(classes = {ServiceTestConfig.class, ServiceConfig.class})
 public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4SpringContextTests {
 //AbstractJdbcOperationsSessionRepositoryITests
 
@@ -73,7 +73,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     }
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
-    @Test(expected=javax.persistence.PersistenceException.class)
+    @Test()
     public void testDeletePropertyValueByIdError() throws Exception {
         //deletePropertyValueById(Long valueId)
         List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
@@ -85,11 +85,12 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
          */
         properties = commodityService.findPropertiesByTypeId(1L);
         logger.info(properties);
-        assertEquals(0, properties.size());
+        assertEquals(1, properties.size());
 
     }
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
+    @Test
     public void testDeletePropertyValueById() throws Exception {
         //deletePropertyValueById(Long valueId)
         List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
@@ -133,7 +134,8 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         rc.setShortDescription("Short Description");
         rc.setTypeId(1L);
         rc.setPropertyValues(Arrays.asList(3L));
-        rc.setImages(Arrays.asList("https://upload.wikimedia.org/wikipedia/commons/0/06/Coffee_Beans_Photographed_in_Macro.jpg"));
+        rc.setImages(ImmutableList.of("https://upload.wikimedia.org/wikipedia/commons/0/06/Coffee_Beans_Photographed_in_Macro.jpg"));
+        rc.setCurrencyCode("EUR");
         commodityService.addCommodity(rc);
         em.flush();
 

@@ -24,7 +24,7 @@ import ru.maxmorev.restful.eshop.services.CustomerServiceImpl;
 /**
  * Created by maxim.morev on 05/06/19.
  */
-@Profile("dev")
+//@Profile("dev")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)

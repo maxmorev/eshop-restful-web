@@ -75,8 +75,9 @@ public class ShoppingCartWebController extends CommonWebController {
         }
         if(Objects.isNull( customerAuth.getShoppingCartId() )){
             customerAuth.setShoppingCart(shoppingCart);
-            customerService.update(customer);
+            customerService.update(customerAuth);
         }
+        customer = customerAuth;
         shoppingCart = shoppingCartService.checkAvailability(shoppingCart);
         addCommonAttributesToModel(uiModel);
         uiModel.addAttribute("customer", customer);

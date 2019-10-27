@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.maxmorev.restful.eshop.annotation.AuthorityValues;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 
+@Data
 @Entity
 @Table(name = "customer")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -43,46 +45,6 @@ public class Customer extends CustomerInfo implements UserDetails {
     @Transient
     private Long shoppingCartId;
 
-    public String getVerifyCode() {
-        return verifyCode;
-    }
-
-    public void setVerifyCode(String verifyCode) {
-        this.verifyCode = verifyCode;
-    }
-
-    public Date getDateOfCreation() {
-        return dateOfCreation;
-    }
-
-    public void setDateOfCreation(Date dateOfCreation) {
-        this.dateOfCreation = dateOfCreation;
-    }
-
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
-
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public Long getShoppingCartId() {
-        return shoppingCart==null?shoppingCartId: shoppingCart.getId();
-    }
-
-    public void setShoppingCartId(Long shoppingCartId) {
-        this.shoppingCartId = shoppingCartId;
-    }
-
     //implement methods of org.springframework.security.core.userdetails.UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -94,15 +56,6 @@ public class Customer extends CustomerInfo implements UserDetails {
             authSet.add(new CustomerAuthority(AuthorityValues.valueOf(str)));
         }
         return authSet;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void addAuthority(AuthorityValues auth){

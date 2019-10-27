@@ -1,9 +1,11 @@
 package ru.maxmorev.restful.eshop.rest.response;
 
+import lombok.Data;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 
 import java.util.List;
 
+@Data
 public class CommodityGrid {
 
     private int totalPages;
@@ -11,35 +13,4 @@ public class CommodityGrid {
     private long totalRecords;
     private List<Commodity> commodityData;
 
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public long getTotalRecords() {
-        return totalRecords;
-    }
-
-    public void setTotalRecords(long totalRecords) {
-        this.totalRecords = totalRecords;
-    }
-
-    public List<Commodity> getCommodityData() {
-        return commodityData;
-    }
-
-    public void setCommodityData(List<Commodity> commodityData) {
-        this.commodityData = commodityData;
-    }
 }
