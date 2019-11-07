@@ -1,7 +1,6 @@
 package ru.maxmorev.restful.eshop.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +10,6 @@ import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
-import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.services.CustomerService;
 import ru.maxmorev.restful.eshop.services.OrderPurchaseService;
 
@@ -20,10 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
+@Slf4j
 @Controller
 public class ShoppingCartWebController extends CommonWebController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartWebController.class);
 
     private CustomerService customerService;
     private OrderPurchaseService orderPurchaseService;
@@ -41,7 +38,7 @@ public class ShoppingCartWebController extends CommonWebController {
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             Model uiModel) throws IOException {
-        logger.info("Listing shopping cart");
+        log.info("Listing shopping cart");
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         return "shopping/cart";
@@ -52,7 +49,7 @@ public class ShoppingCartWebController extends CommonWebController {
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             Model uiModel) throws IOException {
-        logger.info("Listing shopping cart and merge with customer");
+        log.info("Listing shopping cart and merge with customer");
         //merge shopping cart after login
 
         String id = getAuthenticationCustomerId();
@@ -60,17 +57,17 @@ public class ShoppingCartWebController extends CommonWebController {
             throw new IllegalAccessError("Not Authenticated");
 
         ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
-        logger.info("LOGGED IN CUSTOMER: " + id);
-        logger.info("Shopping cart id: " + shoppingCart.getId());
+        log.info("LOGGED IN CUSTOMER: " + id);
+        log.info("Shopping cart id: " + shoppingCart.getId());
         Customer customer = shoppingCart.getCustomer();
-        logger.info("customer from shoppingCart: " + customer);
-        Customer customerAuth = customerService.findByEmail(id);
-        logger.info("customer from authContext: " + customerAuth.getId());
-        if( Objects.nonNull(customerAuth.getShoppingCartId()) && !Objects.equals(customerAuth.getShoppingCart(),shoppingCart)){
+        log.info("customer from shoppingCart: " + customer);
+        Customer customerAuth = customerService.findByEmail(id).orElse(null);
+        log.info("customer from authContext: " + customerAuth.getId());
+        if( Objects.nonNull(customerAuth.getShoppingCartId()) && !Objects.equals(customerAuth.getShoppingCart(),shoppingCart) ){
             //merge cart from cookie to customer cart
-            logger.info("merging cart");
+            log.info("merging cart");
             shoppingCart = shoppingCartService.mergeFromTo(shoppingCart, customerAuth.getShoppingCart());
-            logger.info("update cookie");
+            log.info("update cookie");
             setShoppingCartCookie(shoppingCart, response);
         }
         if(Objects.isNull( customerAuth.getShoppingCartId() )){

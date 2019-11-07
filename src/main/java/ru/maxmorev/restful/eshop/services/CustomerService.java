@@ -3,16 +3,20 @@ package ru.maxmorev.restful.eshop.services;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 
+import java.util.Optional;
+
 public interface CustomerService {
 
-    Customer createCustomer(Customer customer);
+    Customer createCustomerAndVerifyByEmail(Customer customer);
 
     void update(Customer customer);
 
-    Customer find(Long id);
+    Customer updateInfo(CustomerInfo i);
 
-    Customer findByEmail(String email);
+    Optional<Customer> find(Long id);
 
-    Customer verify(Long customerId, String code);
+    Optional<Customer> findByEmail(String email);
+
+    Optional<Customer> verify(Long customerId, String code);
 
 }

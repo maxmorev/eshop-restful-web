@@ -24,7 +24,6 @@ public class MailServiceImpl implements MailService{
 
     @Override
     public Boolean sendPlainEmail(Mail mail) {
-
         // Create a Simple MailMessage.
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom( environment.getProperty("mymail.user") );

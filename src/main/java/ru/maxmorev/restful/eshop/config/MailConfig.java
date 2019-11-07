@@ -23,11 +23,10 @@ public class MailConfig {
         this.environment = env;
     }
 
-
     @Bean
     public JavaMailSender getJavaMailSender() {
         logger.info("Creating mail service");
-        logger.info("mymail.smtp.port - " + environment.getProperty("mymail.smtp.port"));
+        logger.info("mymail.smtp.port - {}", environment.getProperty("mymail.smtp.port"));
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost( environment.getProperty("mymail.smtp") );
 

@@ -17,6 +17,6 @@ public interface OrderPurchaseService {
 
     CustomerOrder confirmPaymentOrder(CustomerOrder order, PaymentProvider paymentProvider, String paymentID);
 
-    Optional<List<CustomerOrder>> findCustomerOrders(Customer customer);
+    List<CustomerOrder> findCustomerOrders(Customer customer);
 
 }

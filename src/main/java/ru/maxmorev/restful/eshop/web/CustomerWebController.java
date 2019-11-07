@@ -1,7 +1,6 @@
 package ru.maxmorev.restful.eshop.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 @Controller
 public class CustomerWebController extends CommonWebController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomerWebController.class);
 
     private CustomerService customerService;
 
@@ -53,8 +51,8 @@ public class CustomerWebController extends CommonWebController {
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         String id = getAuthenticationCustomerId();
-        CustomerDTO customerDTO = CustomerDTO.of(customerService.findByEmail(id));
-        logger.info("CUSTOMER: " + customerDTO);
+        CustomerDTO customerDTO = customerService.findByEmail(id).map(m->CustomerDTO.of(m)).get();
+        log.info("CUSTOMER: " + customerDTO);
         uiModel.addAttribute("customer", customerDTO );
         return "customer/updateAccount";
     }

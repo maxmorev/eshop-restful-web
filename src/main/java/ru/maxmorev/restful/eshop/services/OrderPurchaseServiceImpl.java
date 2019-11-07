@@ -75,7 +75,7 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<List<CustomerOrder>> findCustomerOrders(Customer customer) {
+    public List<CustomerOrder> findCustomerOrders(Customer customer) {
         return customerOrderRepository.findByCustomer(customer);
     }
 

@@ -1,21 +1,19 @@
 package ru.maxmorev.restful.eshop.rest.controllers;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.maxmorev.restful.eshop.entities.Commodity;
+import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.rest.response.CommodityGrid;
 import ru.maxmorev.restful.eshop.rest.response.Message;
-import ru.maxmorev.restful.eshop.entities.Commodity;
-import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import javax.validation.Valid;
@@ -23,10 +21,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 public class CommodityController {
-
-    private final static Logger logger = LoggerFactory.getLogger(CommodityController.class);
 
     private CommodityService commodityService;
     private MessageSource messageSource;
@@ -43,7 +40,7 @@ public class CommodityController {
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"commodity/", method=RequestMethod.POST)
     @ResponseBody
     public Message createCommodityFromRequset(@RequestBody @Valid RequestCommodity requestCommodity, Locale locale){
-        logger.info("POST -> createCommodityFromRequset");
+        log.info("POST -> createCommodityFromRequset");
         commodityService.addCommodity(requestCommodity);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
@@ -51,7 +48,7 @@ public class CommodityController {
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"commodity/", method = RequestMethod.PUT)
     @ResponseBody
     public Message updateCommodity(@RequestBody @Valid RequestCommodity requestCommodity, Locale locale){
-        logger.info("PUT -> updateCommodity");
+        log.info("PUT -> updateCommodity");
         commodityService.updateCommodity(requestCommodity);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
@@ -59,13 +56,9 @@ public class CommodityController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"commodity/id/{id}", method = RequestMethod.GET, produces="application/json")
     @ResponseBody
     public Commodity getCommodity( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
-        Commodity cm = commodityService.findCommodityById(id);
-        if(Objects.nonNull(cm)){
-            return cm;
-        }else {
-            //
-            throw new IllegalArgumentException(messageSource.getMessage("commodity.error.id", new Object[]{id}, locale));
-        }
+        return commodityService.findCommodityById(id)
+                .orElseThrow(()->new IllegalArgumentException(messageSource.getMessage("commodity.error.id", new Object[]{id}, locale)));
+
     }
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "commodities/", method = RequestMethod.GET, produces="application/json")
@@ -112,17 +105,8 @@ public class CommodityController {
         }
 
         Page<Commodity> commoditiesByPage = commodityService.findAllCommoditiesByPage(pageRequest);
-
         // Construct the grid data that will return as JSON data
-        CommodityGrid commodityGrid = new CommodityGrid();
-
-        commodityGrid.setCurrentPage(commoditiesByPage.getNumber() + 1);
-        commodityGrid.setTotalPages(commoditiesByPage.getTotalPages());
-        commodityGrid.setTotalRecords(commoditiesByPage.getTotalElements());
-
-        commodityGrid.setCommodityData(Lists.newArrayList(commoditiesByPage.iterator()));
-
-        return commodityGrid;
+        return new CommodityGrid(commoditiesByPage);
     }
 
     @RequestMapping( path = Constants.REST_PUBLIC_URI + "branches/", method = RequestMethod.GET)
@@ -134,12 +118,10 @@ public class CommodityController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "commodityBranch/{id}", method = RequestMethod.GET)
     @ResponseBody
     public CommodityBranch getCommodityBranch( @PathVariable(name="id", required = true) Long branchId, Locale locale ) throws Exception{
-        CommodityBranch branch = commodityService.findBranchById(branchId);
-        if(Objects.nonNull(branch)){
-            return branch;
-        }else {
-            throw new IllegalArgumentException(messageSource.getMessage("commodity.branch.error.id", new Object[]{branchId}, locale));
-        }
+        return commodityService
+                .findBranchById(branchId)
+                .orElseThrow(()->new IllegalArgumentException(messageSource.getMessage("commodity.branch.error.id", new Object[]{branchId}, locale)));
+
     }
 
 

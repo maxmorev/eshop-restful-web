@@ -60,7 +60,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
     public void testFindTypeById() throws Exception {
-        CommodityType result = commodityService.findTypeById(1L);
+        CommodityType result = commodityService.findTypeById(1L).get();
         assertNotNull(result);
     }
 
@@ -188,7 +188,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
     public void testFindBranchById() throws Exception {
-        CommodityBranch branch = commodityService.findBranchById(5L);
+        CommodityBranch branch = commodityService.findBranchById(5L).get();
         assertNotNull(branch);
     }
 
@@ -197,7 +197,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     public void testUpdateCommodity() throws Exception {
         //updateCommodity(RequestCommodity requestCommodity )
         RequestCommodity rc = new RequestCommodity();
-        CommodityBranch branch = commodityService.findBranchById(5L);
+        CommodityBranch branch = commodityService.findBranchById(5L).get();
         assertNotNull(branch);
         List<String> images = new ArrayList<>();
         for(CommodityImage image: branch.getCommodity().getImages()){
@@ -217,7 +217,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         commodityService.updateCommodity(rc);
         em.flush();
 
-        CommodityBranch branchUpdate = commodityService.findBranchById(5L);
+        CommodityBranch branchUpdate = commodityService.findBranchById(5L).get();
         assertEquals((long)rc.getAmount(), (long)branchUpdate.getAmount() );
         assertEquals(rc.getPrice(), branchUpdate.getPrice(), 2);
         assertEquals(rc.getName(), branchUpdate.getCommodity().getName());

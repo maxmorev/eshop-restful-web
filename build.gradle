@@ -48,6 +48,9 @@ configurations {
 
 dependencies {
 
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBoot}"
     testCompile group: 'org.dbunit', name: 'dbunit', version: '2.5.3'
     testCompile 'com.h2database:h2'
