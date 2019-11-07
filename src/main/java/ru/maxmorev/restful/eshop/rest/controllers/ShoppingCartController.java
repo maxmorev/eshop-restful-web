@@ -50,7 +50,7 @@ public class ShoppingCartController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.POST)
     @ResponseBody
     public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
-        log.info("POST:> RequestShoppingCartSet :> " + requestShoppingCartSet);
+        log.info("POST:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         //TODO Validation
         return shoppingCartService.addBranchToShoppingCart(requestShoppingCartSet.getBranchId(), requestShoppingCartSet.getAmount(), requestShoppingCartSet.getShoppingCartId());
     }
@@ -58,9 +58,8 @@ public class ShoppingCartController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.DELETE)
     @ResponseBody
     public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
-        log.info("DELETE:> RequestShoppingCartSet :> " + requestShoppingCartSet);
+        log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         //TODO Validation
-
         CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId()).get();
         ShoppingCart shoppingCart = shoppingCartService.findShoppingCartById(requestShoppingCartSet.getShoppingCartId());
         ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);

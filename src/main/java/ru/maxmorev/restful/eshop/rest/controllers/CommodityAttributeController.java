@@ -38,7 +38,6 @@ public class CommodityAttributeController {
     @ResponseBody
     public Message createProperty(@RequestBody @Valid RequestAttributeValue property, Locale locale ){
         //to prevent duplicated properties
-        logger.info("&&& -> RA is " + property);
         commodityService.addProperty(property);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }

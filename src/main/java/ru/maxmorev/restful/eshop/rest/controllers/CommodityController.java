@@ -103,10 +103,8 @@ public class CommodityController {
         } else {
             pageRequest = PageRequest.of(page - 1, rows);
         }
-
-        Page<Commodity> commoditiesByPage = commodityService.findAllCommoditiesByPage(pageRequest);
         // Construct the grid data that will return as JSON data
-        return new CommodityGrid(commoditiesByPage);
+        return new CommodityGrid( commodityService.findAllCommoditiesByPage(pageRequest) );
     }
 
     @RequestMapping( path = Constants.REST_PUBLIC_URI + "branches/", method = RequestMethod.GET)

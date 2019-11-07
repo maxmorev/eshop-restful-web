@@ -33,12 +33,9 @@ public class CustomerWebController extends CommonWebController {
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             Model uiModel) throws IOException {
-
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
-        if(from.isPresent()){
-            uiModel.addAttribute("fromPage", from.get());
-        }
+        from.ifPresent( s-> uiModel.addAttribute("fromPage", s) );
         return "customer/createAccount";
     }
 
@@ -47,12 +44,11 @@ public class CustomerWebController extends CommonWebController {
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
             Model uiModel) throws IOException {
-
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         String id = getAuthenticationCustomerId();
         CustomerDTO customerDTO = customerService.findByEmail(id).map(m->CustomerDTO.of(m)).get();
-        log.info("CUSTOMER: " + customerDTO);
+        log.info("CUSTOMER: {}", customerDTO);
         uiModel.addAttribute("customer", customerDTO );
         return "customer/updateAccount";
     }

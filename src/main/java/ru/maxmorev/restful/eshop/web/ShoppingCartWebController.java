@@ -56,34 +56,19 @@ public class ShoppingCartWebController extends CommonWebController {
         if(id==null)
             throw new IllegalAccessError("Not Authenticated");
 
-        ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
-        log.info("LOGGED IN CUSTOMER: " + id);
-        log.info("Shopping cart id: " + shoppingCart.getId());
-        Customer customer = shoppingCart.getCustomer();
-        log.info("customer from shoppingCart: " + customer);
-        Customer customerAuth = customerService.findByEmail(id).orElse(null);
-        log.info("customer from authContext: " + customerAuth.getId());
-        if( Objects.nonNull(customerAuth.getShoppingCartId()) && !Objects.equals(customerAuth.getShoppingCart(),shoppingCart) ){
-            //merge cart from cookie to customer cart
-            log.info("merging cart");
-            shoppingCart = shoppingCartService.mergeFromTo(shoppingCart, customerAuth.getShoppingCart());
-            log.info("update cookie");
-            setShoppingCartCookie(shoppingCart, response);
-        }
-        if(Objects.isNull( customerAuth.getShoppingCartId() )){
-            customerAuth.setShoppingCart(shoppingCart);
-            customerService.update(customerAuth);
-        }
-        customer = customerAuth;
-        shoppingCart = shoppingCartService.checkAvailability(shoppingCart);
-        addCommonAttributesToModel(uiModel);
-        uiModel.addAttribute("customer", customer);
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
+        ShoppingCart scFromCookie = getShoppingCart(cartCookie, response);
+        Customer authCustomer = customerService.findByEmail(id).get();
 
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount() );
+        scFromCookie = shoppingCartService.mergeCartFromCookieWithCustomer( scFromCookie, authCustomer);
+
+        setShoppingCartCookie(scFromCookie, response);
+        addCommonAttributesToModel(uiModel);
+        uiModel.addAttribute("customer", scFromCookie.getCustomer());
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, scFromCookie );
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, scFromCookie.getItemsAmount() );
 
         //TODO create transaction order and hold items for 10 minutes
-        CustomerOrder order = orderPurchaseService.createOrderFor(customer);
+        CustomerOrder order = orderPurchaseService.createOrderFor(scFromCookie.getCustomer());
         uiModel.addAttribute("orderId", order.getId());
 
         return "shopping/proceedToCheckout";

@@ -47,10 +47,6 @@ public class CommodityWebController extends CommonWebController{
             Model uiModel) {
 
         List<Commodity> commodities = commodityService.findAllCommoditiesByTypeName(name);
-        if(Objects.isNull(commodities)){
-            //TODO error handling
-            return "commodity/error";
-        }
         commodityService.findTypeByName(name).map(type->uiModel.addAttribute("currentType", type));
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);

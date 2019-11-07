@@ -40,7 +40,7 @@ public class CommodityTypeController {
     @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/", method = RequestMethod.POST)
     @ResponseBody
     public Message createCommodityType(@RequestBody @Valid CommodityType type, Locale locale){
-        log.info("type : " + type);
+        log.info("type : {} ", type);
         commodityService.addType(type);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }

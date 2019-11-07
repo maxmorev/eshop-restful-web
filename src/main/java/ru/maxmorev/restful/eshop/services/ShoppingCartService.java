@@ -1,6 +1,7 @@
 package ru.maxmorev.restful.eshop.services;
 
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
+import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 
@@ -14,5 +15,8 @@ public interface ShoppingCartService {
     ShoppingCart addBranchToShoppingCart(Long branchId, Integer amount, Long shoppingCartId);
     ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to);
     ShoppingCart checkAvailability(ShoppingCart sc);
+    ShoppingCart mergeCartFromCookieWithCustomer(ShoppingCart sc, Customer customer);
+
+
 
 }

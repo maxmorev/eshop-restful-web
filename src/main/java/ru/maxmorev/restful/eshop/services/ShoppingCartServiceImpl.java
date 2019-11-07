@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
+import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.repos.ShoppingCartRepository;
@@ -23,12 +24,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private ShoppingCartRepository shoppingCartRepository;
     private ShoppingCartSetRepository shoppingCartSetRepository;
     private CommodityService commodityService;
+    private CustomerService customerService;
 
     @Autowired
     public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
     }
-
     @Autowired
     public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
@@ -36,6 +37,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Autowired
     public void setShoppingCartSetRepository(ShoppingCartSetRepository shoppingCartSetRepository) {
         this.shoppingCartSetRepository = shoppingCartSetRepository;
+    }
+    @Autowired
+    public void setCustomerService(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @Override
@@ -158,15 +163,33 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to) {
         if(from!=null && to!=null && !Objects.equals(from, to)) {
             for (ShoppingCartSet set : from.getShoppingSet()) {
-                try {
-                    this.addBranchToShoppingCart(set.getBranch().getId(), set.getAmount(), to.getId());
-                } catch (Exception ex) {
-                    log.error("Error in merge: " + ex);
-                }
+                this.addBranchToShoppingCart(set.getBranch().getId(), set.getAmount(), to.getId());
             }
             shoppingCartRepository.delete(from);
         }
         return to;
+    }
+
+    @Override
+    public ShoppingCart mergeCartFromCookieWithCustomer(ShoppingCart sc, Customer customer) {
+        ShoppingCart shoppingCart = sc;
+        if(
+                Objects.nonNull(customer.getShoppingCart())
+                && !Objects.equals(customer.getShoppingCart(), sc)
+        ){
+            //merge cart from cookie to customer cart
+            log.info("merging cart");
+            shoppingCart = mergeFromTo(sc, customer.getShoppingCart());
+            log.info("update cookie");
+
+        }
+        if( Objects.isNull( customer.getShoppingCartId() ) ){
+            customer.setShoppingCart(sc);
+            customerService.update(customer);
+            shoppingCart = sc;
+        }
+
+        return checkAvailability(shoppingCart);
     }
 
     @Override

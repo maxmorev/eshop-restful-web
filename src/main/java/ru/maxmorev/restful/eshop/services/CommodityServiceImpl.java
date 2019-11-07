@@ -150,7 +150,7 @@ public class CommodityServiceImpl implements CommodityService {
         if(av.isPresent()){
             CommodityAttribute ca = av.get().getAttribute();
 
-            log.info("remove value "+ av.get().getValue() + " : " + ca.getValues().remove(av.get()));
+            log.info("remove value {} : {}", av.get().getValue() , ca.getValues().remove(av.get()));
 
             if(ca.getValues().isEmpty()){
                 //delete empty property

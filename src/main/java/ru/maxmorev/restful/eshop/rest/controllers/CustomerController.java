@@ -37,7 +37,7 @@ public class CustomerController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/", method = RequestMethod.POST)
     @ResponseBody
     public Customer createCustomer(@RequestBody @Valid Customer customer, Locale locale){
-        log.info("Customer : " + customer);
+        log.info("Customer : {}", customer);
         return customerService.createCustomerAndVerifyByEmail(customer);
     }
 
@@ -56,7 +56,7 @@ public class CustomerController {
     @RequestMapping(path = Constants.REST_CUSTOMER_URI + "update/", method = RequestMethod.PUT)
     @ResponseBody
     public CustomerDTO updateCustomer(@RequestBody @Valid CustomerInfo customer, Locale locale){
-        log.info("Customer update : " + customer);
+        log.info("Customer update : {}", customer);
         String id = getAuthenticationCustomerId();
         if(id==null)
             throw new IllegalAccessError("Not Authenticated");
@@ -67,7 +67,7 @@ public class CustomerController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/verify/", method = RequestMethod.POST)
     @ResponseBody
     public CustomerVerify verifyCustomer(@RequestBody @Valid CustomerVerify customerVerify, Locale locale){
-        log.info("CustomerVerify : " + customerVerify);
+        log.info("CustomerVerify : {}", customerVerify);
         Customer customer = customerService
                 .verify(customerVerify.getId(), customerVerify.getVerifyCode())
                 .orElseThrow(()-> new UsernameNotFoundException(messageSource.getMessage("customer.error.notFound", new Object[]{customerVerify.getId()}, locale)));
