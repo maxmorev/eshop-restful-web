@@ -107,7 +107,7 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public void addAttribute(RequestAttributeValue property) {
-        log.info("Property : " + property);
+        log.info("Property : {}",  property);
         Optional<CommodityType> type = commodityTypeRepository.findById(property.getTypeId());
         if(!type.isPresent()){
 
@@ -186,7 +186,7 @@ public class CommodityServiceImpl implements CommodityService {
 
         //create images of commodity
         List<CommodityImage> commodityImages = new ArrayList<>(requestCommodity.getImages().size());
-        log.info("requestCommodity.getImages() > " + requestCommodity.getImages());
+        log.info("requestCommodity.getImages() > {}", requestCommodity.getImages());
         Short imageIndex = 0;
         for(String imageUrl: requestCommodity.getImages()){
             CommodityImage image = new CommodityImage();
@@ -243,7 +243,7 @@ public class CommodityServiceImpl implements CommodityService {
      */
     @Override
     public void addCommodity(RequestCommodity requestCommodity) {
-        log.info("type : " + requestCommodity);
+        log.info("type : {}", requestCommodity);
         Optional<Commodity> commodityExist = commodityRepository.findByNameAndType(requestCommodity.getName(), commodityTypeRepository.findById(requestCommodity.getTypeId()).get());
         if(commodityExist.isPresent()){
             //create new branch for existent commodity
@@ -260,7 +260,7 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public void updateCommodity(RequestCommodity requestCommodity) {
-        log.info("RC : " + requestCommodity);
+        log.info("RC : {}", requestCommodity);
         Optional<CommodityBranch> commodityBranchOptional = commodityBranchRepository.findById(requestCommodity.getBranchId());
         if(commodityBranchOptional.isPresent()){
 
@@ -284,13 +284,13 @@ public class CommodityServiceImpl implements CommodityService {
                         newAttribute.setAttribute(commodityAttributeValue.getAttribute());
                         newAttribute.setAttributeValue(commodityAttributeValue);
                         branch.getAttributeSet().add(newAttribute);
-                        log.info("Add newAttribute->" + newAttribute);
+                        log.info("Add newAttribute -> {}", newAttribute);
                     }
                 }
                 //createBranchPropertySet(requestCommodity.getPropertyValues(), branch);
 
             }
-            log.info("attributes updated: " + branch.getAttributeSet().size());
+            log.info("attributes updated: {}", branch.getAttributeSet().size());
             branch.setAmount(requestCommodity.getAmount());
             branch.setPrice(requestCommodity.getPrice());
             //commodityBranchRepository.save(branch);
@@ -300,13 +300,13 @@ public class CommodityServiceImpl implements CommodityService {
             commodity.setOverview(requestCommodity.getOverview());
             commodity.setName(requestCommodity.getName());
             List<CommodityImage> images = commodity.getImages();
-            log.info("requestCommodity.getImages().size() = " + requestCommodity.getImages().size());
+            log.info("requestCommodity.getImages().size() = {}", requestCommodity.getImages().size());
             log.info("images.size() = " + images.size() );
             if(requestCommodity.getImages().size()==images.size()) {
                 for (int imgIdx = 0; imgIdx < requestCommodity.getImages().size(); imgIdx++) {
                     CommodityImage img = images.get(imgIdx);
-                    log.info("img.getUri()=" + img.getUri());
-                    log.info("requestCommodity.getImages().get(imgIdx)=" + requestCommodity.getImages().get(imgIdx));
+                    log.info("img.getUri()={}", img.getUri());
+                    log.info("requestCommodity.getImages().get(imgIdx)={}", requestCommodity.getImages().get(imgIdx));
                     if(!img.getUri().equals(requestCommodity.getImages().get(imgIdx))){
                         img.setUri(requestCommodity.getImages().get(imgIdx));
                         log.info("save img");
