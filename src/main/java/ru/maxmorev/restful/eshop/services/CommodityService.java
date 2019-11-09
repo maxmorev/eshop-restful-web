@@ -43,4 +43,5 @@ public interface CommodityService {
     List<Commodity> findAllCommoditiesByTypeName(String typeName);//tested
     Optional<Commodity> findCommodityById(Long id);//tested
 
+
 }
