@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-
+@Data
 @Entity
 @Table(name = "commodity_image")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -28,46 +29,6 @@ public class CommodityImage {
 
     @Column(nullable = false, name="image_order")
     private Short imageOrder;
-
-    public Commodity getCommodity() {
-        return commodity;
-    }
-
-    public void setCommodity(Commodity commodity) {
-        this.commodity = commodity;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    public Short getImageOrder() {
-        return imageOrder;
-    }
-
-    public void setImageOrder(Short imageOrder) {
-        this.imageOrder = imageOrder;
-    }
 
     @Override
     public int hashCode() {

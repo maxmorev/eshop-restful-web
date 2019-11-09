@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
@@ -38,8 +37,7 @@ public class CommodityAttributeController {
     @ResponseBody
     public Message createProperty(@RequestBody @Valid RequestAttributeValue property, Locale locale ){
         //to prevent duplicated properties
-        logger.info("&&& -> RA is " + property);
-        commodityService.addProperty(property);
+        commodityService.addAttribute(property);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
@@ -47,7 +45,7 @@ public class CommodityAttributeController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"attributes/{typeId}", method = RequestMethod.GET)
     @ResponseBody
     public List<CommodityAttribute> getProperties(@PathVariable(name = "typeId", required = true) Long typeId){
-        return commodityService.findPropertiesByTypeId(typeId);
+        return commodityService.findAttributesByTypeId(typeId);
     }
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"/attribute/value/dataTypes/", method = RequestMethod.GET)
@@ -59,7 +57,7 @@ public class CommodityAttributeController {
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"attributeValue/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public Message deletePropertyValue(@PathVariable(name = "id", required = true) Long valueId, Locale locale){
-        commodityService.deletePropertyValueById(valueId);
+        commodityService.deleteAttributeValueById(valueId);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 

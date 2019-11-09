@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.*;
 
+@Data
 @Entity
 @Table(name = "commodity_branch")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -35,52 +37,12 @@ public class CommodityBranch extends AbstractEntity{
     @org.hibernate.annotations.BatchSize(size=10)
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
 
-    public Long getCommodityId(){
-        return this.commodity.getId();
-    }
-
     public String getCode(){
         return commodity.getId()+"-" + this.getId();
     }
 
-    public Commodity getCommodity() {
-        return commodity;
-    }
-
-    public void setCommodity(Commodity commodity) {
-        this.commodity = commodity;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
-    }
-
-    public Set<CommodityBranchAttributeSet> getAttributeSet() {
-        return attributeSet;
-    }
-
-    public void setAttributeSet(Set<CommodityBranchAttributeSet> attributeSet) {
-        this.attributeSet = attributeSet;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
+    public Long getCommodityId(){
+        return this.commodity.getId();
     }
 
     @Override public String toString() {

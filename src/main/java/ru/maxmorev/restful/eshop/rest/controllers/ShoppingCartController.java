@@ -1,25 +1,23 @@
 package ru.maxmorev.restful.eshop.rest.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
-import ru.maxmorev.restful.eshop.rest.Constants;
-import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
+import ru.maxmorev.restful.eshop.rest.Constants;
+import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
 import java.util.Locale;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 public class ShoppingCartController {
-
-    private final static Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
 
     private CommodityService commodityService;
     private ShoppingCartService shoppingCartService;
@@ -40,7 +38,7 @@ public class ShoppingCartController {
     @ResponseBody
     public ShoppingCart getShoppingCart( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
         ShoppingCart sc = shoppingCartService.findShoppingCartById(id);
-        logger.info("getShoppingCart -> " + sc);
+        log.info("getShoppingCart -> " + sc);
         if(Objects.nonNull(sc)){
             return sc;
         }else {
@@ -52,7 +50,7 @@ public class ShoppingCartController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.POST)
     @ResponseBody
     public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
-        logger.info("POST:> RequestShoppingCartSet :> " + requestShoppingCartSet);
+        log.info("POST:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         //TODO Validation
         return shoppingCartService.addBranchToShoppingCart(requestShoppingCartSet.getBranchId(), requestShoppingCartSet.getAmount(), requestShoppingCartSet.getShoppingCartId());
     }
@@ -60,10 +58,9 @@ public class ShoppingCartController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.DELETE)
     @ResponseBody
     public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
-        logger.info("DELETE:> RequestShoppingCartSet :> " + requestShoppingCartSet);
+        log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         //TODO Validation
-
-        CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId());
+        CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId()).get();
         ShoppingCart shoppingCart = shoppingCartService.findShoppingCartById(requestShoppingCartSet.getShoppingCartId());
         ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);
         return shoppingCartService.removeFromShoppingCartSet( shoppingCartSet, requestShoppingCartSet.getAmount() );

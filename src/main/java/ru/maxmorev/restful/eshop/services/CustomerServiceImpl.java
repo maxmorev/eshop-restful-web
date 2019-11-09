@@ -1,8 +1,7 @@
 package ru.maxmorev.restful.eshop.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -13,51 +12,81 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.AuthorityValues;
+import ru.maxmorev.restful.eshop.domain.Mail;
 import ru.maxmorev.restful.eshop.entities.Customer;
+import ru.maxmorev.restful.eshop.entities.CustomerInfo;
+import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.repos.CustomerRepository;
 
 import java.util.Objects;
 import java.util.Optional;
 
-
+@Slf4j
 @Service("customerService")
 @Transactional
 public class CustomerServiceImpl implements CustomerService, UserDetailsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
-
     private CustomerRepository customerRepository;
     private PasswordEncoder bcryptEncoder;
     private MessageSource messageSource;
+    private MailService mailService;
+    private ShoppingCartService shoppingCartService;
 
     @Autowired public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
-
     @Autowired public void setBcryptEncoder(PasswordEncoder bcryptEncoder) {
         this.bcryptEncoder = bcryptEncoder;
     }
+    @Autowired public void setMailService(MailService ms){ this.mailService = ms; }
+    @Autowired public void setShoppingCartService(ShoppingCartService shoppingCartService) { this.shoppingCartService = shoppingCartService; }
+    @Autowired public void setCustomerRepository(CustomerRepository customerRepository) { this.customerRepository = customerRepository; }
 
-    @Autowired public void setCustomerRepository(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    protected void checkEmail(Customer customer){
+        findByEmail(customer.getEmail())
+                .ifPresent(c-> new IllegalArgumentException(
+                        messageSource.getMessage("customer.error.unique.email",
+                                new Object[]{c.getEmail()},
+                                LocaleContextHolder.getLocale() )
+                ) );
     }
 
     @Override
-    public Customer createCustomer(Customer customer) {
-        customer.setVerifyCode(RandomStringUtils.randomAlphabetic(5));
-        customer.setPassword(bcryptEncoder.encode(customer.getPassword()));
-        customer.removeAllAuthorities();
-        customer.addAuthority(AuthorityValues.CUSTOMER);
-        return customerRepository.save(customer);
+    public Customer createCustomerAndVerifyByEmail(Customer customer) {
+        Customer created = null;
+
+        checkEmail(customer);
+
+        Mail mail = Mail
+                .builder()
+                .to(customer.getEmail())
+                .subject(messageSource.getMessage("mail.plain.subject", new Object[]{}, LocaleContextHolder.getLocale()))
+                .text(messageSource.getMessage("mail.plain.text", new Object[]{customer.getFullName(), customer.getVerifyCode()}, LocaleContextHolder.getLocale()))
+                .build();
+        Boolean isMailSend = mailService.sendPlainEmail(mail);
+        if(isMailSend){
+            customer.setVerifyCode(RandomStringUtils.randomAlphabetic(5));
+            customer.setPassword(bcryptEncoder.encode(customer.getPassword()));
+            customer.removeAllAuthorities();
+            customer.addAuthority(AuthorityValues.CUSTOMER);
+            ShoppingCart sc = null;
+            if(Objects.nonNull(customer.getShoppingCartId())) {
+                sc = shoppingCartService.findShoppingCartById(customer.getShoppingCartId());
+                customer.setShoppingCart(sc);
+            }
+            created = customerRepository.save(customer);
+        }else{
+            log.info("Mail sending error");
+            throw new RuntimeException( messageSource.getMessage("mail.sending.error", new Object[]{created.getFullName(), created.getVerifyCode()}, LocaleContextHolder.getLocale()) );
+        }
+
+        return created;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Customer findByEmail(String email) {
-        Optional<Customer> oC = customerRepository.findByEmail(email);
-        if(oC.isPresent())
-            return oC.get();
-        return null;
+    public Optional<Customer> findByEmail(String email) {
+        return customerRepository.findByEmail(email);
     }
 
     @Override
@@ -66,37 +95,42 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     }
 
     @Override
-    public Customer verify(Long customerId, String code) {
-        Optional<Customer> oC = customerRepository.findById(customerId);
-        logger.info("......oC.isPresent()>" + oC.isPresent());
-        if(oC.isPresent()){
-            logger.info("......oC.get().getVerifyCode()>" + oC.get().getVerifyCode());
-            if(oC.get().getVerifyCode().equals(code)){
-                Customer customer = oC.get();
-                customer.setVerified(true);
-                return customerRepository.save(customer);
-            }else{
-                return oC.get();
-            }
-        }
-        return null;
+    public Optional<Customer> verify(Long customerId, String code) {
+        Optional<Customer> c = customerRepository.findById(customerId).filter(customer->customer.getVerifyCode().equals(code));
+        c.ifPresent(customer->{
+            customer.setVerified(true);
+            customerRepository.save(customer);
+        });
+        return c;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Customer find(Long id) {
-        Optional<Customer> cO = customerRepository.findById(id);
-        return cO.isPresent()? cO.get(): null;
+    public Optional<Customer> findById(Long id) {
+        return customerRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = this.findByEmail(username);
-        if(Objects.isNull(customer))
-            throw new UsernameNotFoundException(messageSource.getMessage("customer.error.notFound", new Object[]{username}, LocaleContextHolder.getLocale() ));
-        return customer;
+        return findByEmail(username)
+                .orElseThrow( ()-> new UsernameNotFoundException(messageSource.getMessage("customer.error.notFound",
+                        new Object[]{username}, LocaleContextHolder.getLocale() )) );
     }
 
+    @Override
+    public Customer updateInfo(CustomerInfo i) {
+        Customer findByEmail = findByEmail(i.getEmail())
+                .orElseThrow(()->new IllegalArgumentException(
+                        messageSource.getMessage("customer.error.notFound",
+                                new Object[]{i.getEmail()}, LocaleContextHolder.getLocale()))
+                );
 
+        findByEmail.setAddress(i.getAddress());
+        findByEmail.setCity(i.getCity());
+        findByEmail.setPostcode(i.getPostcode());
+        findByEmail.setCountry(i.getCountry());
+        findByEmail.setFullName(i.getFullName());
+        return customerRepository.save(findByEmail);
+    }
 }

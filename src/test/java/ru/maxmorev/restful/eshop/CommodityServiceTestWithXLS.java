@@ -1,6 +1,7 @@
 package ru.maxmorev.restful.eshop;
 
 
+import com.google.common.collect.ImmutableList;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,12 +31,11 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by maxim.morev on 05/01/19.
  */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {ServiceTestConfig.class, ServiceConfig.class})
-
-@TestExecutionListeners({ServiceTestExecutionListener.class})
 @ActiveProfiles("test")
-public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4SpringContextTests {
+@RunWith(SpringRunner.class)
+@TestExecutionListeners({ServiceTestExecutionListener.class})
+@ContextConfiguration(classes = {ServiceTestConfig.class, ServiceConfig.class})
+public class CommodityServiceTestWithXLS extends AbstractTransactionalJUnit4SpringContextTests {
 //AbstractJdbcOperationsSessionRepositoryITests
 
     private CommodityService commodityService;
@@ -60,47 +60,48 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
     public void testFindTypeById() throws Exception {
-        CommodityType result = commodityService.findTypeById(1L);
+        CommodityType result = commodityService.findTypeById(1L).get();
         assertNotNull(result);
     }
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
     public void testFindPropertiesByTypeId() throws Exception {
-        List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
+        List<CommodityAttribute> properties = commodityService.findAttributesByTypeId(1L);
         assertNotNull(properties);
         assertEquals(2, properties.size());
     }
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
-    @Test(expected=javax.persistence.PersistenceException.class)
+    @Test()
     public void testDeletePropertyValueByIdError() throws Exception {
         //deletePropertyValueById(Long valueId)
-        List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
+        List<CommodityAttribute> properties = commodityService.findAttributesByTypeId(1L);
         logger.info(properties);
-        commodityService.deletePropertyValueById(3l);
+        commodityService.deleteAttributeValueById(3l);
         em.flush();
         /**
          * the method deletePropertyValueById will try to delete property witch id used as FK in TABLE commodity_branch_property_set
          */
-        properties = commodityService.findPropertiesByTypeId(1L);
+        properties = commodityService.findAttributesByTypeId(1L);
         logger.info(properties);
-        assertEquals(0, properties.size());
+        assertEquals(1, properties.size());
 
     }
 
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
+    @Test
     public void testDeletePropertyValueById() throws Exception {
         //deletePropertyValueById(Long valueId)
-        List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
+        List<CommodityAttribute> properties = commodityService.findAttributesByTypeId(1L);
         assertEquals(2, properties.size());
 
-        commodityService.deletePropertyValueById(9l);
+        commodityService.deleteAttributeValueById(9l);
         em.flush();
         /**
          * the method deletePropertyValueById also delete property without value
          */
-        properties = commodityService.findPropertiesByTypeId(1L);
+        properties = commodityService.findAttributesByTypeId(1L);
         assertEquals(1, properties.size());
 
     }
@@ -112,9 +113,9 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         requestPV.setName("color");
         requestPV.setTypeId(1L);
         requestPV.setValue("ffffff");
-        commodityService.addProperty(requestPV);
+        commodityService.addAttribute(requestPV);
         em.flush();
-        List<CommodityAttribute> properties = commodityService.findPropertiesByTypeId(1L);
+        List<CommodityAttribute> properties = commodityService.findAttributesByTypeId(1L);
 
         assertEquals(2, properties.size());
 
@@ -133,7 +134,8 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         rc.setShortDescription("Short Description");
         rc.setTypeId(1L);
         rc.setPropertyValues(Arrays.asList(3L));
-        rc.setImages(Arrays.asList("https://upload.wikimedia.org/wikipedia/commons/0/06/Coffee_Beans_Photographed_in_Macro.jpg"));
+        rc.setImages(ImmutableList.of("https://upload.wikimedia.org/wikipedia/commons/0/06/Coffee_Beans_Photographed_in_Macro.jpg"));
+        rc.setCurrencyCode("EUR");
         commodityService.addCommodity(rc);
         em.flush();
 
@@ -186,7 +188,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     @DataSets(setUpDataSet= "/ru/maxmorev/restful/eshop/CommodityServiceImplTest.xls")
     @Test
     public void testFindBranchById() throws Exception {
-        CommodityBranch branch = commodityService.findBranchById(5L);
+        CommodityBranch branch = commodityService.findBranchById(5L).get();
         assertNotNull(branch);
     }
 
@@ -195,7 +197,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
     public void testUpdateCommodity() throws Exception {
         //updateCommodity(RequestCommodity requestCommodity )
         RequestCommodity rc = new RequestCommodity();
-        CommodityBranch branch = commodityService.findBranchById(5L);
+        CommodityBranch branch = commodityService.findBranchById(5L).get();
         assertNotNull(branch);
         List<String> images = new ArrayList<>();
         for(CommodityImage image: branch.getCommodity().getImages()){
@@ -215,7 +217,7 @@ public class CommodityServiceImplTest  extends AbstractTransactionalJUnit4Spring
         commodityService.updateCommodity(rc);
         em.flush();
 
-        CommodityBranch branchUpdate = commodityService.findBranchById(5L);
+        CommodityBranch branchUpdate = commodityService.findBranchById(5L).get();
         assertEquals((long)rc.getAmount(), (long)branchUpdate.getAmount() );
         assertEquals(rc.getPrice(), branchUpdate.getPrice(), 2);
         assertEquals(rc.getName(), branchUpdate.getCommodity().getName());

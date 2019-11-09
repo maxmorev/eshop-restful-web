@@ -5,35 +5,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@Profile("dev")
 @Configuration
-@PropertySource("file:/opt/mail.properties")
-public class MailConfig {
-    private final static Logger logger = LoggerFactory.getLogger(MailConfig.class);
+public class MailSenderConfig {
+    private final static Logger logger = LoggerFactory.getLogger(MailSenderConfig.class);
 
-    private Environment environment;
-
-    @Autowired public void setEnvirenment(Environment env){
-        this.environment = env;
-    }
-
+    @Autowired
+    private MailConfiguration mailConfiguration;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
-        logger.info("Creating mail service");
-        logger.info("mymail.smtp.port - " + environment.getProperty("mymail.smtp.port"));
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost( environment.getProperty("mymail.smtp") );
-
-        mailSender.setPort( Integer.valueOf( environment.getProperty("mymail.smtp.port")) );
-        mailSender.setUsername( environment.getProperty("mymail.user") );
-        mailSender.setPassword( environment.getProperty("mymail.user.password") );
+        mailSender.setHost(mailConfiguration.getSmtp());
+        mailSender.setPort(Integer.valueOf(mailConfiguration.getPort()));
+        mailSender.setUsername(mailConfiguration.getUsername());
+        mailSender.setPassword(mailConfiguration.getPassword());
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");

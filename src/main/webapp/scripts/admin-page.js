@@ -99,6 +99,7 @@ function refreshProperties(typeId){
                         content += "<td>" + json[i].values[valIndex].value + "</td>";
                     }
                     content += "<td>" + json[i].dataType + "</td>";
+                    console.log("json[i].measure="+json[i].measure)
                     if(json[i].measure!=null){
                         content += "<td>" + json[i].measure + "</td>";
                     }else{

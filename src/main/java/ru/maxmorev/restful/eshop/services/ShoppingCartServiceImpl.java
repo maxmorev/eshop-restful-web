@@ -1,11 +1,11 @@
 package ru.maxmorev.restful.eshop.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
+import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.repos.ShoppingCartRepository;
@@ -16,22 +16,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 @Service("shoppingCartService")
 @Transactional
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
-
     private ShoppingCartRepository shoppingCartRepository;
     private ShoppingCartSetRepository shoppingCartSetRepository;
-
     private CommodityService commodityService;
+    private CustomerService customerService;
 
     @Autowired
     public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
     }
-
     @Autowired
     public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
@@ -39,6 +37,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Autowired
     public void setShoppingCartSetRepository(ShoppingCartSetRepository shoppingCartSetRepository) {
         this.shoppingCartSetRepository = shoppingCartSetRepository;
+    }
+    @Autowired
+    public void setCustomerService(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @Override
@@ -79,8 +81,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     protected ShoppingCart addToShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
 
         isValidShoppingCartSet(shoppingCartSet);
-        logger.info("======================================");
-        logger.info("addToShoppingCartSet : " + shoppingCartSet);
+        log.info("======================================");
+        log.info("addToShoppingCartSet : " + shoppingCartSet);
         CommodityBranch branch = shoppingCartSet.getBranch();
         ShoppingCart cart = shoppingCartSet.getShoppingCart();
 
@@ -108,7 +110,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if(amount==null) throw new IllegalArgumentException("amount can not be null");
         if(shoppingCartId==null) throw new IllegalArgumentException("shoppingCartId can not be null");
 
-        CommodityBranch branch = commodityService.findBranchById(branchId);
+        CommodityBranch branch = commodityService.findBranchById(branchId).get();
         ShoppingCart shoppingCart = this.findShoppingCartById(shoppingCartId);
         ShoppingCartSet shoppingCartSet = this.findByBranchAndShoppingCart(branch, shoppingCart);
         if(Objects.isNull(shoppingCartSet)){
@@ -123,8 +125,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCart removeFromShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
         isValidShoppingCartSet(shoppingCartSet);
-        logger.info("======================================");
-        logger.info("removeFromShoppingCartSet : "+ shoppingCartSet);
+        log.info("======================================");
+        log.info("removeFromShoppingCartSet : "+ shoppingCartSet);
         CommodityBranch branch = shoppingCartSet.getBranch();
         ShoppingCart cart = shoppingCartSet.getShoppingCart();
 
@@ -161,15 +163,33 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to) {
         if(from!=null && to!=null && !Objects.equals(from, to)) {
             for (ShoppingCartSet set : from.getShoppingSet()) {
-                try {
-                    this.addBranchToShoppingCart(set.getBranch().getId(), set.getAmount(), to.getId());
-                } catch (Exception ex) {
-                    logger.error("Error in merge: " + ex);
-                }
+                this.addBranchToShoppingCart(set.getBranch().getId(), set.getAmount(), to.getId());
             }
             shoppingCartRepository.delete(from);
         }
         return to;
+    }
+
+    @Override
+    public ShoppingCart mergeCartFromCookieWithCustomer(ShoppingCart sc, Customer customer) {
+        ShoppingCart shoppingCart = sc;
+        if(
+                Objects.nonNull(customer.getShoppingCart())
+                && !Objects.equals(customer.getShoppingCart(), sc)
+        ){
+            //merge cart from cookie to customer cart
+            log.info("merging cart");
+            shoppingCart = mergeFromTo(sc, customer.getShoppingCart());
+            log.info("update cookie");
+
+        }
+        if( Objects.isNull( customer.getShoppingCartId() ) ){
+            customer.setShoppingCart(sc);
+            customerService.update(customer);
+            shoppingCart = sc;
+        }
+
+        return checkAvailability(shoppingCart);
     }
 
     @Override

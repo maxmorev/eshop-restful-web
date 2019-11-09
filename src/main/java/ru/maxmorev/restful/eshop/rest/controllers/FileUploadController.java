@@ -58,7 +58,7 @@ public class FileUploadController {
         }
         Files.copy(inputStream, Paths. get(saveFilePath));
         String serverURL = applicationContext.getEnvironment().getProperty("eShop.image.server");
-        FileUploadResponse response = new FileUploadResponse(FileUploadResponse.Status.OK, serverURL+ newName);
+        FileUploadResponse response = new FileUploadResponse(FileUploadResponse.Status.OK.toString(), serverURL+ newName);
 
         // processing file
 

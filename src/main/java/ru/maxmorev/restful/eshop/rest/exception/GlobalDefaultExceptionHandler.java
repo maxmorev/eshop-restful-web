@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.rest.controllers;
+package ru.maxmorev.restful.eshop.rest.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,12 @@ public class GlobalDefaultExceptionHandler {
 
     private final static Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
+    /**
+     * Other errors
+     * @param req
+     * @param ex
+     * @return
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = Exception.class)
     @ResponseBody

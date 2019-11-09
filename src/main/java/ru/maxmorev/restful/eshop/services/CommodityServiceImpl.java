@@ -1,25 +1,25 @@
 package ru.maxmorev.restful.eshop.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
-import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
-import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 import ru.maxmorev.restful.eshop.entities.*;
 import ru.maxmorev.restful.eshop.repos.*;
+import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
+import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 
-import java.util.*;
-
-@Service("commodityService")
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Optional;
+@Slf4j
 @Transactional
+@Service("commodityService")
 public class CommodityServiceImpl implements CommodityService {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommodityServiceImpl.class);
 
     //Repositories
     private CommodityTypeRepository commodityTypeRepository;
@@ -82,14 +82,14 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommodityType findTypeById(Long id) {
-        return commodityTypeRepository.findById(id).get();
+    public Optional<CommodityType> findTypeById(Long id) {
+        return commodityTypeRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CommodityType findTypeByName(String name) {
-        return commodityTypeRepository.findByName(name).get();
+    public Optional<CommodityType> findTypeByName(String name) {
+        return commodityTypeRepository.findByName(name);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     @Override
-    public void addProperty(RequestAttributeValue property) {
-        logger.info("Property : " + property);
+    public void addAttribute(RequestAttributeValue property) {
+        log.info("Property : " + property);
         Optional<CommodityType> type = commodityTypeRepository.findById(property.getTypeId());
         if(!type.isPresent()){
 
@@ -139,18 +139,18 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommodityAttribute> findPropertiesByTypeId(Long typeId) {
+    public List<CommodityAttribute> findAttributesByTypeId(Long typeId) {
         return commodityAttributeRepository.findByCommodityType(commodityTypeRepository.findById(typeId).get());
     }
 
     @Override
-    public void deletePropertyValueById(Long valueId) {
+    public void deleteAttributeValueById(Long valueId) {
         Optional<CommodityAttributeValue> av =
                 commodityAttributeValueRepository.findById(valueId);
         if(av.isPresent()){
             CommodityAttribute ca = av.get().getAttribute();
 
-            logger.info("remove value "+ av.get().getValue() + " : " + ca.getValues().remove(av.get()));
+            log.info("remove value {} : {}", av.get().getValue() , ca.getValues().remove(av.get()));
 
             if(ca.getValues().isEmpty()){
                 //delete empty property
@@ -176,7 +176,7 @@ public class CommodityServiceImpl implements CommodityService {
             throw new IllegalArgumentException("Illegal argument typeId=" + requestCommodity.getTypeId() );
         }
 
-        logger.info("CREATE COMMODITY");
+        log.info("CREATE COMMODITY");
         Commodity commodity = new Commodity();
         commodity.setName(requestCommodity.getName());
         commodity.setShortDescription(requestCommodity.getShortDescription());
@@ -186,7 +186,7 @@ public class CommodityServiceImpl implements CommodityService {
 
         //create images of commodity
         List<CommodityImage> commodityImages = new ArrayList<>(requestCommodity.getImages().size());
-        logger.info("requestCommodity.getImages() > " + requestCommodity.getImages());
+        log.info("requestCommodity.getImages() > " + requestCommodity.getImages());
         Short imageIndex = 0;
         for(String imageUrl: requestCommodity.getImages()){
             CommodityImage image = new CommodityImage();
@@ -241,10 +241,9 @@ public class CommodityServiceImpl implements CommodityService {
      *
      * @param requestCommodity
      */
-
     @Override
     public void addCommodity(RequestCommodity requestCommodity) {
-        logger.info("type : " + requestCommodity);
+        log.info("type : " + requestCommodity);
         Optional<Commodity> commodityExist = commodityRepository.findByNameAndType(requestCommodity.getName(), commodityTypeRepository.findById(requestCommodity.getTypeId()).get());
         if(commodityExist.isPresent()){
             //create new branch for existent commodity
@@ -261,7 +260,7 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public void updateCommodity(RequestCommodity requestCommodity) {
-        logger.info("RC : " + requestCommodity);
+        log.info("RC : " + requestCommodity);
         Optional<CommodityBranch> commodityBranchOptional = commodityBranchRepository.findById(requestCommodity.getBranchId());
         if(commodityBranchOptional.isPresent()){
 
@@ -285,37 +284,37 @@ public class CommodityServiceImpl implements CommodityService {
                         newAttribute.setAttribute(commodityAttributeValue.getAttribute());
                         newAttribute.setAttributeValue(commodityAttributeValue);
                         branch.getAttributeSet().add(newAttribute);
-                        logger.info("Add newAttribute->" + newAttribute);
+                        log.info("Add newAttribute->" + newAttribute);
                     }
                 }
                 //createBranchPropertySet(requestCommodity.getPropertyValues(), branch);
 
             }
-            logger.info("attributes updated: " + branch.getAttributeSet().size());
+            log.info("attributes updated: " + branch.getAttributeSet().size());
             branch.setAmount(requestCommodity.getAmount());
             branch.setPrice(requestCommodity.getPrice());
             //commodityBranchRepository.save(branch);
-            logger.info("branch fields updated");
+            log.info("branch fields updated");
             Commodity commodity = branch.getCommodity();
             commodity.setShortDescription(requestCommodity.getShortDescription());
             commodity.setOverview(requestCommodity.getOverview());
             commodity.setName(requestCommodity.getName());
             List<CommodityImage> images = commodity.getImages();
-            logger.info("requestCommodity.getImages().size() = " + requestCommodity.getImages().size());
-            logger.info("images.size() = " + images.size() );
+            log.info("requestCommodity.getImages().size() = " + requestCommodity.getImages().size());
+            log.info("images.size() = " + images.size() );
             if(requestCommodity.getImages().size()==images.size()) {
                 for (int imgIdx = 0; imgIdx < requestCommodity.getImages().size(); imgIdx++) {
                     CommodityImage img = images.get(imgIdx);
-                    logger.info("img.getUri()=" + img.getUri());
-                    logger.info("requestCommodity.getImages().get(imgIdx)=" + requestCommodity.getImages().get(imgIdx));
+                    log.info("img.getUri()=" + img.getUri());
+                    log.info("requestCommodity.getImages().get(imgIdx)=" + requestCommodity.getImages().get(imgIdx));
                     if(!img.getUri().equals(requestCommodity.getImages().get(imgIdx))){
                         img.setUri(requestCommodity.getImages().get(imgIdx));
-                        logger.info("save img");
+                        log.info("save img");
                         //commodityImageRepository.save(img);
                     }
                 }
             }
-            logger.info("commodity fields updated");
+            log.info("commodity fields updated");
             //commodityBranchRepository.save(branch);
             commodityRepository.save(commodity);
 
@@ -330,13 +329,8 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommodityBranch findBranchById(Long branchId) {
-        Optional<CommodityBranch>  commodityBranch = commodityBranchRepository.findById(branchId);
-        if(commodityBranch.isPresent()) {
-            return commodityBranch.get();
-        }else{
-            return null;
-        }
+    public Optional<CommodityBranch> findBranchById(Long branchId) {
+        return commodityBranchRepository.findById(branchId);
     }
 
     @Override
@@ -364,12 +358,7 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     @Transactional(readOnly = true)
-    public Commodity findCommodityById(Long id) {
-        Optional<Commodity> oc = commodityRepository.findById(id);
-        if(oc.isPresent()){
-            return oc.get();
-        }else {
-            return null;
-        }
+    public Optional<Commodity> findCommodityById(Long id) {
+        return commodityRepository.findById(id);
     }
 }

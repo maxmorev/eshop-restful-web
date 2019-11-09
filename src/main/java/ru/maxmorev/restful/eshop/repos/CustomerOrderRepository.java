@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CustomerOrderRepository extends CrudRepository<CustomerOrder, Long> {
 
-    Optional<List<CustomerOrder>> findByCustomer(Customer customer);
+    List<CustomerOrder> findByCustomer(Customer customer);
 
 }

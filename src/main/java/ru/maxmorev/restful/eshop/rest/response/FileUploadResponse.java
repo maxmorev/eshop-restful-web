@@ -1,5 +1,10 @@
 package ru.maxmorev.restful.eshop.rest.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
 public class FileUploadResponse {
 
     public enum Status{
@@ -9,25 +14,6 @@ public class FileUploadResponse {
     private String status;
     private String uri;
 
-    public FileUploadResponse(FileUploadResponse.Status status, String uri){
-        super();
-        this.status = status.name();
-        this.uri = uri;
-    }
 
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 }

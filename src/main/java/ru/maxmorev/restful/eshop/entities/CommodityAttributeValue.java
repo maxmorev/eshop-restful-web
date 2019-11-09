@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Objects;
-
+@Data
 @Entity
 @Table(name = "commodity_attribute_value")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -30,8 +31,8 @@ public class CommodityAttributeValue extends AbstractEntity{
     @JsonIgnore
     private CommodityAttribute attribute;
 
-    public CommodityAttributeValue(){
-        super();
+    protected CommodityAttributeValue(){
+
     }
 
     public CommodityAttributeValue(CommodityAttribute attribute){
@@ -73,47 +74,6 @@ public class CommodityAttributeValue extends AbstractEntity{
             }
         }
         return null;
-    }
-
-
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String value) {
-        this.string = value;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Float getReal() {
-        return real;
-    }
-
-    public void setReal(Float real) {
-        this.real = real;
-    }
-
-    public Long getInteger() {
-        return integer;
-    }
-
-    public void setInteger(Long integer) {
-        this.integer = integer;
-    }
-
-    public CommodityAttribute getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(CommodityAttribute attribute) {
-        this.attribute = attribute;
     }
 
     @Override public String toString() {
