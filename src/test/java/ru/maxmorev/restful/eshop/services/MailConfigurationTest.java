@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
 @DisplayName("Mail configuration Test")
+@SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
 public class MailConfigurationTest {
 
     @Autowired

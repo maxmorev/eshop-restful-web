@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 import ru.maxmorev.restful.eshop.config.MailConfiguration;
 import ru.maxmorev.restful.eshop.domain.Mail;
 
+import javax.validation.Valid;
+
 @Component("mailService")
+@Validated
 public class MailServiceImpl implements MailService{
 
     public JavaMailSender javaMailSender;
@@ -20,7 +24,7 @@ public class MailServiceImpl implements MailService{
 
 
     @Override
-    public Boolean sendPlainEmail(Mail mail) {
+    public boolean sendPlainEmail(@Valid Mail mail) {
         // Create a Simple MailMessage.
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mailConfiguration.getUsername());

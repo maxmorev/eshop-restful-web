@@ -27,7 +27,7 @@ public class ShoppingCart extends AbstractEntity{
     private Set<ShoppingCartSet> shoppingSet;
 
     public int getItemsAmount(){
-        return shoppingSet!=null? shoppingSet.stream().collect(Collectors.summingInt(s->s.getAmount())) : 0;
+        return shoppingSet!=null? shoppingSet.stream().mapToInt(ShoppingCartSet::getAmount).sum() : 0;
     }
 
     @Override

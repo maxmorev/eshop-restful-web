@@ -48,7 +48,6 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         final CustomerOrder newOrder = customerOrderRepository.save(customerOrder);
         shoppingCart.getShoppingSet().forEach(shoppingCartSet -> {
             CommodityBranch changeBranch = shoppingCartSet.getBranch();
-            //TODO check for branch amount consistent
             if(changeBranch.getAmount() - shoppingCartSet.getAmount() < 0 )
                 throw new IllegalArgumentException("Amount of commodities is not available for purchase");
             changeBranch.setAmount(changeBranch.getAmount() - shoppingCartSet.getAmount());
@@ -68,7 +67,7 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         ShoppingCart shoppingCart = order.getCustomer().getShoppingCart();
         if(shoppingCart!=null){
             shoppingCart.getShoppingSet().clear();
-            shoppingCartRepository.save( shoppingCart );
+            shoppingCartRepository.save(shoppingCart);
         }
         return customerOrderRepository.save(order);
     }
