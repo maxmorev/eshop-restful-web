@@ -26,7 +26,7 @@ public class MailServiceTest {
 
     @Test
     @DisplayName("Should send email")
-    public void sendPlainEmailTest(){
+    public void sendPlainEmailTest() {
         Mail mail = Mail
                 .builder()
                 .subject("Sending email test")
@@ -38,7 +38,7 @@ public class MailServiceTest {
 
     @Test
     @DisplayName("Should throw ConstraintViolationException while send email")
-    public void sendPlainEmailTestValidationError(){
+    public void sendPlainEmailTestValidationError() {
         Mail mail = Mail
                 .builder()
                 .text("Hello freak bitches")

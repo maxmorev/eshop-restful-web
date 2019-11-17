@@ -165,7 +165,7 @@ public class CommodityServiceTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     @Transactional
-    public void testAddAttribute() throws  Exception {
+    public void testAddAttribute() throws Exception {
         //void addProperty(RequestAttributeValue property);
         RequestAttributeValue requestPV = new RequestAttributeValue();
         requestPV.setName("color");
@@ -194,33 +194,33 @@ public class CommodityServiceTest {
         //deletePropertyValueById(Long valueId)
         log.info("BEFORE OPERATION");
         List<CommodityBranch> branches = commodityService.findAllBranches();
-        assertTrue(branches.size()==1);
+        assertTrue(branches.size() == 1);
 
         CommodityBranch branch = branches.get(0);
         log.info("branch.getAttributeSet().size()={}", branch.getAttributeSet().size());
-        assertTrue(branch.getAttributeSet().size()==1);
+        assertTrue(branch.getAttributeSet().size() == 1);
 
-        branch.getAttributeSet().forEach( as -> {
+        branch.getAttributeSet().forEach(as -> {
             log.info("attribute value is {}", as.getAttributeValue());
-            assertTrue(as.getAttributeValue().getId()==3l);
-        } );
+            assertTrue(as.getAttributeValue().getId() == 3l);
+        });
 
         commodityService.deleteAttributeValueById(3l);
 
         /**
          * the method deletePropertyValueById will try to delete property witch id used as FK in TABLE commodity_branch_property_set
          */
-        assertThrows(javax.persistence.PersistenceException.class, em::flush );
+        assertThrows(javax.persistence.PersistenceException.class, em::flush);
 
         branches = commodityService.findAllBranches();
-        assertTrue(branches.size()==1);
+        assertTrue(branches.size() == 1);
         branch = branches.get(0);
         log.info("branch.getAttributeSet().size()={}", branch.getAttributeSet().size());
-        assertTrue(branch.getAttributeSet().size()==1);
-        branch.getAttributeSet().forEach( as -> {
+        assertTrue(branch.getAttributeSet().size() == 1);
+        branch.getAttributeSet().forEach(as -> {
             log.info("attribute value is {}", as.getAttributeValue());
-            assertTrue(as.getAttributeValue().getId()==3l);
-        } );
+            assertTrue(as.getAttributeValue().getId() == 3l);
+        });
     }
 
     @Test
@@ -273,7 +273,7 @@ public class CommodityServiceTest {
     })
     public void testFinaAllCommodities() throws Exception {
         List<Commodity> commodities = commodityService.findAllCommodities();
-        assertEquals(1, commodities.size() );
+        assertEquals(1, commodities.size());
         log.info("commodities {}", commodities);
     }
 
@@ -294,7 +294,7 @@ public class CommodityServiceTest {
         CommodityBranch branch = commodityService.findBranchById(5L).get();
         assertNotNull(branch);
         List<String> images = new ArrayList<>();
-        for(CommodityImage image: branch.getCommodity().getImages()){
+        for (CommodityImage image : branch.getCommodity().getImages()) {
             images.add(image.getUri());
         }
         rc.setImages(images);
@@ -312,11 +312,11 @@ public class CommodityServiceTest {
         em.flush();
 
         CommodityBranch branchUpdate = commodityService.findBranchById(5L).get();
-        assertEquals((long)rc.getAmount(), (long)branchUpdate.getAmount() );
+        assertEquals((long) rc.getAmount(), (long) branchUpdate.getAmount());
         assertEquals(rc.getPrice(), branchUpdate.getPrice(), 2);
         assertEquals(rc.getName(), branchUpdate.getCommodity().getName());
         List<CommodityBranchAttributeSet> list = Lists.newArrayList(branch.getAttributeSet());
-        assertEquals((long)9, (long)list.get(0).getAttributeValue().getId());
+        assertEquals((long) 9, (long) list.get(0).getAttributeValue().getId());
 
     }
 
@@ -331,8 +331,8 @@ public class CommodityServiceTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     public void testFinaCommoditiesByTypeName() throws Exception {
-       List<Commodity> commodityList = commodityService.findAllCommoditiesByTypeName("TypeTest");
-        assertTrue(commodityList.size()>0);
+        List<Commodity> commodityList = commodityService.findAllCommoditiesByTypeName("TypeTest");
+        assertTrue(commodityList.size() > 0);
     }
 
     @Test
@@ -362,7 +362,7 @@ public class CommodityServiceTest {
     })
     public void findAllBranches() {
         List<CommodityBranch> branches = commodityService.findAllBranches();
-        assertTrue(branches.size()==1 );
+        assertTrue(branches.size() == 1);
     }
 
     @Test
@@ -382,13 +382,11 @@ public class CommodityServiceTest {
 
     @Test
     @DisplayName("should check Availeble Attribute Data Types")
-    public void testGetAvailebleAttributeDataTypes(){
+    public void testGetAvailebleAttributeDataTypes() {
 
         assertEquals(AttributeDataType.values().length,
                 commodityService.getAvailebleAttributeDataTypes().size());
     }
-
-
 
 
 }

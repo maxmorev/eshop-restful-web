@@ -30,14 +30,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
     }
+
     @Autowired
     public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
     }
+
     @Autowired
     public void setShoppingCartSetRepository(ShoppingCartSetRepository shoppingCartSetRepository) {
         this.shoppingCartSetRepository = shoppingCartSetRepository;
     }
+
     @Autowired
     public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
@@ -52,28 +55,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     @Transactional(readOnly = true)
-    public ShoppingCart findShoppingCartById(Long id) {
-        Optional<ShoppingCart> cart = shoppingCartRepository.findById(id);
-        if(cart.isPresent()){
-            return cart.get();
-        }
-        return null;
+    public Optional<ShoppingCart> findShoppingCartById(Long id) {
+        return shoppingCartRepository.findById(id);
     }
 
-    private void isValidShoppingCartSet(ShoppingCartSet shoppingCartSet){
-        if(Objects.isNull(shoppingCartSet)){
+    private void isValidShoppingCartSet(ShoppingCartSet shoppingCartSet) {
+        if (Objects.isNull(shoppingCartSet)) {
             throw new IllegalArgumentException("Illegal argument: ShoppingCartSet is null");
         }
-        if(Objects.isNull(shoppingCartSet.getAmount()) || shoppingCartSet.getAmount()<=0){
-            throw new IllegalArgumentException("Illegal argument amount="+shoppingCartSet.getAmount());
+        if (Objects.isNull(shoppingCartSet.getAmount()) || shoppingCartSet.getAmount() <= 0) {
+            throw new IllegalArgumentException("Illegal argument amount=" + shoppingCartSet.getAmount());
         }
 
-        if(Objects.isNull(shoppingCartSet.getBranch())){
-            throw new IllegalArgumentException("Illegal argument branch="+shoppingCartSet.getBranch());
+        if (Objects.isNull(shoppingCartSet.getBranch())) {
+            throw new IllegalArgumentException("Illegal argument branch=" + shoppingCartSet.getBranch());
         }
 
-        if(Objects.isNull(shoppingCartSet.getShoppingCart())){
-            throw new IllegalArgumentException("Illegal argument shoppingCart="+shoppingCartSet.getShoppingCart());
+        if (Objects.isNull(shoppingCartSet.getShoppingCart())) {
+            throw new IllegalArgumentException("Illegal argument shoppingCart=" + shoppingCartSet.getShoppingCart());
         }
     }
 
@@ -86,14 +85,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CommodityBranch branch = shoppingCartSet.getBranch();
         ShoppingCart cart = shoppingCartSet.getShoppingCart();
 
-        if(Objects.isNull(shoppingCartSet.getId())){
+        if (Objects.isNull(shoppingCartSet.getId())) {
             //adding new set
-            if( shoppingCartSet.getAmount() > branch.getAmount() ){
+            if (shoppingCartSet.getAmount() > branch.getAmount()) {
                 return cart;
             }
             cart.getShoppingSet().add(shoppingCartSet);
-        }else{
-            if( shoppingCartSet.getAmount()+amount > branch.getAmount() ){
+        } else {
+            if (shoppingCartSet.getAmount() + amount > branch.getAmount()) {
                 return cart;
                 //throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
             }
@@ -105,65 +104,62 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCart addBranchToShoppingCart(Long branchId, Integer amount, Long shoppingCartId) {
-        if(branchId==null) throw new IllegalArgumentException("branchId can not be null");
-        if(amount==null) throw new IllegalArgumentException("amount can not be null");
-        if(shoppingCartId==null) throw new IllegalArgumentException("shoppingCartId can not be null");
+    public ShoppingCart addBranchToShoppingCart(Long branchId, Long shoppingCartId, Integer amount) {
+        if (branchId == null) throw new IllegalArgumentException("branchId can not be null");
+        if (amount == null) throw new IllegalArgumentException("amount can not be null");
+        if (shoppingCartId == null) throw new IllegalArgumentException("shoppingCartId can not be null");
 
         CommodityBranch branch = commodityService.findBranchById(branchId).get();
-        ShoppingCart shoppingCart = this.findShoppingCartById(shoppingCartId);
-        ShoppingCartSet shoppingCartSet = this.findByBranchAndShoppingCart(branch, shoppingCart);
-        if(Objects.isNull(shoppingCartSet)){
-            shoppingCartSet = new ShoppingCartSet();
-            shoppingCartSet.setAmount(amount);
-            shoppingCartSet.setBranch(branch);
-            shoppingCartSet.setShoppingCart(shoppingCart);
-        }
-        return this.addToShoppingCartSet(shoppingCartSet, amount);
+        ShoppingCart shoppingCart = this.findShoppingCartById(shoppingCartId)
+                .orElseThrow(() -> new IllegalArgumentException("ShoppingCartId can not be null"));
+        return shoppingCart
+                .getShoppingSet()
+                .stream()
+                .filter(scs -> scs.getBranch().getId().equals(branchId))
+                .findFirst()
+                .map(scs -> addToShoppingCartSet(scs, amount))
+                .orElseGet(() -> addToShoppingCartSet(ShoppingCartSet
+                        .builder()
+                        .amount(amount)
+                        .branch(branch).shoppingCart(shoppingCart).build(), amount));
+
     }
 
     @Override
-    public ShoppingCart removeFromShoppingCartSet(ShoppingCartSet shoppingCartSet, Integer amount) {
-        isValidShoppingCartSet(shoppingCartSet);
-        log.info("======================================");
-        log.info("removeFromShoppingCartSet : "+ shoppingCartSet);
-        CommodityBranch branch = shoppingCartSet.getBranch();
-        ShoppingCart cart = shoppingCartSet.getShoppingCart();
-
-        //Optional<ShoppingCartSet> setExist = shoppingCartSetRepository.findByBranchAndShoppingCart(branch, cart);
-        if (shoppingCartSet.getAmount() - amount <=0) {
-            //remove set from cart
-            cart.getShoppingSet().remove(shoppingCartSet);
-        }else{
-            shoppingCartSet.setAmount(shoppingCartSet.getAmount() - amount);
-        }
-        //update set cart
-        shoppingCartRepository.save(cart);
+    public ShoppingCart removeBranchFromShoppingCart(Long branchId, Long shoppingCartId, Integer amount) {
+        ShoppingCart cart = findShoppingCartById(shoppingCartId).orElseThrow(() -> new IllegalArgumentException("Shopping Cart not found"));
+        cart
+                .getShoppingSet()
+                .stream()
+                .filter(scs -> scs.getBranch().getId().equals(branchId))
+                .findFirst()
+                .ifPresent(shoppingCartSet -> {
+                    if (shoppingCartSet.getAmount() - amount <= 0) {
+                        cart.getShoppingSet().remove(shoppingCartSet);
+                    } else {
+                        shoppingCartSet.setAmount(shoppingCartSet.getAmount() - amount);
+                    }
+                    shoppingCartRepository.save(cart);
+                });
         return cart;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ShoppingCartSet findByBranchAndShoppingCart(CommodityBranch branch, ShoppingCart cart) {
-        Optional<ShoppingCartSet> oSCS = shoppingCartSetRepository.findByBranchAndShoppingCart(branch, cart);
-        if(oSCS.isPresent()){
-            return  oSCS.get();
-        }else {
-            return null;
-        }
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Optional<ShoppingCartSet> findByBranchAndShoppingCart(CommodityBranch branch, ShoppingCart cart) {
+//        return shoppingCartSetRepository.findByBranchAndShoppingCart(branch, cart);
+//    }
 
     @Override
-
     public ShoppingCart update(ShoppingCart sc) {
         return shoppingCartRepository.save(sc);
     }
 
-    @Override
+
     public ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to) {
-        if(from!=null && to!=null && !Objects.equals(from, to)) {
+        if (from != null && to != null && !Objects.equals(from, to)) {
             for (ShoppingCartSet set : from.getShoppingSet()) {
-                this.addBranchToShoppingCart(set.getBranch().getId(), set.getAmount(), to.getId());
+                this.addBranchToShoppingCart(set.getBranch().getId(), to.getId(), set.getAmount());
             }
             shoppingCartRepository.delete(from);
         }
@@ -172,40 +168,37 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart mergeCartFromCookieWithCustomer(ShoppingCart sc, Customer customer) {
-        ShoppingCart shoppingCart = sc;
-        if(
+        if (
                 Objects.nonNull(customer.getShoppingCart())
-                && !Objects.equals(customer.getShoppingCart(), sc)
-        ){
+                        && !Objects.equals(customer.getShoppingCart(), sc)
+        ) {
             //merge cart from cookie to customer cart
             log.info("merging cart");
-            shoppingCart = mergeFromTo(sc, customer.getShoppingCart());
+            sc = mergeFromTo(sc, customer.getShoppingCart());
             log.info("update cookie");
 
         }
-        if( Objects.isNull( customer.getShoppingCartId() ) ){
+        if (Objects.isNull(customer.getShoppingCartId())) {
             customer.setShoppingCart(sc);
             customerService.update(customer);
-            shoppingCart = sc;
         }
-
-        return checkAvailability(shoppingCart);
+        return checkAvailabilityByBranches(sc);
     }
 
     @Override
-    public ShoppingCart checkAvailability(ShoppingCart sc) {
+    public ShoppingCart checkAvailabilityByBranches(ShoppingCart sc) {
         Set<ShoppingCartSet> removeFromCart = new HashSet<>();
-        for(ShoppingCartSet set: sc.getShoppingSet()){
-            if(set.getBranch().getAmount()==0){
+        for (ShoppingCartSet set : sc.getShoppingSet()) {
+            if (set.getBranch().getAmount() == 0) {
                 //remove set from shopping cart
                 removeFromCart.add(set);
-            }else {
+            } else {
                 if (set.getBranch().getAmount() < set.getAmount()) {
                     set.setAmount(set.getBranch().getAmount());
                 }
             }
         }
-        for(ShoppingCartSet remove: removeFromCart){
+        for (ShoppingCartSet remove : removeFromCart) {
             sc.getShoppingSet().remove(remove);
         }
         return shoppingCartRepository.save(sc);

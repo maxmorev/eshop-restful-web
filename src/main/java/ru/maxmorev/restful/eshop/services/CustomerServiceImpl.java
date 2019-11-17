@@ -71,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
             customer.addAuthority(AuthorityValues.CUSTOMER);
             ShoppingCart sc = null;
             if(Objects.nonNull(customer.getShoppingCartId())) {
-                sc = shoppingCartService.findShoppingCartById(customer.getShoppingCartId());
+                sc = shoppingCartService.findShoppingCartById(customer.getShoppingCartId()).get();
                 customer.setShoppingCart(sc);
             }
             created = customerRepository.save(customer);

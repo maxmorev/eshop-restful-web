@@ -5,6 +5,7 @@ import org.dbunit.util.fileloader.XlsDataFileLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import ru.maxmorev.restful.eshop.init.DBInitializer;
@@ -18,7 +19,17 @@ import javax.sql.DataSource;
         excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DBInitializer.class)}
         )
 public class ServiceTestConfig {
+
     private static Logger logger = LoggerFactory.getLogger(ServiceTestConfig.class);
+
+    @Bean
+    ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames("file:src/main/webapp/WEB-INF/i18n/application", "file:src/main/webapp/WEB-INF/i18n/messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setFallbackToSystemLocale(false);
+        return messageSource;
+    }
 
     @Bean
     public DataSource dataSource() {

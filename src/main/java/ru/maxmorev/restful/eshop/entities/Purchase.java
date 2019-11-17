@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Data
 @Entity
 @Table(name = "purchase")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Purchase {
+public class Purchase implements Serializable {
 
     @EmbeddedId
     private PurchaseId id;

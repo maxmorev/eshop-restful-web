@@ -4,7 +4,6 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,11 +16,15 @@ import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
 import ru.maxmorev.restful.eshop.config.MailTestConfig;
 import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
-import ru.maxmorev.restful.eshop.entities.*;
+import ru.maxmorev.restful.eshop.entities.CommodityBranch;
+import ru.maxmorev.restful.eshop.entities.Customer;
+import ru.maxmorev.restful.eshop.entities.CustomerOrder;
+import ru.maxmorev.restful.eshop.entities.Purchase;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,11 +45,12 @@ public class OrderPurchaseServiceTest {
     private EntityManager em;
 
     @Value
-    class ShoppingCartInfo{
+    class ShoppingCartInfo {
         long branchId;
         int branchAmount;
         int shoppingCartAmount;
-        public ShoppingCartInfo(long branchId, int branchAmount, int shoppingCartAmount){
+
+        public ShoppingCartInfo(long branchId, int branchAmount, int shoppingCartAmount) {
             this.branchId = branchId;
             this.branchAmount = branchAmount;
             this.shoppingCartAmount = shoppingCartAmount;
@@ -64,7 +68,7 @@ public class OrderPurchaseServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void createOrderForTest(){
+    public void createOrderForTest() {
 
         Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
 
@@ -83,13 +87,13 @@ public class OrderPurchaseServiceTest {
             em.flush();
             assertEquals(CustomerOrderStatus.AWAITING_PAYMENT, co.getStatus());
             assertEquals(branchInfo.stream().mapToInt(ShoppingCartInfo::getShoppingCartAmount).sum(), co.getPurchases().stream().mapToInt(Purchase::getAmount).sum());
-            branchInfo.forEach(branch->{
+            branchInfo.forEach(branch -> {
                 Optional<CommodityBranch> fromDb = commodityService.findBranchById(branch.getBranchId());
                 log.info("Branch#{} -> amount {} -> shopping cart amount {}", branch.getBranchId(),
                         branch.getBranchAmount(),
                         branch.getShoppingCartAmount());
                 assertEquals(fromDb.get().getAmount().intValue(),
-                        branch.getBranchAmount()-branch.getShoppingCartAmount());
+                        branch.getBranchAmount() - branch.getShoppingCartAmount());
 
 
             });
@@ -108,7 +112,7 @@ public class OrderPurchaseServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void createOrderForTestException(){
+    public void createOrderForTestException() {
 
         Optional<Customer> customer = customerService.findByEmail("test-error@titsonfire.store");
 
@@ -121,7 +125,7 @@ public class OrderPurchaseServiceTest {
                             scs.getBranch().getAmount(),
                             scs.getAmount()))
                     .collect(Collectors.toList());
-            assertThrows(IllegalArgumentException.class, ()->orderPurchaseService.createOrderFor(c));
+            assertThrows(IllegalArgumentException.class, () -> orderPurchaseService.createOrderFor(c));
         });
     }
 
@@ -136,7 +140,7 @@ public class OrderPurchaseServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void confirmPaymentOrderTest(){
+    public void confirmPaymentOrderTest() {
         Optional<CustomerOrder> order = orderPurchaseService.findOrder(16L);
         assertTrue(order.isPresent());
         order.ifPresent(o -> {
@@ -153,17 +157,17 @@ public class OrderPurchaseServiceTest {
             assertEquals(
                     CustomerOrderStatus.PAYMENT_APPROVED,
                     orderUpdate.get().getStatus()
-                    );
+            );
             /* check if the shopping cart is Empty*/
             assertTrue(
                     customerService
-                    .findById(o
-                            .getCustomer()
-                            .getId())
-                    .get()
-                    .getShoppingCart()
-                    .getShoppingSet()
-                    .isEmpty());
+                            .findById(o
+                                    .getCustomer()
+                                    .getId())
+                            .get()
+                            .getShoppingCart()
+                            .getShoppingSet()
+                            .isEmpty());
         });
 
     }
@@ -179,7 +183,7 @@ public class OrderPurchaseServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void findOrderTest(){
+    public void findOrderTest() {
         Optional<CustomerOrder> order = orderPurchaseService.findOrder(16L);
         assertTrue(order.isPresent());
     }
@@ -195,7 +199,7 @@ public class OrderPurchaseServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void findCustomerOrdersTest(){
+    public void findCustomerOrdersTest() {
         Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
         assertTrue(customer.isPresent());
         List<CustomerOrder> orders = orderPurchaseService.findCustomerOrders(customer.get());

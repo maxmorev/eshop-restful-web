@@ -23,49 +23,56 @@ public class ShoppingCartController {
     private ShoppingCartService shoppingCartService;
     private MessageSource messageSource;
 
-    @Autowired public void setShoppingCartService(ShoppingCartService shoppingCartService) {
+    @Autowired
+    public void setShoppingCartService(ShoppingCartService shoppingCartService) {
         this.shoppingCartService = shoppingCartService;
     }
-    @Autowired public void setMessageSource(MessageSource messageSource) {
+
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
-    @Autowired public void setCommodityService(CommodityService commodityService) {
+    @Autowired
+    public void setCommodityService(CommodityService commodityService) {
         this.commodityService = commodityService;
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/id/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + "shoppingCart/id/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ShoppingCart getShoppingCart( @PathVariable(name="id", required = true) Long id, Locale locale ) throws Exception{
-        ShoppingCart sc = shoppingCartService.findShoppingCartById(id);
-        log.info("getShoppingCart -> " + sc);
-        if(Objects.nonNull(sc)){
-            return sc;
-        }else {
-            //TODO
-            throw new IllegalArgumentException(messageSource.getMessage("shoppingCart.error.id", new Object[]{id}, locale));
-        }
+    public ShoppingCart getShoppingCart(@PathVariable(name = "id", required = true) Long id, Locale locale) throws Exception {
+        return shoppingCartService
+                .findShoppingCartById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                messageSource
+                                        .getMessage("shoppingCart.error.id",
+                                                new Object[]{id},
+                                                locale)));
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + "shoppingCart/", method = RequestMethod.POST)
     @ResponseBody
-    public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
+    public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("POST:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         //TODO Validation
-        return shoppingCartService.addBranchToShoppingCart(requestShoppingCartSet.getBranchId(), requestShoppingCartSet.getAmount(), requestShoppingCartSet.getShoppingCartId());
+        return shoppingCartService
+                .addBranchToShoppingCart(
+                        requestShoppingCartSet.getBranchId(),
+                        requestShoppingCartSet.getShoppingCartId(),
+                        requestShoppingCartSet.getAmount());
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI+"shoppingCart/", method= RequestMethod.DELETE)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + "shoppingCart/", method = RequestMethod.DELETE)
     @ResponseBody
-    public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale){
+    public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         //TODO Validation
-        CommodityBranch branch = commodityService.findBranchById(requestShoppingCartSet.getBranchId()).get();
-        ShoppingCart shoppingCart = shoppingCartService.findShoppingCartById(requestShoppingCartSet.getShoppingCartId());
-        ShoppingCartSet shoppingCartSet = shoppingCartService.findByBranchAndShoppingCart(branch, shoppingCart);
-        return shoppingCartService.removeFromShoppingCartSet( shoppingCartSet, requestShoppingCartSet.getAmount() );
+        return shoppingCartService.removeBranchFromShoppingCart(
+                requestShoppingCartSet.getBranchId(),
+                requestShoppingCartSet.getShoppingCartId(),
+                requestShoppingCartSet.getAmount());
     }
-
 
 
 }

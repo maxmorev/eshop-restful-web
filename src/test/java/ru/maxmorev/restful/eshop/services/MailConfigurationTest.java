@@ -25,7 +25,7 @@ public class MailConfigurationTest {
 
     @Test
     @DisplayName("should be configured")
-    public void testConfiguration(){
+    public void testConfiguration() {
         assertNotNull(mailConfiguration.getUsername());
         assertNotNull(mailConfiguration.getPassword());
         assertNotNull(mailConfiguration.getSmtp());

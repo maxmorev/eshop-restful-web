@@ -23,32 +23,35 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
     private CommodityBranchRepository commodityBranchRepository;
     private ShoppingCartRepository shoppingCartRepository;
 
-    @Autowired public void setCustomerOrderRepository(CustomerOrderRepository customerOrderRepository) {
+    @Autowired
+    public void setCustomerOrderRepository(CustomerOrderRepository customerOrderRepository) {
         this.customerOrderRepository = customerOrderRepository;
     }
 
-    @Autowired public void setPurchaseRepository(PurchaseRepository purchaseRepository) {
+    @Autowired
+    public void setPurchaseRepository(PurchaseRepository purchaseRepository) {
         this.purchaseRepository = purchaseRepository;
     }
 
-    @Autowired public void setCommodityBranchRepository(CommodityBranchRepository commodityBranchRepository) {
+    @Autowired
+    public void setCommodityBranchRepository(CommodityBranchRepository commodityBranchRepository) {
         this.commodityBranchRepository = commodityBranchRepository;
     }
 
-    @Autowired public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
+    @Autowired
+    public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
     }
 
     @Override
     public CustomerOrder createOrderFor(Customer customer) {
-        ShoppingCart shoppingCart = customer.getShoppingCart();
         CustomerOrder customerOrder = new CustomerOrder();
         customerOrder.setCustomer(customer);
         customerOrder.setStatus(CustomerOrderStatus.AWAITING_PAYMENT);
         final CustomerOrder newOrder = customerOrderRepository.save(customerOrder);
-        shoppingCart.getShoppingSet().forEach(shoppingCartSet -> {
+        customer.getShoppingCart().getShoppingSet().forEach(shoppingCartSet -> {
             CommodityBranch changeBranch = shoppingCartSet.getBranch();
-            if(changeBranch.getAmount() - shoppingCartSet.getAmount() < 0 )
+            if (changeBranch.getAmount() - shoppingCartSet.getAmount() < 0)
                 throw new IllegalArgumentException("Amount of commodities is not available for purchase");
             changeBranch.setAmount(changeBranch.getAmount() - shoppingCartSet.getAmount());
             commodityBranchRepository.save(changeBranch);
@@ -65,7 +68,7 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         order.setPaymentID(paymentID);
         //clean shopping cart
         ShoppingCart shoppingCart = order.getCustomer().getShoppingCart();
-        if(shoppingCart!=null){
+        if (shoppingCart != null) {
             shoppingCart.getShoppingSet().clear();
             shoppingCartRepository.save(shoppingCart);
         }

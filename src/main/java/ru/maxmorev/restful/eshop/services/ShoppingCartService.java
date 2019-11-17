@@ -5,16 +5,17 @@ import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 
+import java.util.Optional;
+
 public interface ShoppingCartService {
 
     ShoppingCart createEmptyShoppingCart();
-    ShoppingCart findShoppingCartById(Long id);
-    ShoppingCart removeFromShoppingCartSet(ShoppingCartSet set, Integer amount);
-    ShoppingCartSet findByBranchAndShoppingCart(CommodityBranch branch, ShoppingCart cart);
+    Optional<ShoppingCart> findShoppingCartById(Long id);
+    ShoppingCart removeBranchFromShoppingCart(Long branchId, Long shoppingCartId, Integer amount);
     ShoppingCart update(ShoppingCart sc);
-    ShoppingCart addBranchToShoppingCart(Long branchId, Integer amount, Long shoppingCartId);
-    ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to);
-    ShoppingCart checkAvailability(ShoppingCart sc);
+    ShoppingCart addBranchToShoppingCart(Long branchId, Long shoppingCartId, Integer amount);
+    //ShoppingCart mergeFromTo(ShoppingCart from, ShoppingCart to);
+    ShoppingCart checkAvailabilityByBranches(ShoppingCart sc);
     ShoppingCart mergeCartFromCookieWithCustomer(ShoppingCart sc, Customer customer);
 
 

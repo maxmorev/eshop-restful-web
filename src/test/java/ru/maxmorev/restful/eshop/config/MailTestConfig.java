@@ -15,13 +15,4 @@ public class MailTestConfig {
         return new MockMailSender();
     }
 
-    @Bean
-    ReloadableResourceBundleMessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasenames("file:src/main/webapp/WEB-INF/i18n/application", "file:src/main/webapp/WEB-INF/i18n/messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setFallbackToSystemLocale(false);
-        return messageSource;
-    }
-
 }

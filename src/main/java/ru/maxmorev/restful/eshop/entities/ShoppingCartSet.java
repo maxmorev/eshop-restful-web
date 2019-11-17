@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
 @Data
 @Entity
+@Builder(toBuilder = true)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Table(name = "shopping_cart_set")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ShoppingCartSet extends AbstractEntity {

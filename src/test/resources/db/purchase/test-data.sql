@@ -67,7 +67,7 @@ insert into customer (
                verified,
                shopping_cart_id)
                values (15,
-               'Address test',
+               'Address : test for error with amount in shopping cart set',
                'Moscow',
                'Russia',
                'test-error@titsonfire.store',
@@ -98,8 +98,20 @@ insert into customer_order (
          10);
 insert into PURCHASE (branch_id, order_id, amount) values (5,16,2);
 
+-- shopping cart without customer, founded by id in cookie
+insert into shopping_cart (id, version) values (17, 1);
+insert into shopping_cart_set (id, amount, branch_id, shopping_cart_id) values(18, 1, 5, 17);
 
-
-
-
-
+--empty commodity
+insert into commodity (id, type_id, name, short_description, overview, date_of_creation, VERSION)
+values (19, 1,	'ceramics', 'test description ceramics',	'Overview ceramics test',	'2019-08-25 18:46:23.918',	1);
+insert into commodity_image (image_order,	commodity_id, uri,	width,	height)
+values(0, 19, 'https://upload.wikimedia.org/wikipedia/commons/d/da/TheOffspringLogo.png', null, null);
+--amount=0
+insert into commodity_branch (id, commodity_id, amount,	price, VERSION,	currency)
+values (20, 19, 0, 1000, 1, 'EUR');
+insert into commodity_branch_attribute_set (id,	branch_id, attribute_value_id, attribute_id)
+values (21, 20, 3, 2);
+-- shopping cart with empty branch
+insert into shopping_cart (id, version) values (22, 1);
+insert into shopping_cart_set (id, amount, branch_id, shopping_cart_id) values(23, 2, 20, 22);

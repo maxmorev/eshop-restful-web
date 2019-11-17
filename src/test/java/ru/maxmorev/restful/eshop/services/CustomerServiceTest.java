@@ -95,7 +95,7 @@ public class CustomerServiceTest {
                 .country("Russia")
                 .password("helloFreakBitches")
                 .build();
-        assertThrows(org.springframework.mail.MailPreparationException.class, ()->customerService.createCustomerAndVerifyByEmail(customer));
+        assertThrows(org.springframework.mail.MailPreparationException.class, () -> customerService.createCustomerAndVerifyByEmail(customer));
         //assertThrows(javax.validation.ConstraintViolationException.class, em::flush);
     }
 
@@ -109,7 +109,7 @@ public class CustomerServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void testFindByEmail(){
+    public void testFindByEmail() {
         Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
         assertTrue(customer.isPresent());
     }
@@ -124,7 +124,7 @@ public class CustomerServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void testFindById(){
+    public void testFindById() {
         // Optional<Customer> find(Long id); 10
         Optional<Customer> customer = customerService.findById(10L);
         assertTrue(customer.isPresent());
@@ -142,7 +142,7 @@ public class CustomerServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void testVerify(){
+    public void testVerify() {
         Optional<Customer> customer = customerService.verify(10L, "TKYOC");
         em.flush();
         assertTrue(customer.isPresent());
@@ -160,7 +160,7 @@ public class CustomerServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void testVerifyError(){
+    public void testVerifyError() {
         Optional<Customer> customer = customerService.verify(10L, "TKYOX");
         em.flush();
         assertFalse(customer.isPresent());
@@ -177,7 +177,7 @@ public class CustomerServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void updateInfoTest(){
+    public void updateInfoTest() {
         Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
         assertTrue(customer.isPresent());
         Customer c = customer.get();
@@ -200,7 +200,7 @@ public class CustomerServiceTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void updateCustomerTest(){
+    public void updateCustomerTest() {
         Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
         assertTrue(customer.isPresent());
 
@@ -212,8 +212,8 @@ public class CustomerServiceTest {
         em.flush();
 
         customer = customerService.findByEmail("test@titsonfire.store");
-        assertTrue(customer.get().getShoppingCart()!=null);
-        assertTrue(customer.get().getShoppingCart().getId()!=null);
+        assertTrue(customer.get().getShoppingCart() != null);
+        assertTrue(customer.get().getShoppingCart().getId() != null);
 
     }
 

@@ -77,12 +77,9 @@ public abstract class CommonWebController {
             // load shopping cart from shoppingCart service and add to uiModel
             logger.info("Load existing shopping cart: " + cartCookie.getValue());
             Long cartId = Long.valueOf( cartCookie.getValue() );
-            shoppingCart = shoppingCartService.findShoppingCartById(cartId);
-            if(Objects.isNull( shoppingCart )){
-                //logger.info("Recreate shopping cart: " + cartCookie.getValue());
-                shoppingCart = setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response);
-                logger.info("Recreate shopping cart: " + shoppingCart.getId() );
-            }
+            shoppingCart = shoppingCartService
+                    .findShoppingCartById(cartId)
+                    .orElse(setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response));
         }
         return  shoppingCart;
     }
