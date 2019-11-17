@@ -36,9 +36,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Created by maxim.morev on 11/08/19.
  */
 @Slf4j
+@ActiveProfiles("test")
 @SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class})
 @DisplayName("Integration CommodityService Test")
-@ActiveProfiles("test")
 public class CommodityServiceTest {
 
     @Autowired

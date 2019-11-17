@@ -67,10 +67,17 @@ dependencies {
 
     //TEST
     testAnnotationProcessor('org.projectlombok:lombok')
-    testCompile 'com.h2database:h2'
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBoot}"
-    testCompile group: 'org.dbunit', name: 'dbunit', version: '2.5.3'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.2'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.2'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation('org.springframework.security:spring-security-test')
+    testImplementation('com.h2database:h2')
+    testImplementation('org.dbunit:dbunit:2.5.3')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    testImplementation('org.junit.jupiter:junit-jupiter-engine:5.3.2')
 
+}
+
+test {
+    useJUnitPlatform()
 }

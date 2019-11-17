@@ -87,6 +87,7 @@ public class CustomerServiceTest {
     public void testErrorSendMail() {
         Customer customer = Customer
                 .builder()
+                .email("error@error.send")
                 .fullName("Maxim Morev")
                 .address("Address test")
                 .authorities(AuthorityValues.ADMIN.name())

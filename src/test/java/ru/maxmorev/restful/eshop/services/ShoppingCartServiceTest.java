@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class})
 @DisplayName("Integration Shopping Cart Service Test")
+@SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class})
 public class ShoppingCartServiceTest {
 
     @Autowired
@@ -295,7 +295,7 @@ public class ShoppingCartServiceTest {
                 .findByEmail("test@titsonfire.store")
                 .ifPresent(customer -> {
                     assertEquals(2, customer.getShoppingCart().getItemsAmount());
-                    ShoppingCart sc = shoppingCartService
+                    shoppingCartService
                             .mergeCartFromCookieWithCustomer(
                                     shoppingCartService
                                             .findShoppingCartById(17L)

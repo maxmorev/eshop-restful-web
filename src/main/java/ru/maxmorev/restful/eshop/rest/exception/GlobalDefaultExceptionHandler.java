@@ -42,7 +42,7 @@ public class GlobalDefaultExceptionHandler {
      * @param ex MethodArgumentNotValidException
      * @return @see ru.maxmorev.restful.eshop.rest.response.Message
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public Message validationException(HttpServletRequest req, MethodArgumentNotValidException ex) {

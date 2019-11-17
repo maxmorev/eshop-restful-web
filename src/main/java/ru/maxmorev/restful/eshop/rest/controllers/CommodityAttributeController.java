@@ -19,6 +19,7 @@ import java.util.Locale;
 public class CommodityAttributeController {
 
     private final static Logger logger = LoggerFactory.getLogger(CommodityAttributeController.class);
+    public static final String ATTRIBUTE_DATA_TYPES = "/attribute/value/dataTypes/";
 
     private CommodityService commodityService;
     private MessageSource messageSource;
@@ -35,20 +36,19 @@ public class CommodityAttributeController {
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI+"attribute/", method = RequestMethod.POST)
     @ResponseBody
-    public Message createProperty(@RequestBody @Valid RequestAttributeValue property, Locale locale ){
+    public Message createAttribute(@RequestBody @Valid RequestAttributeValue property, Locale locale ){
         //to prevent duplicated properties
         commodityService.addAttribute(property);
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
-
     @RequestMapping(path = Constants.REST_PUBLIC_URI+"attributes/{typeId}", method = RequestMethod.GET)
     @ResponseBody
-    public List<CommodityAttribute> getProperties(@PathVariable(name = "typeId", required = true) Long typeId){
+    public List<CommodityAttribute> getAttributes(@PathVariable(name = "typeId", required = true) Long typeId){
         return commodityService.findAttributesByTypeId(typeId);
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI+"/attribute/value/dataTypes/", method = RequestMethod.GET)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI+ATTRIBUTE_DATA_TYPES, method = RequestMethod.GET)
     @ResponseBody
     public List<String> getAvailebleAttributeDataTypes(){
         return commodityService.getAvailebleAttributeDataTypes();

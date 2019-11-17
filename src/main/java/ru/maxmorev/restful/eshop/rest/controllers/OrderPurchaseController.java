@@ -35,12 +35,14 @@ public class OrderPurchaseController {
             @RequestBody @Valid OrderPaymentConfirmation orderPaymentConfirmation,
             Locale locale){
 
-        Optional<CustomerOrder> order =  orderPurchaseService.findOrder(orderPaymentConfirmation.getOrderId());
-        orderPurchaseService.confirmPaymentOrder(
-                order.get(),
-                PaymentProvider.valueOf(orderPaymentConfirmation.getPaymentProvider()),
-                orderPaymentConfirmation.getPaymentId()
-                );
+        orderPurchaseService.findOrder(orderPaymentConfirmation.getOrderId()).ifPresent(order -> {
+            orderPurchaseService.confirmPaymentOrder(
+                    order,
+                    PaymentProvider.valueOf(orderPaymentConfirmation.getPaymentProvider()),
+                    orderPaymentConfirmation.getPaymentId()
+            );
+        });
+
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
