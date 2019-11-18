@@ -27,11 +27,11 @@ public class Customer extends CustomerInfo implements UserDetails {
     private String password;
 
     @JsonIgnore
-    @Column(name="verifycode",nullable = false, length = 256)
+    @Column(name = "verifycode", nullable = false, length = 256)
     private String verifyCode;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="date_of_creation", nullable = false, updatable = false)
+    @Column(name = "date_of_creation", nullable = false, updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     private Date dateOfCreation;
 
@@ -39,7 +39,7 @@ public class Customer extends CustomerInfo implements UserDetails {
     private Boolean verified = false;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="shopping_cart_id", referencedColumnName = "id")
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
     private ShoppingCart shoppingCart;
 
     @Column(name = "authorities", nullable = false)
@@ -60,7 +60,7 @@ public class Customer extends CustomerInfo implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<CustomerAuthority> authSet = new HashSet<>();
-        if(Objects.isNull(authorities))
+        if (Objects.isNull(authorities))
             return authSet;
         Arrays.asList(authorities.split(","))
                 .forEach(str ->
@@ -68,17 +68,17 @@ public class Customer extends CustomerInfo implements UserDetails {
         return authSet;
     }
 
-    public void addAuthority(AuthorityValues auth){
-        if(Objects.isNull(authorities)){
+    public void addAuthority(AuthorityValues auth) {
+        if (Objects.isNull(authorities)) {
             authorities = auth.name();
             return;
         }
         Collection<? extends GrantedAuthority> authSet = getAuthorities();
-        if( authSet.contains( new CustomerAuthority(auth) ) ) return;
-        authorities += ","+auth.name();
+        if (authSet.contains(new CustomerAuthority(auth))) return;
+        authorities += "," + auth.name();
     }
 
-    public void removeAllAuthorities(){
+    public void removeAllAuthorities() {
         this.authorities = null;
     }
 
@@ -117,6 +117,7 @@ public class Customer extends CustomerInfo implements UserDetails {
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof Customer)) return false;
@@ -129,6 +130,7 @@ public class Customer extends CustomerInfo implements UserDetails {
                 java.util.Objects.equals(getAuthorities(), customer.getAuthorities());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getPassword(), getVerifyCode(), getDateOfCreation(), getVerified());
     }

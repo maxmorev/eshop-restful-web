@@ -10,24 +10,25 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+
 @Data
 @Entity
 @Table(name = "commodity_image")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommodityImage {
     @Id
-    @Column(name="uri", nullable = false, unique = true)
+    @Column(name = "uri", nullable = false, unique = true)
     private String uri;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="commodity_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "commodity_id", referencedColumnName = "id")
     @JsonIgnore
     private Commodity commodity;
 
     private Integer width;
     private Integer height;
 
-    @Column(nullable = false, name="image_order")
+    @Column(nullable = false, name = "image_order")
     private Short imageOrder;
 
     @Override
@@ -35,6 +36,7 @@ public class CommodityImage {
         return Objects.hash(uri, commodity);
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityImage)) return false;

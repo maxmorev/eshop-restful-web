@@ -38,6 +38,7 @@ public class CommodityBranchAttributeSet extends AbstractEntity {
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityBranchAttributeSet)) return false;
@@ -48,6 +49,7 @@ public class CommodityBranchAttributeSet extends AbstractEntity {
                 getAttributeValue().equals(that.getAttributeValue());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getBranch(), getAttribute(), getAttributeValue());
     }

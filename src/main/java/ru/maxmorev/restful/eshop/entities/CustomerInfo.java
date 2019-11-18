@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
+
 @Data
 @MappedSuperclass
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class CustomerInfo extends AbstractEntity {
     private String email;
 
     @NotBlank(message = "{validation.customer.fullName}")
-    @Column(name = "fullname",nullable = false, length = 256)
+    @Column(name = "fullname", nullable = false, length = 256)
     private String fullName;
 
     @NotBlank(message = "{validation.customer.country}")
@@ -50,6 +51,7 @@ public class CustomerInfo extends AbstractEntity {
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CustomerInfo)) return false;
@@ -63,6 +65,7 @@ public class CustomerInfo extends AbstractEntity {
                 getAddress().equals(that.getAddress());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getEmail(), getFullName(), getCountry(), getPostcode(), getCity(), getAddress());
     }

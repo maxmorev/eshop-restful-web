@@ -13,15 +13,15 @@ import java.util.*;
 @Entity
 @Table(name = "commodity_branch")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@org.hibernate.annotations.BatchSize(size=10)
-public class CommodityBranch extends AbstractEntity{
+@org.hibernate.annotations.BatchSize(size = 10)
+public class CommodityBranch extends AbstractEntity {
 
     @Version
     @Column(name = "VERSION")
     private int version;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="commodity_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "commodity_id", referencedColumnName = "id")
     @JsonIgnore
     private Commodity commodity;
 
@@ -33,19 +33,20 @@ public class CommodityBranch extends AbstractEntity{
     @Column(nullable = false)
     private Currency currency; //current price currency
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
-    @org.hibernate.annotations.BatchSize(size=10)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch", orphanRemoval = true, targetEntity = CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 10)
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
 
-    public String getCode(){
-        return commodity.getId()+"-" + this.getId();
+    public String getCode() {
+        return commodity.getId() + "-" + this.getId();
     }
 
-    public Long getCommodityId(){
+    public Long getCommodityId() {
         return this.commodity.getId();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
@@ -54,6 +55,7 @@ public class CommodityBranch extends AbstractEntity{
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityBranch)) return false;
@@ -66,6 +68,7 @@ public class CommodityBranch extends AbstractEntity{
                 getCurrency().equals(that.getCurrency());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), version, getCommodity(), getAmount(), getPrice(), getCurrency());
     }

@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
+
 @Data
 @Entity
 @Builder(toBuilder = true)
@@ -17,19 +18,19 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ShoppingCartSet extends AbstractEntity {
 
-    @Column(name="amount", nullable = false)
+    @Column(name = "amount", nullable = false)
     private Integer amount = 1;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="branch_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "branch_id", referencedColumnName = "id")
     private CommodityBranch branch;
 
     @JsonIgnore
-    @ManyToOne(optional=false)
-    @JoinColumn(name="shopping_cart_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
     private ShoppingCart shoppingCart;
 
-    public CommodityInfo getCommodityInfo(){
+    public CommodityInfo getCommodityInfo() {
         return branch.getCommodity();
     }
 
@@ -43,6 +44,7 @@ public class ShoppingCartSet extends AbstractEntity {
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof ShoppingCartSet)) return false;
@@ -53,6 +55,7 @@ public class ShoppingCartSet extends AbstractEntity {
                 getShoppingCart().equals(that.getShoppingCart());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getAmount(), getBranch(), getShoppingCart());
     }

@@ -15,21 +15,21 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
-	@Id
-	@GeneratedValue(generator = Constants.ID_GENERATOR)
-	@Column(updatable = false)
-	protected Long id;
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR)
+    @Column(updatable = false)
+    protected Long id;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof AbstractEntity)) return false;
-		AbstractEntity that = (AbstractEntity) o;
-		return this.getId().equals(that.getId());
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractEntity)) return false;
+        AbstractEntity that = (AbstractEntity) o;
+        return this.getId().equals(that.getId());
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId());
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

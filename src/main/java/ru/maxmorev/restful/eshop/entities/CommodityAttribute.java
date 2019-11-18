@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "commodity_attribute")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityAttribute extends AbstractEntity{
+public class CommodityAttribute extends AbstractEntity {
 
     @Column(updatable = false, length = 64)
     private String name;
@@ -29,21 +29,22 @@ public class CommodityAttribute extends AbstractEntity{
     @Column(name = "attribute_measure")
     private String measure;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="type_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
     @JsonIgnore
     private CommodityType commodityType;
 
-    @org.hibernate.annotations.BatchSize(size=5)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "attribute", targetEntity= CommodityAttributeValue.class, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 5)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "attribute", targetEntity = CommodityAttributeValue.class, fetch = FetchType.LAZY)
     private Set<CommodityAttributeValue> values = new HashSet<>();
 
-    @org.hibernate.annotations.BatchSize(size=5)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval=true, targetEntity= CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 5)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval = true, targetEntity = CommodityBranchAttributeSet.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<CommodityBranchAttributeSet> attributeSet = new HashSet<>();
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
@@ -52,6 +53,7 @@ public class CommodityAttribute extends AbstractEntity{
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityAttribute)) return false;
@@ -63,6 +65,7 @@ public class CommodityAttribute extends AbstractEntity{
                 Objects.equals(getCommodityType().getId(), that.getCommodityType().getId());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getDataType(), getCommodityType());
     }

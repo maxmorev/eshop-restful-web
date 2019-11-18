@@ -16,18 +16,18 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "shopping_cart")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShoppingCart extends AbstractEntity{
+public class ShoppingCart extends AbstractEntity {
 
     @Version
     @Column(name = "VERSION")
     private int version;
 
-    @org.hibernate.annotations.BatchSize(size=5)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart", targetEntity=ShoppingCartSet.class, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 5)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "shoppingCart", targetEntity = ShoppingCartSet.class, fetch = FetchType.LAZY)
     private Set<ShoppingCartSet> shoppingSet;
 
-    public int getItemsAmount(){
-        return shoppingSet!=null? shoppingSet.stream().mapToInt(ShoppingCartSet::getAmount).sum() : 0;
+    public int getItemsAmount() {
+        return shoppingSet != null ? shoppingSet.stream().mapToInt(ShoppingCartSet::getAmount).sum() : 0;
     }
 
     @Override
@@ -40,6 +40,7 @@ public class ShoppingCart extends AbstractEntity{
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof ShoppingCart)) return false;
@@ -48,6 +49,7 @@ public class ShoppingCart extends AbstractEntity{
         return version == that.version;
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), version);
     }

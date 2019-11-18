@@ -8,6 +8,8 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.maxmorev.restful.eshop.init.DBInitializer;
 
 import javax.sql.DataSource;
@@ -21,6 +23,13 @@ import javax.sql.DataSource;
 public class ServiceTestConfig {
 
     private static Logger logger = LoggerFactory.getLogger(ServiceTestConfig.class);
+
+    @Bean
+    public Validator validator() {
+        final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(messageSource());
+        return validator;
+    }
 
     @Bean
     ReloadableResourceBundleMessageSource messageSource() {

@@ -28,16 +28,16 @@ public class CommodityType extends AbstractEntity {
     private String name;
 
     @NotBlank(message = "{validation.CommodityType.description.NotBlank.message}")
-    @Size(min=8, max=128, message = "{validation.CommodityType.description.size.message}")
+    @Size(min = 8, max = 128, message = "{validation.CommodityType.description.size.message}")
     @Column(nullable = false, length = 128)
     private String description;
 
-    @org.hibernate.annotations.BatchSize(size=5)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "commodityType", targetEntity= CommodityAttribute.class, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 5)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "commodityType", targetEntity = CommodityAttribute.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<CommodityAttribute> attributes = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "type", targetEntity=Commodity.class, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "type", targetEntity = Commodity.class, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Commodity> commodities = new HashSet<>();
 
@@ -51,6 +51,7 @@ public class CommodityType extends AbstractEntity {
         }
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityType)) return false;
@@ -61,6 +62,7 @@ public class CommodityType extends AbstractEntity {
                 getDescription().equals(that.getDescription());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), version, getName(), getDescription());
     }
