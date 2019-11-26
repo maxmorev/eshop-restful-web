@@ -115,3 +115,5 @@ values (21, 20, 3, 2);
 -- shopping cart with empty branch
 insert into shopping_cart (id, version) values (22, 1);
 insert into shopping_cart_set (id, amount, branch_id, shopping_cart_id) values(23, 2, 20, 22);
+
+insert into commodity_type (name, description, VERSION, id) values ('TypeTestDelete', 'test delete', 1, 24);

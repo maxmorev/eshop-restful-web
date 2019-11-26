@@ -14,7 +14,7 @@
          ),
          @Parameter(
             name = "initial_value",
-            value = "1"
+            value = "100"
          ),
          @Parameter(
             name = "increment_size",

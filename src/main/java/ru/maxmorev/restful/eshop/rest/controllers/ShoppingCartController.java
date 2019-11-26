@@ -19,6 +19,7 @@ import java.util.Objects;
 @RestController
 public class ShoppingCartController {
 
+    public static final String SHOPPING_CART = "shoppingCart/";
     private CommodityService commodityService;
     private ShoppingCartService shoppingCartService;
     private MessageSource messageSource;
@@ -51,7 +52,7 @@ public class ShoppingCartController {
                                                 locale)));
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI + "shoppingCart/", method = RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.POST)
     @ResponseBody
     public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("POST:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
@@ -63,7 +64,7 @@ public class ShoppingCartController {
                         requestShoppingCartSet.getAmount());
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI + "shoppingCart/", method = RequestMethod.DELETE)
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.DELETE)
     @ResponseBody
     public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);

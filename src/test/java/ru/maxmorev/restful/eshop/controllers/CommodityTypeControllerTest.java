@@ -16,13 +16,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
+import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.rest.Constants;
-import ru.maxmorev.restful.eshop.rest.controllers.CommodityAttributeController;
 import ru.maxmorev.restful.eshop.rest.response.Message;
+import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,15 +34,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-@DisplayName("Integration controller (CommodityAttributeController) test")
+@DisplayName("Integration controller (CommodityTypeController) test")
 @SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class})
-public class CommodityAttributeControllerTest {
+public class CommodityTypeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private CommodityService commodityService;
 
     @Test
-    @DisplayName("Should return available attribute data types")
+    @DisplayName("Should return commodity type info")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
@@ -47,17 +53,17 @@ public class CommodityAttributeControllerTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void getAvailableAttributeDataTypesTest() throws Exception {
+    public void getCommodityTypeTest() throws Exception {
 
-        mockMvc.perform(get(Constants.REST_PUBLIC_URI + CommodityAttributeController.ATTRIBUTE_DATA_TYPES))
+        mockMvc.perform(get(Constants.REST_PUBLIC_URI + "type/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0]", is("String")));
+                .andExpect(jsonPath("$.name", is("TypeTest")))
+                .andExpect(jsonPath("$.description", is("test")));
     }
 
     @Test
-    @DisplayName("Should return available attributes for type")
+    @DisplayName("Should delete commodity type by id")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
@@ -66,35 +72,19 @@ public class CommodityAttributeControllerTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void getAttributesTest() throws Exception {
-        mockMvc.perform(get(Constants.REST_PUBLIC_URI + "attributes/" + 1))
-                .andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].name", is("size")));
-    }
+    public void deleteCommodityTypeTest() throws Exception {
 
-    @Test
-    @DisplayName("Should remove attribute by id")
-    @SqlGroup({
-            @Sql(value = "classpath:db/purchase/test-data.sql",
-                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
-                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(value = "classpath:db/purchase/clean-up.sql",
-                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
-    })
-    public void deletePropertyValueTest() throws Exception {
-        mockMvc.perform(delete(Constants.REST_PRIVATE_URI + "attributeValue/3")
+        mockMvc.perform(delete(Constants.REST_PRIVATE_URI + "type/24")
                 .with(user("admin")
                         .password("pass")
                         .authorities((GrantedAuthority) () -> "ADMIN")))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(Message.SUCCES)));
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.message", is("Success")));
     }
 
     @Test
-    @DisplayName("Should create attribute")
+    @DisplayName("Should expect error while deleting commodity type by id")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
@@ -103,20 +93,20 @@ public class CommodityAttributeControllerTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void createAttributeTest() throws Exception {
-        mockMvc.perform(post(Constants.REST_PRIVATE_URI+"attribute/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"typeId\":1, \"name\":\"size\", \"dataType\":\"String\", \"measure\":null, \"value\":\"m\"}")
+    public void deleteCommodityTypeTestError() throws Exception {
+
+        mockMvc.perform(delete(Constants.REST_PRIVATE_URI + "type/1")
                 .with(user("admin")
                         .password("pass")
                         .authorities((GrantedAuthority) () -> "ADMIN")))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(Message.SUCCES)));
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Internal storage error")));
     }
 
+
     @Test
-    @DisplayName("Should create attribute with error")
+    @DisplayName("Should update commodity type by id")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
@@ -125,10 +115,47 @@ public class CommodityAttributeControllerTest {
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
-    public void createAttributeErrorTest() throws Exception {
-        mockMvc.perform(post(Constants.REST_PRIVATE_URI+"attribute/")
+    public void updateCommodityTypeTest() throws Exception {
+        CommodityType type = commodityService.findTypeById(24L).get();
+        type.setName("Type Update");
+        mockMvc.perform(put(Constants.REST_PRIVATE_URI + "type/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"typeId\":1, \"name\":\"size\", \"dataType\":\"string\", \"measure\":null, \"value\":\"m\"}")
+                .content(type.toString())
+                .with(user("admin")
+                        .password("pass")
+                        .authorities((GrantedAuthority) () -> "ADMIN")))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.status", is(Message.SUCCES)));
+    }
+
+    @Test
+    @DisplayName("Should create new commodity type")
+    public void createCommodityTypeTest() throws Exception {
+        CommodityType type = new CommodityType();
+        type.setName("Create Test");
+        type.setDescription("Test Creation of type");
+        mockMvc.perform(post(Constants.REST_PRIVATE_URI + "type/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(type.toString())
+                .with(user("admin")
+                        .password("pass")
+                        .authorities((GrantedAuthority) () -> "ADMIN")))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.status", is(Message.SUCCES)));
+
+    }
+
+    @Test
+    @DisplayName("Should except Validation error while create new commodity type")
+    public void createCommodityTypeTestValidationError() throws Exception {
+        CommodityType type = new CommodityType();
+        type.setName("CT");
+        type.setDescription("TD");
+        mockMvc.perform(post(Constants.REST_PRIVATE_URI + "type/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(type.toString())
                 .with(user("admin")
                         .password("pass")
                         .authorities((GrantedAuthority) () -> "ADMIN")))
@@ -137,8 +164,6 @@ public class CommodityAttributeControllerTest {
                 .andExpect(jsonPath("$.status", is(Message.ERROR)))
                 .andExpect(jsonPath("$.message", is("Validation error")))
                 .andExpect(jsonPath("$.errors").isArray());
-
     }
-
 
 }

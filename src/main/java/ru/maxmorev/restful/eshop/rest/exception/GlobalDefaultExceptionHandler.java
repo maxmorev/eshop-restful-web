@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.rest.exception;
 
+import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,12 +28,27 @@ public class GlobalDefaultExceptionHandler {
      * @param ex
      * @return
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Message handleBadRequest(HttpServletRequest req, Exception ex) {
         logger.error(ex.getLocalizedMessage(), ex);
         Message responseMessage = new Message(Message.ERROR, req.getRequestURL().toString(), ex, Collections.EMPTY_LIST);
+        return responseMessage;
+    }
+
+    /**
+     * Processing HibernateException
+     * @param req
+     * @param ex
+     * @return
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = org.springframework.dao.DataAccessException.class)
+    @ResponseBody
+    public Message handleHibernateException(HttpServletRequest req, Exception ex) {
+        Message responseMessage = new Message(Message.ERROR, req.getRequestURL().toString(), "Internal storage error", Collections.EMPTY_LIST);
+        logger.error("HibernateException {}", ex);
         return responseMessage;
     }
 
