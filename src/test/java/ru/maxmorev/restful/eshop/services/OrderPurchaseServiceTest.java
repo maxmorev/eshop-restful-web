@@ -45,7 +45,7 @@ public class OrderPurchaseServiceTest {
     private EntityManager em;
 
     @Value
-    class ShoppingCartInfo {
+    public static class ShoppingCartInfo {
         long branchId;
         int branchAmount;
         int shoppingCartAmount;

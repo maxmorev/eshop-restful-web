@@ -3,20 +3,24 @@ package ru.maxmorev.restful.eshop.rest.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.CustomerVerify;
 import ru.maxmorev.restful.eshop.rest.response.CustomerDTO;
 import ru.maxmorev.restful.eshop.services.CustomerService;
-import ru.maxmorev.restful.eshop.services.FutureRunner;
 
 import javax.validation.Valid;
 import java.util.Locale;
@@ -34,13 +38,6 @@ public class CustomerController {
         this.messageSource = messageSource;
     }
 
-    @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/", method = RequestMethod.POST)
-    @ResponseBody
-    public Customer createCustomer(@RequestBody @Valid Customer customer, Locale locale){
-        log.info("Customer : {}", customer);
-        return customerService.createCustomerAndVerifyByEmail(customer);
-    }
-
     private String getAuthenticationCustomerId(){
         String id = null;
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -53,13 +50,22 @@ public class CustomerController {
         return id;
     }
 
+    @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/", method = RequestMethod.POST)
+    @ResponseBody
+    public CustomerDTO createCustomer(@RequestBody @Valid Customer customer, Locale locale){
+        log.info("Customer : {}", customer);
+        return CustomerDTO.of(customerService.createCustomerAndVerifyByEmail(customer));
+    }
+
     @RequestMapping(path = Constants.REST_CUSTOMER_URI + "update/", method = RequestMethod.PUT)
     @ResponseBody
     public CustomerDTO updateCustomer(@RequestBody @Valid CustomerInfo customer, Locale locale){
         log.info("Customer update : {}", customer);
         String id = getAuthenticationCustomerId();
-        if(id==null)
-            throw new IllegalAccessError("Not Authenticated");
+        log.info("Authentication id = {}", id);
+        /* user can update only self data */
+        if(!id.equals(customer.getEmail()))
+            throw new BadCredentialsException("Not Authenticated");
         Customer findByEmail = customerService.updateInfo(customer);
         return CustomerDTO.of(findByEmail);
     }

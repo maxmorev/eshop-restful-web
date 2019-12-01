@@ -96,10 +96,12 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
 
     @Override
     public Optional<Customer> verify(Long customerId, String code) {
-        Optional<Customer> c = customerRepository.findById(customerId).filter(customer->customer.getVerifyCode().equals(code));
+        Optional<Customer> c = customerRepository.findById(customerId);
         c.ifPresent(customer->{
-            customer.setVerified(true);
-            customerRepository.save(customer);
+            if(code.equals(customer.getVerifyCode())) {
+                customer.setVerified(true);
+                customerRepository.save(customer);
+            }
         });
         return c;
     }

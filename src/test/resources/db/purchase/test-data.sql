@@ -77,7 +77,7 @@ insert into customer (
                '2019-08-25 18:46:23.918',
                '$2a$10$um0PcvHczmxeUEbR3vCBGuOvtNdgJffm72knavG/EFE7JDm9QBEha',
                'TKYOC',
-               't',
+               'f',
                13);
 
 insert into customer_order (

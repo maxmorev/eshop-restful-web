@@ -56,12 +56,13 @@ public class Customer extends CustomerInfo implements UserDetails {
         this.authorities = authorities;
     }
 
-    //implement methods of org.springframework.security.core.userdetails.UserDetails
+    //implementation methods of org.springframework.security.core.userdetails.UserDetails
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<CustomerAuthority> authSet = new HashSet<>();
         if (Objects.isNull(authorities))
-            return authSet;
+            return null;
         Arrays.asList(authorities.split(","))
                 .forEach(str ->
                         authSet.add(new CustomerAuthority(AuthorityValues.valueOf(str))));

@@ -42,6 +42,11 @@ public class CustomerServiceTest {
     @Test
     @DisplayName("should create customer")
     @Transactional
+    @SqlGroup({
+            @Sql(value = "classpath:db/customer/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
     public void testCreateCustomerAndVerifyByEmail() {
         Customer customer = Customer
                 .builder()
@@ -164,7 +169,8 @@ public class CustomerServiceTest {
     public void testVerifyError() {
         Optional<Customer> customer = customerService.verify(10L, "TKYOX");
         em.flush();
-        assertFalse(customer.isPresent());
+        assertTrue(customer.isPresent());
+        assertFalse(customer.get().getVerified());
     }
 
     @Test

@@ -17,5 +17,14 @@ public class CustomerVerify {
     private String verifyCode;
     private Boolean verified;
 
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return e.getMessage();
+        }
+    }
 
 }

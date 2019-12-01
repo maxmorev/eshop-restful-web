@@ -44,7 +44,9 @@ public class ServiceTestConfig {
     public DataSource dataSource() {
         try {
             EmbeddedDatabaseBuilder dbBuilder = new EmbeddedDatabaseBuilder();
-            return dbBuilder.setType(EmbeddedDatabaseType.H2).build();
+            return dbBuilder
+                    .setType(EmbeddedDatabaseType.H2)
+                    .build();
         } catch (Exception e) {
             logger.error("Embedded DataSource bean cannot be created!", e);
             return null;

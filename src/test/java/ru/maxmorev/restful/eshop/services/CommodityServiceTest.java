@@ -66,6 +66,11 @@ public class CommodityServiceTest {
     @Test
     @DisplayName("should add type")
     @Transactional
+    @SqlGroup({
+            @Sql(value = "classpath:db/commodity/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
     public void testAddType() throws Exception {
         CommodityType type = new CommodityType();
         type.setName("TestType");
