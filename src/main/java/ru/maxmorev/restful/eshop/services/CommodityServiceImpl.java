@@ -265,14 +265,11 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public void updateCommodity(RequestCommodity requestCommodity) {
-        log.info("RC : {}", requestCommodity);
-        Optional<CommodityBranch> commodityBranchOptional = commodityBranchRepository.findById(requestCommodity.getBranchId());
-        if (commodityBranchOptional.isPresent()) {
+        log.info("RequestCommodity : {}", requestCommodity);
+        commodityBranchRepository.findById(requestCommodity.getBranchId()).ifPresent( branch -> {
 
-            CommodityBranch branch = commodityBranchOptional.get();
             List<CommodityBranchAttributeSet> propertySetList = new ArrayList<>(branch.getAttributeSet());
-            //update branch propertySet
-            boolean updateBranch = false;
+
             if (requestCommodity.getPropertyValues().size() > 0) {
                 //updateBranch = true;
                 propertySetList.forEach(set -> branch.getAttributeSet().remove(set));
@@ -323,7 +320,7 @@ public class CommodityServiceImpl implements CommodityService {
             //commodityBranchRepository.save(branch);
             commodityRepository.save(commodity);
 
-        }
+        });
     }
 
     @Override
