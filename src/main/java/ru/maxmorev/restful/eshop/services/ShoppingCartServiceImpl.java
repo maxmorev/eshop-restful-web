@@ -94,7 +94,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         } else {
             if (shoppingCartSet.getAmount() + amount > branch.getAmount()) {
                 return cart;
-                //throw new IllegalArgumentException( "amount =" + shoppingCartSet.getAmount() +" Must be less than or equal to the branch.amount=" + branch.getAmount() );
             }
             shoppingCartSet.setAmount(shoppingCartSet.getAmount() + amount);
         }
@@ -109,24 +108,31 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (amount == null) throw new IllegalArgumentException("amount can not be null");
         if (shoppingCartId == null) throw new IllegalArgumentException("shoppingCartId can not be null");
 
-        CommodityBranch branch = commodityService.findBranchById(branchId).get();
         ShoppingCart shoppingCart = this.findShoppingCartById(shoppingCartId)
-                .orElseThrow(() -> new IllegalArgumentException("ShoppingCartId can not be null"));
+                .orElseThrow(() -> new IllegalArgumentException("Cant find shopping cart by id"));
         return shoppingCart
                 .getShoppingSet()
                 .stream()
                 .filter(scs -> scs.getBranch().getId().equals(branchId))
                 .findFirst()
                 .map(scs -> addToShoppingCartSet(scs, amount))
-                .orElseGet(() -> addToShoppingCartSet(ShoppingCartSet
-                        .builder()
-                        .amount(amount)
-                        .branch(branch).shoppingCart(shoppingCart).build(), amount));
-
+                .orElseGet(() -> addToShoppingCartSet(
+                        ShoppingCartSet.builder()
+                                .amount(amount)
+                                .branch(commodityService
+                                        .findBranchById(branchId)
+                                        .orElseThrow(() -> new IllegalArgumentException("Cant find branch by id")))
+                                .shoppingCart(shoppingCart)
+                                .build(),
+                        amount));
     }
 
     @Override
     public ShoppingCart removeBranchFromShoppingCart(Long branchId, Long shoppingCartId, Integer amount) {
+        if (branchId == null) throw new IllegalArgumentException("branchId can not be null");
+        if (amount == null) throw new IllegalArgumentException("amount can not be null");
+        if (shoppingCartId == null) throw new IllegalArgumentException("shoppingCartId can not be null");
+
         ShoppingCart cart = findShoppingCartById(shoppingCartId).orElseThrow(() -> new IllegalArgumentException("Shopping Cart not found"));
         cart
                 .getShoppingSet()

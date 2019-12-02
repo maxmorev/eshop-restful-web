@@ -45,7 +45,7 @@ public class CommodityBranchAttributesValidator implements ConstraintValidator<C
         Optional<Commodity> commodityExist = commodityRepository.findByNameAndType(value.getName(), commodityTypeRepository.findById(value.getTypeId()).get() );
         if(commodityExist.isPresent()) {
             /*
-            TODO check: if there is a branch with identical set of properties
+            if there is a branch with identical set of properties
             if exist - send message, else create branch
             */
             List<Long> values = value.getPropertyValues();

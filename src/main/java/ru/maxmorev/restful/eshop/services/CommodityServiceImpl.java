@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
+
 @Slf4j
 @Transactional
 @Service("commodityService")
@@ -34,10 +35,12 @@ public class CommodityServiceImpl implements CommodityService {
     public void setCommodityTypeRepository(CommodityTypeRepository commodityTypeRepository) {
         this.commodityTypeRepository = commodityTypeRepository;
     }
+
     @Autowired
     public void setCommodityAttributeRepository(CommodityAttributeRepository commodityAttributeRepository) {
         this.commodityAttributeRepository = commodityAttributeRepository;
     }
+
     @Autowired
     public void setCommodityAttributeValueRepository(CommodityAttributeValueRepository commodityAttributeValueRepository) {
         this.commodityAttributeValueRepository = commodityAttributeValueRepository;
@@ -47,14 +50,17 @@ public class CommodityServiceImpl implements CommodityService {
     public void setCommodityRepository(CommodityRepository commodityRepository) {
         this.commodityRepository = commodityRepository;
     }
+
     @Autowired
     public void setCommodityBranchRepository(CommodityBranchRepository commodityBranchRepository) {
         this.commodityBranchRepository = commodityBranchRepository;
     }
+
     @Autowired
     public void setCommodityBranchPropertySetRepository(CommodityBranchPropertySetRepository commodityBranchPropertySetRepository) {
         this.commodityBranchPropertySetRepository = commodityBranchPropertySetRepository;
     }
+
     @Autowired
     public void setCommodityImageRepository(CommodityImageRepository commodityImageRepository) {
         this.commodityImageRepository = commodityImageRepository;
@@ -63,7 +69,7 @@ public class CommodityServiceImpl implements CommodityService {
     @Override
     public List<String> getAvailebleAttributeDataTypes() {
         List<String> types = new ArrayList<>();
-        for(AttributeDataType dt:AttributeDataType.values()){
+        for (AttributeDataType dt : AttributeDataType.values()) {
             types.add(dt.name());
         }
         return types;
@@ -97,11 +103,11 @@ public class CommodityServiceImpl implements CommodityService {
         commodityTypeRepository.deleteById(id);
     }
 
-    private void createValue(CommodityAttribute prop, String valString){
+    private void createValue(CommodityAttribute prop, String valString) {
         CommodityAttributeValue newValue = new CommodityAttributeValue(prop);
-        Object val = newValue.createValueFrom( valString );
-        newValue.setAttribute( prop);
-        newValue.setValue( val );
+        Object val = newValue.createValueFrom(valString);
+        newValue.setAttribute(prop);
+        newValue.setValue(val);
         commodityAttributeValueRepository.save(newValue);
     }
 
@@ -109,23 +115,23 @@ public class CommodityServiceImpl implements CommodityService {
     public void addAttribute(RequestAttributeValue attribute) {
         log.info("Property : {}", attribute);
         Optional<CommodityType> type = commodityTypeRepository.findById(attribute.getTypeId());
-        if(!type.isPresent()){
+        if (!type.isPresent()) {
 
-            throw new IllegalArgumentException( "Type not found type.id=" + attribute.getTypeId());
+            throw new IllegalArgumentException("Type not found type.id=" + attribute.getTypeId());
 
         }
         Optional<CommodityAttribute> propertyOptional = commodityAttributeRepository.findByNameAndCommodityType(attribute.getName(), type.get());
-        if(propertyOptional.isPresent()){
+        if (propertyOptional.isPresent()) {
             //check: if value exist? true: do nothing esle create new value
             CommodityAttribute existProperty = propertyOptional.get();
             CommodityAttributeValue newValue = new CommodityAttributeValue(existProperty);
-            Object val = newValue.createValueFrom( attribute.getValue() );
-            if( existProperty.getValues().stream().noneMatch(v->v.getValue().equals(val))  ){
+            Object val = newValue.createValueFrom(attribute.getValue());
+            if (existProperty.getValues().stream().noneMatch(v -> v.getValue().equals(val))) {
                 //create value
                 createValue(existProperty, attribute.getValue());
             }
 
-        }else{
+        } else {
             CommodityAttribute newProperty = new CommodityAttribute();
             newProperty.setDataType(AttributeDataType.valueOf(attribute.getDataType()));
             newProperty.setName(attribute.getName());
@@ -147,12 +153,12 @@ public class CommodityServiceImpl implements CommodityService {
     public void deleteAttributeValueById(Long valueId) {
         Optional<CommodityAttributeValue> av =
                 commodityAttributeValueRepository.findById(valueId);
-        if(av.isPresent()){
+        if (av.isPresent()) {
             CommodityAttribute ca = av.get().getAttribute();
 
-            log.info("remove value {} : {}", av.get().getValue() , ca.getValues().remove(av.get()));
+            log.info("remove value {} : {}", av.get().getValue(), ca.getValues().remove(av.get()));
 
-            if(ca.getValues().isEmpty()){
+            if (ca.getValues().isEmpty()) {
                 //delete empty property
                 commodityAttributeRepository.delete(ca);
                 return;
@@ -166,14 +172,14 @@ public class CommodityServiceImpl implements CommodityService {
         COMMODITY
      */
 
-    private Commodity createCommodityFromRequest(RequestCommodity requestCommodity){
+    private Commodity createCommodityFromRequest(RequestCommodity requestCommodity) {
         CommodityType commodityType;
-        Optional<CommodityType> commodityTypeExist = commodityTypeRepository.findById( requestCommodity.getTypeId());
+        Optional<CommodityType> commodityTypeExist = commodityTypeRepository.findById(requestCommodity.getTypeId());
 
-        if(commodityTypeExist.isPresent()){
+        if (commodityTypeExist.isPresent()) {
             commodityType = commodityTypeExist.get();
-        }else{
-            throw new IllegalArgumentException("Illegal argument typeId=" + requestCommodity.getTypeId() );
+        } else {
+            throw new IllegalArgumentException("Illegal argument typeId=" + requestCommodity.getTypeId());
         }
 
         log.info("CREATE COMMODITY");
@@ -181,41 +187,41 @@ public class CommodityServiceImpl implements CommodityService {
         commodity.setName(requestCommodity.getName());
         commodity.setShortDescription(requestCommodity.getShortDescription());
         commodity.setOverview(requestCommodity.getOverview());
-        commodity.setType( commodityType );
+        commodity.setType(commodityType);
         //commodityRepository.save( commodity );
 
         //create images of commodity
         List<CommodityImage> commodityImages = new ArrayList<>(requestCommodity.getImages().size());
         log.info("requestCommodity.getImages() > {}", requestCommodity.getImages());
         Short imageIndex = 0;
-        for(String imageUrl: requestCommodity.getImages()){
+        for (String imageUrl : requestCommodity.getImages()) {
             CommodityImage image = new CommodityImage();
             image.setImageOrder(imageIndex);
             image.setUri(imageUrl);
             image.setCommodity(commodity);
             //commodityImageRepository.save( image );
-            commodityImages.add( image );
+            commodityImages.add(image);
             imageIndex++;
         }
         commodity.setImages(commodityImages);
         return commodity;
     }
 
-    private void createCommodityBranch(RequestCommodity requestCommodity, Commodity commodity){
+    private void createCommodityBranch(RequestCommodity requestCommodity, Commodity commodity) {
         //create branch
         CommodityBranch commodityBranch = new CommodityBranch();
-        commodityBranch.setAmount( requestCommodity.getAmount() );
-        commodityBranch.setPrice( requestCommodity.getPrice() );
+        commodityBranch.setAmount(requestCommodity.getAmount());
+        commodityBranch.setPrice(requestCommodity.getPrice());
         commodityBranch.setCommodity(commodity);
-        commodityBranch.setCurrency( Currency.getInstance(requestCommodity.getCurrencyCode()));
+        commodityBranch.setCurrency(Currency.getInstance(requestCommodity.getCurrencyCode()));
         //commodityBranchRepository.save( commodityBranch );
         createBranchPropertySet(requestCommodity.getPropertyValues(), commodityBranch);
         commodity.getBranches().add(commodityBranch);
     }
 
-    private boolean createPropertySet(CommodityBranchAttributeSet propertySet, Long valId){
+    private boolean createPropertySet(CommodityBranchAttributeSet propertySet, Long valId) {
         Optional<CommodityAttributeValue> commodityPropertyValueExist = commodityAttributeValueRepository.findById(valId);
-        if(commodityPropertyValueExist.isPresent()) {
+        if (commodityPropertyValueExist.isPresent()) {
             CommodityAttributeValue commodityAttributeValue = commodityPropertyValueExist.get();
             propertySet.setAttribute(commodityAttributeValue.getAttribute());
             propertySet.setAttributeValue(commodityAttributeValue);
@@ -225,12 +231,12 @@ public class CommodityServiceImpl implements CommodityService {
         return false;
     }
 
-    private void createBranchPropertySet(List<Long> valueIdList, CommodityBranch commodityBranch){
+    private void createBranchPropertySet(List<Long> valueIdList, CommodityBranch commodityBranch) {
         //create branch properies
-        for(Long propertyValueId: valueIdList){
+        for (Long propertyValueId : valueIdList) {
             CommodityBranchAttributeSet propertySet = new CommodityBranchAttributeSet();
-            propertySet.setBranch( commodityBranch );
-            if(createPropertySet(propertySet, propertyValueId)) {
+            propertySet.setBranch(commodityBranch);
+            if (createPropertySet(propertySet, propertyValueId)) {
                 commodityBranch.getAttributeSet().add(propertySet);
             }
         }
@@ -238,19 +244,18 @@ public class CommodityServiceImpl implements CommodityService {
 
 
     /**
-     *
      * @param requestCommodity
      */
     @Override
     public void addCommodity(RequestCommodity requestCommodity) {
         log.info("type : {}", requestCommodity);
         Optional<Commodity> commodityExist = commodityRepository.findByNameAndType(requestCommodity.getName(), commodityTypeRepository.findById(requestCommodity.getTypeId()).get());
-        if(commodityExist.isPresent()){
+        if (commodityExist.isPresent()) {
             //create new branch for existent commodity
-            createCommodityBranch( requestCommodity, commodityExist.get());
+            createCommodityBranch(requestCommodity, commodityExist.get());
             commodityRepository.save(commodityExist.get());
 
-        }else{
+        } else {
             //create new commodity and dependent classes
             Commodity commodity = createCommodityFromRequest(requestCommodity);
             createCommodityBranch(requestCommodity, commodity);
@@ -262,32 +267,32 @@ public class CommodityServiceImpl implements CommodityService {
     public void updateCommodity(RequestCommodity requestCommodity) {
         log.info("RC : {}", requestCommodity);
         Optional<CommodityBranch> commodityBranchOptional = commodityBranchRepository.findById(requestCommodity.getBranchId());
-        if(commodityBranchOptional.isPresent()){
+        if (commodityBranchOptional.isPresent()) {
 
             CommodityBranch branch = commodityBranchOptional.get();
             List<CommodityBranchAttributeSet> propertySetList = new ArrayList<>(branch.getAttributeSet());
             //update branch propertySet
             boolean updateBranch = false;
-            if(requestCommodity.getPropertyValues().size()>0) {
+            if (requestCommodity.getPropertyValues().size() > 0) {
                 //updateBranch = true;
-                propertySetList.forEach(set->branch.getAttributeSet().remove(set));
+                propertySetList.forEach(set -> branch.getAttributeSet().remove(set));
 
-                //TODO change attributeSet
+                //TODO change attributeSet think bout refactorin
                 List<Long> valueIdList = requestCommodity.getPropertyValues();
-                for(Long propertyValueId: valueIdList){
+                for (Long propertyValueId : valueIdList) {
                     Optional<CommodityAttributeValue> commodityPropertyValueExist = commodityAttributeValueRepository.findById(propertyValueId);
-                    if(commodityPropertyValueExist.isPresent()) {
-                        CommodityAttributeValue commodityAttributeValue = commodityPropertyValueExist.get();
+                    commodityPropertyValueExist.ifPresent(commodityAttributeValue -> {
+                                CommodityBranchAttributeSet newAttribute = new CommodityBranchAttributeSet();
+                                newAttribute.setBranch(branch);
+                                newAttribute.setAttribute(commodityAttributeValue.getAttribute());
+                                newAttribute.setAttributeValue(commodityAttributeValue);
+                                branch.getAttributeSet().add(newAttribute);
+                                log.info("Add newAttribute -> {}", newAttribute);
+                            }
 
-                        CommodityBranchAttributeSet newAttribute = new CommodityBranchAttributeSet();
-                        newAttribute.setBranch( branch );
-                        newAttribute.setAttribute(commodityAttributeValue.getAttribute());
-                        newAttribute.setAttributeValue(commodityAttributeValue);
-                        branch.getAttributeSet().add(newAttribute);
-                        log.info("Add newAttribute -> {}", newAttribute);
-                    }
+                    );
+
                 }
-                //createBranchPropertySet(requestCommodity.getPropertyValues(), branch);
 
             }
             log.info("attributes updated: {}", branch.getAttributeSet().size());
@@ -301,13 +306,13 @@ public class CommodityServiceImpl implements CommodityService {
             commodity.setName(requestCommodity.getName());
             List<CommodityImage> images = commodity.getImages();
             log.info("requestCommodity.getImages().size() = {}", requestCommodity.getImages().size());
-            log.info("images.size() = " + images.size() );
-            if(requestCommodity.getImages().size()==images.size()) {
+            log.info("images.size() = " + images.size());
+            if (requestCommodity.getImages().size() == images.size()) {
                 for (int imgIdx = 0; imgIdx < requestCommodity.getImages().size(); imgIdx++) {
                     CommodityImage img = images.get(imgIdx);
                     log.info("img.getUri()={}", img.getUri());
                     log.info("requestCommodity.getImages().get(imgIdx)={}", requestCommodity.getImages().get(imgIdx));
-                    if(!img.getUri().equals(requestCommodity.getImages().get(imgIdx))){
+                    if (!img.getUri().equals(requestCommodity.getImages().get(imgIdx))) {
                         img.setUri(requestCommodity.getImages().get(imgIdx));
                         log.info("save img");
                         //commodityImageRepository.save(img);
@@ -350,7 +355,7 @@ public class CommodityServiceImpl implements CommodityService {
     public List<Commodity> findAllCommoditiesByTypeName(String typeName) {
 
         Optional<CommodityType> typeExist = commodityTypeRepository.findByName(typeName);
-        if(typeExist.isPresent()) {
+        if (typeExist.isPresent()) {
             return commodityRepository.findByType(typeExist.get());
         }
         return null;

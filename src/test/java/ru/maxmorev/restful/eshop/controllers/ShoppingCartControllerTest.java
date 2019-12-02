@@ -113,4 +113,60 @@ public class ShoppingCartControllerTest {
                 .andExpect(jsonPath("$.id", is(11)));
     }
 
+    @Test
+    @DisplayName("Should expect validation error in shopping cart id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void addToSCSShoppingCartIdValidationTest() throws Exception {
+        RequestShoppingCartSet rscs = RequestShoppingCartSet
+                .builder()
+                .amount(1)
+                .branchId(5L)
+                .shoppingCartId(23L)
+                .build();
+
+        mockMvc.perform(post(Constants.REST_PUBLIC_URI + ShoppingCartController.SHOPPING_CART)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rscs.toString()))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")))
+                .andExpect(jsonPath("$.errors[0].field", is("shoppingCartId")));
+    }
+
+    @Test
+    @DisplayName("Should expect validation error in branch id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void addToSCSBranchIdValidationTest() throws Exception {
+        RequestShoppingCartSet rscs = RequestShoppingCartSet
+                .builder()
+                .amount(1)
+                .branchId(50L)
+                .shoppingCartId(22L)
+                .build();
+
+        mockMvc.perform(post(Constants.REST_PUBLIC_URI + ShoppingCartController.SHOPPING_CART)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rscs.toString()))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")))
+                .andExpect(jsonPath("$.errors[0].field", is("branchId")));
+    }
+
+
+
 }

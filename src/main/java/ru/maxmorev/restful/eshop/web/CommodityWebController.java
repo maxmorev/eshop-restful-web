@@ -28,10 +28,6 @@ public class CommodityWebController extends CommonWebController{
 
         log.info("Listing branches");
         List<Commodity> commodities = commodityService.findAllCommodities();
-        if(Objects.isNull(commodities)){
-            //TODO error handling
-            return "commodity/error";
-        }
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
         uiModel.addAttribute("commodities", commodities );

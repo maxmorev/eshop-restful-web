@@ -7,7 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import ru.maxmorev.restful.eshop.validation.CheckCommodityBranchAttributes;
 
-import javax.validation.constraints.*;
+
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Currency;
 import java.util.List;
 import java.util.Objects;

@@ -12,6 +12,7 @@ import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
+import javax.validation.Valid;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -54,9 +55,8 @@ public class ShoppingCartController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.POST)
     @ResponseBody
-    public ShoppingCart addToShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
+    public ShoppingCart addToShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("POST:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
-        //TODO Validation
         return shoppingCartService
                 .addBranchToShoppingCart(
                         requestShoppingCartSet.getBranchId(),
@@ -66,9 +66,8 @@ public class ShoppingCartController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.DELETE)
     @ResponseBody
-    public ShoppingCart removeFromShoppingCartSet(@RequestBody RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
+    public ShoppingCart removeFromShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
-        //TODO Validation
         return shoppingCartService.removeBranchFromShoppingCart(
                 requestShoppingCartSet.getBranchId(),
                 requestShoppingCartSet.getShoppingCartId(),
