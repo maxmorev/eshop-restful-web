@@ -28,7 +28,9 @@ import ru.maxmorev.restful.eshop.services.CustomerService;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -50,7 +52,6 @@ public class CustomerControllerTest {
 
     @Test
     @DisplayName("Should create customer from RequestBody")
-    @Transactional
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/clean-up.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
@@ -76,7 +77,131 @@ public class CustomerControllerTest {
     }
 
     @Test
+    @DisplayName("Should except error while create customer from RequestBody")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void createCustomerUniqueErrorTest() throws Exception {
+        assertTrue(customerService.findByEmail("test@titsonfire.store").isPresent());
+        Customer customer = Customer
+                .builder()
+                .email("test@titsonfire.store")
+                .fullName("Maxim Morev")
+                .address("Test Address")
+                .postcode("111123")
+                .city("Moscow")
+                .country("Russia")
+                .password("helloFreakBitches")
+                .build();
+        mockMvc.perform(post(Constants.REST_PUBLIC_URI + "customer/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(customer.toString()))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Internal storage error")));
+    }
+
+    @Test
+    @DisplayName("Should except validation error while create customer from RequestBody")
     @Transactional
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void createCustomerValidationErrorTest() throws Exception {
+        assertTrue(customerService.findByEmail("test@titsonfire.store").isPresent());
+        Customer customer = Customer
+                .builder()
+                .email("test2@titsonfire.store")
+                .fullName("Maxim Morev")
+                .address("")
+                .postcode("111123")
+                .city("Moscow")
+                .country("Russia")
+                .password("helloFreakBitches")
+                .build();
+        mockMvc.perform(post(Constants.REST_PUBLIC_URI + "customer/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(customer.toString()))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")))
+                .andExpect(jsonPath("$.errors[0].field", is("address")));
+    }
+
+    @Test
+    @DisplayName("Should except validation errors while create customer from RequestBody")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void createCustomerValidationErrorFullListTest() throws Exception {
+        Customer customer = Customer
+                .builder()
+                .email("")
+                .fullName("")
+                .address("")
+                .postcode("")
+                .city("")
+                .country("")
+                .password("")
+                .build();
+        mockMvc.perform(post(Constants.REST_PUBLIC_URI + "customer/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(customer.toString()))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(8)))
+        ;
+    }
+
+    @Test
+    @DisplayName("Should except email pattern validation error while create customer from RequestBody")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void createCustomerEmailValidationErrorTest() throws Exception {
+        assertTrue(customerService.findByEmail("test@titsonfire.store").isPresent());
+        Customer customer = Customer
+                .builder()
+                .email("notvalid@titsonfire")
+                .fullName("Maxim Morev")
+                .address("Correct Address")
+                .postcode("111123")
+                .city("Moscow")
+                .country("Russia")
+                .password("helloFreakBitches")
+                .build();
+        mockMvc.perform(post(Constants.REST_PUBLIC_URI + "customer/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(customer.toString()))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")))
+                .andExpect(jsonPath("$.errors[0].field", is("email")));
+    }
+
+    @Test
     @DisplayName("Should update customer info from RequestBody")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
@@ -107,8 +232,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @Transactional
-    @DisplayName("Should not update customer info from RequestBody and expected error")
+    @DisplayName("Should not update customer info from RequestBody and expected auth error")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
@@ -137,7 +261,6 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Should verify customer from RequestBody")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
@@ -161,7 +284,6 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Should fail verify customer from RequestBody")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",
@@ -184,7 +306,6 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Should expect error while verify customer from RequestBody")
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/test-data.sql",

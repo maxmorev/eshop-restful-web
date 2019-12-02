@@ -106,33 +106,33 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     @Override
-    public void addAttribute(RequestAttributeValue property) {
-        log.info("Property : {}",  property);
-        Optional<CommodityType> type = commodityTypeRepository.findById(property.getTypeId());
+    public void addAttribute(RequestAttributeValue attribute) {
+        log.info("Property : {}", attribute);
+        Optional<CommodityType> type = commodityTypeRepository.findById(attribute.getTypeId());
         if(!type.isPresent()){
 
-            throw new IllegalArgumentException( "Type not found type.id=" + property.getTypeId());
+            throw new IllegalArgumentException( "Type not found type.id=" + attribute.getTypeId());
 
         }
-        Optional<CommodityAttribute> propertyOptional = commodityAttributeRepository.findByNameAndCommodityType(property.getName(), type.get());
+        Optional<CommodityAttribute> propertyOptional = commodityAttributeRepository.findByNameAndCommodityType(attribute.getName(), type.get());
         if(propertyOptional.isPresent()){
             //check: if value exist? true: do nothing esle create new value
             CommodityAttribute existProperty = propertyOptional.get();
             CommodityAttributeValue newValue = new CommodityAttributeValue(existProperty);
-            Object val = newValue.createValueFrom( property.getValue() );
+            Object val = newValue.createValueFrom( attribute.getValue() );
             if( existProperty.getValues().stream().noneMatch(v->v.getValue().equals(val))  ){
                 //create value
-                createValue(existProperty, property.getValue());
+                createValue(existProperty, attribute.getValue());
             }
 
         }else{
             CommodityAttribute newProperty = new CommodityAttribute();
-            newProperty.setDataType(AttributeDataType.valueOf(property.getDataType()));
-            newProperty.setName(property.getName());
+            newProperty.setDataType(AttributeDataType.valueOf(attribute.getDataType()));
+            newProperty.setName(attribute.getName());
             newProperty.setCommodityType(type.get());
-            newProperty.setMeasure(property.getMeasure());
+            newProperty.setMeasure(attribute.getMeasure());
             commodityAttributeRepository.save(newProperty);
-            createValue(newProperty, property.getValue());
+            createValue(newProperty, attribute.getValue());
         }
 
     }

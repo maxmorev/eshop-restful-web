@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,7 @@ public class CustomerController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/", method = RequestMethod.POST)
     @ResponseBody
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public CustomerDTO createCustomer(@RequestBody @Valid Customer customer, Locale locale){
         log.info("Customer : {}", customer);
         return CustomerDTO.of(customerService.createCustomerAndVerifyByEmail(customer));
@@ -59,6 +61,7 @@ public class CustomerController {
 
     @RequestMapping(path = Constants.REST_CUSTOMER_URI + "update/", method = RequestMethod.PUT)
     @ResponseBody
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public CustomerDTO updateCustomer(@RequestBody @Valid CustomerInfo customer, Locale locale){
         log.info("Customer update : {}", customer);
         String id = getAuthenticationCustomerId();
@@ -72,6 +75,7 @@ public class CustomerController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "customer/verify/", method = RequestMethod.POST)
     @ResponseBody
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public CustomerVerify verifyCustomer(@RequestBody @Valid CustomerVerify customerVerify, Locale locale){
         log.info("CustomerVerify : {}", customerVerify);
         Customer customer = customerService

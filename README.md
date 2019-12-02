@@ -58,3 +58,5 @@ https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9
 update java version in linux
 
 update-alternatives --config java
+
+Validating Input to a Spring Service Method https://reflectoring.io/bean-validation-with-spring-boot/

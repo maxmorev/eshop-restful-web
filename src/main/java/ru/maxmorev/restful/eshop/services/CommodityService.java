@@ -23,7 +23,7 @@ public interface CommodityService {
 
     void deleteTypeById(Long id); //tested
 
-    void addAttribute(RequestAttributeValue property); //tested
+    void addAttribute(RequestAttributeValue attribute); //tested
 
     List<CommodityAttribute> findAttributesByTypeId(Long typeId); //tested
 
