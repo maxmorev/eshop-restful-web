@@ -67,7 +67,7 @@
                 </c:if>
             <a class="mdl-navigation__link" href="#about">${labelAbout}</a>
             <a class="mdl-navigation__link" href="#contacts">${labelContacts}</a>
-            <a class="tab-shopping-cart mdl-navigation__link" href="#shopping_cart"><div class="material-icons mdl-badge mdl-badge--overlap shopping-cart-nav" >shopping_cart</div></a>
+            <a class="tab-shopping-cart mdl-navigation__link" href="${shoppingCartUrl}"><div class="material-icons mdl-badge mdl-badge--overlap shopping-cart-nav" >shopping_cart</div></a>
             <a class="tab-account-update mdl-navigation__link" href="${accountUrl}"><div class="material-icons">account_circle</div></a>
         </nav>
     </div>

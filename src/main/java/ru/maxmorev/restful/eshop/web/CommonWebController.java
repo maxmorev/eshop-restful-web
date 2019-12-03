@@ -1,7 +1,6 @@
 package ru.maxmorev.restful.eshop.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,10 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Objects;
 
-
+@Slf4j
 public abstract class CommonWebController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommonWebController.class);
 
     protected ShoppingCartService shoppingCartService;
 
@@ -62,7 +59,7 @@ public abstract class CommonWebController {
         newCartCookie.setMaxAge(60*60*24*15);//15 days in seconds
         newCartCookie.setPath("/");
         //newCartCookie.setDomain();
-        logger.info("SETTING COOKIE");
+        log.info("SETTING COOKIE");
         response.addCookie(newCartCookie);
         return shoppingCart;
     }
@@ -72,14 +69,14 @@ public abstract class CommonWebController {
         ShoppingCart shoppingCart;
         if(Objects.isNull(cartCookie)){
             // create new shopping cart and save cookie
+            log.info("!!!!!!!!!!!create new shopping cart and save cookie");
             shoppingCart = setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response);
         }else{
             // load shopping cart from shoppingCart service and add to uiModel
-            logger.info("Load existing shopping cart: " + cartCookie.getValue());
+            log.info("Load existing shopping cart: " + cartCookie.getValue());
             Long cartId = Long.valueOf( cartCookie.getValue() );
             shoppingCart = shoppingCartService
-                    .findShoppingCartById(cartId)
-                    .orElse(setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response));
+                    .findShoppingCartById(cartId).orElseGet(()->setShoppingCartCookie(shoppingCartService.createEmptyShoppingCart(), response));
         }
         return  shoppingCart;
     }

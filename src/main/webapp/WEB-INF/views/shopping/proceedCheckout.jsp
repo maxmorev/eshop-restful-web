@@ -114,21 +114,20 @@ $(document).ready(function () {
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text commodity-name">${labelWelcome}</b></h2>
             </div>
-            <div class="mdl-card__media" style="background-color:white" >
-
-            </div>
-            <div class="mdl-card__supporting-text">
-            <span>Comment for page</span>
-            </div>
-            <div class="mdl-grid">
+            <div class="mdl-card__media" style="background-color:white" ></div>
+            <div class="mdl-card__supporting-text"><span>Comment for page</span></div>
+            <div class="mdl-grid portfolio-copy">
                 <div id="error-container" class="mdl-cell mdl-cell--12-col">
                     <h4>Error</h4>
                     <p id="error-message"></p>
                 </div>
-
-                <tiles:insertAttribute name="cart-container"/>
-
-                <div id="payment-info" class="mdl-cell mdl-cell--12-col">
+                <div class="mdl-cell mdl-cell--12-col">
+                Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                    <tiles:insertAttribute name="cart-container"/>
+                </div>
+                <div id="payment-info" class="mdl-cell mdl-cell--6-col">
                     <div class="mdl-grid">
                         <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
                         <div class="mdl-cell mdl-cell--8-col">
@@ -138,8 +137,7 @@ $(document).ready(function () {
 
                     </div>
                 </div>
-
-                <div id="payment-confirmed" class="mdl-cell mdl-cell--12-col">
+                <div id="payment-confirmed" class="mdl-cell mdl-cell--6-col">
                     <div class="mdl-grid">
                         <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
                         <div class="mdl-cell mdl-cell--8-col">

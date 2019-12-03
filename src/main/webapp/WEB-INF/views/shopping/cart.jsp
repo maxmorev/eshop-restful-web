@@ -47,26 +47,26 @@ $(document).ready(function () {
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
         <c:if test="${not empty shoppingCart}">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text commodity-name">${labelWelcome}</b></h2>
+                MY SHOPPING CART
             </div>
-            <div class="mdl-card__media" style="background-color:white" >
-
-            </div>
+            <div class="mdl-card__media" style="background-color:white"></div>
             <div class="mdl-card__supporting-text">
-            <span>Comment for page</span>
+            <span>Товары будут зарезервированы на 60 минут</span>
             </div>
-            <div class="mdl-grid">
 
-                <tiles:insertAttribute name="cart-container"/>
-
-                <div class="mdl-cell mdl-cell--6-col">&nbsp;</div>
-                <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
-                <div class="mdl-cell mdl-cell--4-col">
-                <button id="cart-btn-proceed" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">${labelProceedCheckout}</button>
-                </div>
+            <div class="mdl-grid portfolio-copy">
+               <div class="mdl-cell mdl-cell--12-col">
+               Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div>
+               </div>
+               <div class="mdl-cell mdl-cell--6-col">
+               <tiles:insertAttribute name="cart-container"/>
+               </div>
+               <div class="mdl-cell mdl-cell--6-col">
+               <button id="cart-btn-proceed" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">${labelProceedCheckout}</button>
+               </div>
 
             </div>
 
         </c:if>
-    </div>
+     </div>
 </div>

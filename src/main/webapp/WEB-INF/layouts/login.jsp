@@ -35,11 +35,15 @@
 </head>
 
 <body>
-<tiles:insertAttribute name="body"/>
-<!-- Toast place -->
-<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
-<div class="mdl-snackbar__text"></div>
-<button class="mdl-snackbar__action" type="button"></button>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+     <main class="mdl-layout__content">
+        <tiles:insertAttribute name="body"/>
+        <!-- Toast place -->
+        <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+        </div>
+     </main>
 </div>
 <!-- end Toast place -->
 <script defer src="${mdl_url}/material.min.js"></script>

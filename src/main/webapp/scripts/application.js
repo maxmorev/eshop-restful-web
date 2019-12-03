@@ -165,10 +165,7 @@ function showShoppingCart(shoppingCart){
     var totalItems = 0;
     var totalPrice = 0;
     shoppingSet.forEach(function(set){
-        content += '<tr>';
-        content += '<td>'+set.branch.code+'</td>';
-        content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'"><img src="'+set.commodityInfo.images[0].uri+'" width="100px"/></a></td>';
-        content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'">'+set.commodityInfo.name+'</a><br/>';
+
         //show attributes
         var attributes = set.branch.attributeSet;
         var attributesContent = '';
@@ -179,17 +176,23 @@ function showShoppingCart(shoppingCart){
             });
         }else{
             attributes.forEach(function(attr){
-                attributesContent += showWearAttrubute(attr);
+                attributesContent += showWearAttrubute(attr)+'<br/>';
             });
         }
+        content += '<tr>';
+        content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'"><img src="'+set.commodityInfo.images[0].uri+'" width="100px"/></a></td>';
+        content += '<td class="mdl-data-table__cell--non-numeric">';
+        content += '<b>'+set.branch.price+' £</b><br/>';
+        content += '<a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'">'+set.commodityInfo.name+'</a><br/>';
         content += attributesContent;
+        content += 'quantity: ' + set.amount +' | price: '+set.branch.price;
         content += '</td>';
+        content += '</tr>';
         //show attributes
-        content += '<td>'+set.amount+'</td>';
-        content += '<td>'+set.branch.price+'</td>';
-        content += '<td>'+set.amount*set.branch.price+'</td>';
-        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addToSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">add</i></button></td>';
-        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="removeFromSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">remove</i></button></td>';
+        //buttons
+        content += '<tr><td></td>'
+        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addToSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">add</i></button>&nbsp;';
+        content += '<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="removeFromSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">remove</i></button></td>';
         content += '</tr>';
         totalItems += set.amount;
         totalPrice += set.amount*set.branch.price;
