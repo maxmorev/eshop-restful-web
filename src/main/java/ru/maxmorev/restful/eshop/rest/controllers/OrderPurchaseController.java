@@ -22,19 +22,21 @@ public class OrderPurchaseController {
     private MessageSource messageSource;
     private OrderPurchaseService orderPurchaseService;
 
-    @Autowired public void setMessageSource(MessageSource messageSource) {
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
-    @Autowired public void setOrderPurchaseService(OrderPurchaseService orderPurchaseService) {
+    @Autowired
+    public void setOrderPurchaseService(OrderPurchaseService orderPurchaseService) {
         this.orderPurchaseService = orderPurchaseService;
     }
 
-    @RequestMapping(path = Constants.REST_CUSTOMER_URI+"order/confirm/", method = RequestMethod.POST)
+    @RequestMapping(path = Constants.REST_CUSTOMER_URI + "order/confirm/", method = RequestMethod.POST)
     @ResponseBody
-    Message confirmOrder(
-            @RequestBody @Valid OrderPaymentConfirmation orderPaymentConfirmation,
-            Locale locale){
+    Message confirmOrder(@RequestBody
+                         @Valid OrderPaymentConfirmation orderPaymentConfirmation,
+                         Locale locale) {
 
         orderPurchaseService.findOrder(orderPaymentConfirmation.getOrderId()).ifPresent(order -> {
             orderPurchaseService.confirmPaymentOrder(
