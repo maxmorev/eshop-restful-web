@@ -34,9 +34,8 @@ function refreshTypes(){
         for(var i=0; i<json.length; i++){
 
             content += "<tr>";
-            content += "<td >" + json[i].id + "</td>";
             content += "<td class='mdl-data-table__cell--non-numeric'>" + "<a class='edit-type-link' href='#typeId/" + json[i].id + "' onclick='onEditTypeClick("+json[i].id+");'>" +json[i].name + "</td>";
-            content += "<td class='mdl-data-table__cell--non-numeric'>NAN</td>";
+            content += "<td class='mdl-data-table__cell--non-numeric'><button class='mdl-button mdl-js-button mdl-button--icon mdl-button--colored' onclick='setupType(" + json[i].id + ");'><i class='material-icons'>build</i></button></td>";
             content += "<td class='mdl-data-table__cell--non-numeric'><button class='mdl-button mdl-js-button mdl-button--icon mdl-button--colored' onclick='deleteType(" + json[i].id + ");'><i class='material-icons'>delete</i></button></td>";
             content += "</tr>";
 
@@ -76,6 +75,7 @@ function deletePropertyValue(valueId){
 
 };
 
+
 function refreshProperties(typeId){
      var snackbarContainer = document.querySelector('#demo-toast-example');
 
@@ -92,21 +92,25 @@ function refreshProperties(typeId){
             if(json[i].values){
                 for(var valIndex=0; valIndex < json[i].values.length; valIndex++){
                     content += "<tr>";
-                    content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].name + "</td>";
+                    content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].name+' : ';
                     if(json[i].name=="color"){
-                        content += '<td>' + showColorElement(json[i].values[valIndex].value) + '</td>';
+                        content += showColorElement(json[i].values[valIndex].value);
                     }else{
-                        content += "<td>" + json[i].values[valIndex].value + "</td>";
+                        if(json[i].name=="size"){
+                            content += showSizeElement(json[i].values[valIndex].value);
+                        }else{
+                            content += json[i].values[valIndex].value;
+                        }
                     }
-                    content += "<td>" + json[i].dataType + "</td>";
+                    content += '</td>';
+                    content += "<td> type : " + json[i].dataType + "<br/> measure :";
                     console.log("json[i].measure="+json[i].measure)
                     if(json[i].measure!=null){
-                        content += "<td>" + json[i].measure + "</td>";
+                        content += json[i].measure;
                     }else{
-                        content += "<td>undefined</td>";
+                        content += "undefined";
                     }
-
-
+                    content += "</td>";
                     content += "<td><button class='mdl-button mdl-js-button mdl-button--icon mdl-button--colored' onclick='deletePropertyValue(" + json[i].values[valIndex].id + ");'><i class='material-icons'>delete</i></button></td>";
                     content += "</tr>";
                 }
@@ -149,7 +153,7 @@ function loadDataTypes(){
     $.getJSON( URL_SERVICES + "/public/attribute/value/dataTypes/", function(json, status){
         var content = "";
         for(var i=0; i < json.length; i++){
-            content += '<div mdl-cell mdl-cell--2-col><span class="mdl-list__item-primary-content">';
+            content += '<span class="mdl-list__item-primary-content">';
             content += json[i] + '</span><span class="mdl-list__item-secondary-action">';
             content += '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="datatype-option-'+i+'">';
             content += '<input type="radio" onclick="setDataType(this);" id="datatype-option-'+i+'" class="mdl-radio__button" name="dataType" value="'+json[i];
@@ -160,7 +164,7 @@ function loadDataTypes(){
                 content += '" />';
             }
 
-            content += '</label></span></div>';
+            content += '</label></span>';
         }
         $('#data-type-container').empty();
         $('#data-type-container').append(content);
@@ -177,10 +181,10 @@ function onEditTypeClick(typeId) {
         var toastMessage = {message: 'Hide -> typeId= ' + typeId };
         snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
         if( typeId ){
-            showEditType();
+            drawEditType();
             getCommodityType(typeId);
-            loadDataTypes();
-            refreshProperties(typeId);
+            //loadDataTypes();
+            //refreshProperties(typeId);
         }
 };
 
@@ -189,18 +193,6 @@ function showNavigationCaption(text){
      $("#navigation-text").empty();
      $("#navigation-text").append(text);
 }
-
-  function showEditType(){
-    $('#error-container-1').hide();
-    $("#form-create").hide();
-    $("#form-edit-type").show();
-    $("#type-list").hide();
-    $("#type-properties").show();
-    $("#attributes-container").show();
-    $("#btn-attribute-back").show();
-    showNavigationCaption("Edit commodity type and attributes");
-    componentHandler.upgradeDom();
-  };
 
   function cleanCreateType(){
     $( "#commodityTypeName" ).val("");
@@ -212,25 +204,117 @@ function showNavigationCaption(text){
     $( "#attributeValue" ).val("");
   };
 
+const ERROR_CONTAINERS = 2;
+
+function errorContainerHide(i){
+    $('#error-container-'+i).empty();
+    $('#error-container-'+i).hide();
+}
+
+function drawCreateTypeBtnAction(){
+    //
+    $("#form-create").show();
+    $("#form-create-btns").show();
+    $("#draw-create-type-btn").hide();
+    $("#type-list").hide();
+}
+
+function drawEditType(){
+  errorContainerHide(1);
+  $("#type-list").hide();
+  $("#form-edit-type").show();
+  $("#form-edit-type-btns").show();
+  showNavigationCaption("Edit commodity type");
+  componentHandler.upgradeDom();
+};
+
+function drawTypeList(){
+    //show
+    window.location = '#view/typeList';
+    showNavigationCaption("Here you can Create/Edit Type of your Commodities");
+    $("#type-list").show();
+    $("#draw-create-type-btn").show();
+    //hide
+    errorContainerHide(1);
+    $("#form-create").hide();
+    $("#form-create-btns").hide();
+    $("#form-edit-type").hide();
+    $("#form-edit-type-btns").hide();
+    $("#add-attributes-container").hide();
+    $("#add-attributes-container-btns").hide()
+    $("#attributes-container").hide();
+    $("#attributes-container-btns").hide();
+    $("#btn-attribute-back-container").hide();
+    componentHandler.upgradeDom();
+};
+
+function addAttributeAction(){
+    var typeId = getTypeIdFromUrl();
+
+    var measure = null;
+    if(  !($( "#attributeMeasure" ).val() === undefined) ){
+        if( $( "#attributeMeasure" ).val().length > 0 ){
+            measure = $( "#attributeMeasure" ).val();
+        }
+    }
+    var data = {
+        typeId: typeId,
+        dataType: DATA_TYPE,
+        measure: measure,
+        name: $( "#propertyName" ).val(),
+        value: $( "#attributeValue" ).val()
+    };
+
+    addAttribute(data, 1, function(){
+        refreshProperties(typeId);
+        setupType(typeId);
+        });
+    cleanProperty();
+}
+
+function setupType(typeId){
+    if(typeId==undefined){
+        typeId = getTypeIdFromUrl();
+    }
+    window.location = '#typeId/'+typeId+'/view/setupType';
+    errorContainerHide(1);
+    refreshProperties(typeId);
+    $("#add-attributes-container-btns").hide();
+    $("#add-attributes-container").hide();
+    $("#attributes-container").show();
+    $("#attributes-container-btns").show();
+    $("#type-list").hide();
+    $("#form-create").hide();
+    $("#draw-create-type-btn").hide();
+    $("#type-list").hide();
+    showNavigationCaption("Edit type attributes");
+}
+
+function drawAddAttributes(){
+    var typeId = getTypeIdFromUrl();
+    window.location = '#typeId/'+typeId+'/view/addAttribute/';
+
+    loadDataTypes();
+    $("#attributes-container").hide();
+    $("#attributes-container-btns").hide();
+    $("#add-attributes-container").show();
+    $("#add-attributes-container-btns").show();
+    showNavigationCaption("Here you can add attribute to type");
+    componentHandler.upgradeDom();
+}
+
+
   function showCreateType(){
     cleanCreateType();
     refreshTypes();
-    $('#error-container-1').hide();
-    $("#form-create").show();
-    $("#form-edit-type").hide();
-    $("#type-list").show();
-    $("#type-properties").hide();
-    $("#attributes-container").hide();
-    $("#btn-attribute-back").hide();
-    showNavigationCaption("Create Commodity Type");
-    componentHandler.upgradeDom();
+    drawTypeList();
   };
 
 
   function showForm(){
     var currentURL = window.location.href;
     var splited = currentURL.split("#");
-    $('#error-container-1').hide();
+    errorContainerHide(1);
     if( splited.length==1 ){
 
         showCreateType();
@@ -242,7 +326,7 @@ function showNavigationCaption(text){
             getCommodityType(typeId);
             refreshProperties(typeId);
             loadDataTypes();
-            showEditType();
+            drawEditType();
         }else{
             showCreateType();
         }
@@ -266,34 +350,33 @@ function showNavigationCaption(text){
 
   };
 
+function drawChip(text){
+    var chip = '<span class="mdl-chip"><span class="mdl-chip__text">'+text+'</span></span>';
+    return chip;
+}
 
-  function showError(json, errorTab){
+  function showError(json, errorTab) {
     console.log(json);
-    var errorContent = json.responseJSON.message.replace(/\n/g, "<br/>");
+    var errorContent = drawChip(json.responseJSON.message.replace(/\n/g, "<br/>"));
     if(json.responseJSON.errors && json.responseJSON.errors.length>0){
         errorContent = "";
-        json.responseJSON.errors.forEach(function(val){ console.log(val.field); errorContent += val.message +"<br/>"});
+        json.responseJSON.errors.forEach(function(val){ console.log(val.field); errorContent += drawChip(val.message); });
+
     }
-
-    var message = "<b>" + json.responseJSON.status +"</b>:&nbsp;" + errorContent;
+    var message = errorContent;
     if(errorTab===undefined){
-        $('#error-message-content-1').empty();
-        $('#error-message-content-1').append(message);
-        $('#error-message-content-1').show();
-        $('#error-message-1').show();
+        $('#error-container-1').empty();
+        $('#error-container-1').append(message);
         $('#error-container-1').show();
-
     }else{
-        $('#error-message-content-'+errorTab).empty();
-        $('#error-message-content-'+errorTab).append(message);
-        $('#error-message-content-'+errorTab).show();
-        $('#error-message-'+errorTab).show();
+        $('#error-container-'+errorTab).empty();
+        $('#error-container-'+errorTab).append(message);
         $('#error-container-'+errorTab).show();
     }
     componentHandler.upgradeDom();
   }
 
-  function showErrorFromText(text, errorTab){
+  function showErrorFromText(text, errorTab) {
 
       var message = text;
       if(errorTab===undefined){
@@ -336,17 +419,22 @@ function addTypeSuccess(json){
     showToast('Success');
     refreshTypes();
     cleanCreateType()
+    $("#type-list").show();
+    $("#draw-create-type-btn").show();
+    //hide
+    errorContainerHide(1);
+    $("#form-create").hide();
 }
 
 function addTypeError(json){
     showToast("Error create type");
     showError(json);
     refreshTypes();
-    cleanCreateType()
 }
 
 function updateTypeSuccess(json){
-    getCommodityType( getTypeIdFromUrl() );
+    $('#commodityTypeNameEdit').val( json.name );
+    $('#commodityTypeDescEdit').val( json.description );
     showToast('Update Type Success');
 }
 function updateTypeError(json){
@@ -354,7 +442,13 @@ function updateTypeError(json){
     showToast('Error');
 }
 
+function btnAttributeBackAction(){
+    window.location = '#commodityTypes';
+    showCreateType();
+}
+
 $(document).ready(function () {
+
 
   showForm();
 
@@ -373,32 +467,8 @@ $(document).ready(function () {
   var createPropertyButton = document.querySelector('#btn-create-attribute');
 
   createPropertyButton.addEventListener('click', function() {
-    var typeId = getTypeIdFromUrl();
-
-    var measure = null;
-    if(  !($( "#attributeMeasure" ).val() === undefined) ){
-        if( $( "#attributeMeasure" ).val().length > 0 ){
-            measure = $( "#attributeMeasure" ).val();
-        }
-    }
-    var data = {
-        typeId: typeId,
-        dataType: DATA_TYPE,
-        measure: measure,
-        name: $( "#propertyName" ).val(),
-        value: $( "#attributeValue" ).val()
-    };
-
-    addAttribute(data, 1, function(){refreshProperties(typeId);});
-    cleanProperty();
-
-  });
-
-
-  var btnPropertyBack = document.querySelector('#btn-attribute-back');
-  btnPropertyBack.addEventListener('click', function() {
-    window.location = '#commodityTypes';
-    showCreateType();
+    //add attribute
+    addAttributeAction();
   });
 
   var btnEditType = document.querySelector('#btn-edit-type');

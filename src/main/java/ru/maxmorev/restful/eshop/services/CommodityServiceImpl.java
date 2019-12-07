@@ -87,6 +87,18 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     @Override
+    public CommodityType updateType(CommodityType type) {
+        return commodityTypeRepository
+                .findById(type.getId())
+                .map(t -> {
+                    t.setName(type.getName());
+                    t.setDescription(type.getDescription());
+                    return commodityTypeRepository.save(t);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Type not found type.id=" + type.getId()));
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<CommodityType> findTypeById(Long id) {
         return commodityTypeRepository.findById(id);
@@ -266,7 +278,7 @@ public class CommodityServiceImpl implements CommodityService {
     @Override
     public void updateCommodity(RequestCommodity requestCommodity) {
         log.info("RequestCommodity : {}", requestCommodity);
-        commodityBranchRepository.findById(requestCommodity.getBranchId()).ifPresent( branch -> {
+        commodityBranchRepository.findById(requestCommodity.getBranchId()).ifPresent(branch -> {
 
             List<CommodityBranchAttributeSet> propertySetList = new ArrayList<>(branch.getAttributeSet());
 

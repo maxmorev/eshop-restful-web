@@ -3,6 +3,8 @@ package ru.maxmorev.restful.eshop.rest.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.rest.Constants;
@@ -47,9 +49,10 @@ public class CommodityTypeController {
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI + "type/", method = RequestMethod.PUT)
     @ResponseBody
-    public Message updateCommodityType(@RequestBody @Valid CommodityType type, Locale locale ){
-        commodityService.addType(type);
-        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    public CommodityType updateCommodityType(@RequestBody @Valid CommodityType type, Locale locale ){
+        log.info("updateCommodityType {}", type);
+        return commodityService.updateType(type);
     }
 
 

@@ -22,6 +22,7 @@ import ru.maxmorev.restful.eshop.rest.response.Message;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -117,7 +118,8 @@ public class CommodityTypeControllerTest {
     })
     public void updateCommodityTypeTest() throws Exception {
         CommodityType type = commodityService.findTypeById(24L).get();
-        type.setName("Type Update");
+        assertEquals("test delete", type.getDescription());
+        type.setDescription("Type Update test controller");
         mockMvc.perform(put(Constants.REST_PRIVATE_URI + "type/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(type.toString())
@@ -126,7 +128,34 @@ public class CommodityTypeControllerTest {
                         .authorities((GrantedAuthority) () -> "ADMIN")))
                 .andDo(print())
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.status", is(Message.SUCCES)));
+                .andExpect(jsonPath("$.id", is(24)))
+                .andExpect(jsonPath("$.description", is("Type Update test controller")));
+    }
+
+    @Test
+    @DisplayName("Should expect error while update commodity type by id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void updateCommodityTypeValidationTest() throws Exception {
+        CommodityType type = commodityService.findTypeById(24L).get();
+        assertEquals("test delete", type.getDescription());
+        type.setDescription("Type");
+        mockMvc.perform(put(Constants.REST_PRIVATE_URI + "type/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(type.toString())
+                .with(user("admin")
+                        .password("pass")
+                        .authorities((GrantedAuthority) () -> "ADMIN")))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")))
+                .andExpect(jsonPath("$.errors[0].field", is("description")));
     }
 
     @Test

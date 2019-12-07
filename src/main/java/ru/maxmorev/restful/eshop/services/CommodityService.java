@@ -17,6 +17,8 @@ public interface CommodityService {
 
     void addType(CommodityType type); //tested
 
+    CommodityType updateType(CommodityType type);
+
     Optional<CommodityType> findTypeById(Long id); //tested
 
     Optional<CommodityType> findTypeByName(String name);

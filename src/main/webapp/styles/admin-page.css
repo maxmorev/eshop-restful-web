@@ -1,52 +1,98 @@
-    label.input-custom-file input[type=file] {
-        display: none;
-    }
-    .img-parent {
-        position: relative;
-        border: 1px solid gray;
-        width: 200px;
-        height: 200px;
-    }
-    .img-placeholder {
-        width: 200px;
-        height: 200px;
-    }
-    .img-upload-spinner {
-        position:absolute;
-        top:100px;
-        left:90px
-    }
-    .img-upload-btn {
-        position:relative;
-        top:-45px;
-        left:155px
-    }
-    .mdl-cell {
-        min-width:200px;
+/**
+admin
+*/
 
-    }
+label.input-custom-file input[type=file] {
+    display: none;
+}
+.img-parent {
+    position: relative;
+    border: 1px solid gray;
+    width: 200px;
+    height: 200px;
+}
+.img-placeholder {
+    width: 200px;
+    height: 200px;
+}
+.img-upload-spinner {
+    position:absolute;
+    top:100px;
+    left:90px
+}
+.img-upload-btn {
+    position:relative;
+    top:-45px;
+    left:155px
+}
+.mdl-cell {
+    min-width:200px;
 
-    .btn-before-commodity{
-        position:relative;
-        top:10px;
-        left:500px;
-    }
+}
 
-    .btn-next-commodity{
-        position:relative;
-        top:10px;
-        left:550px;
-    }
+.btn-before-commodity{
+    position:relative;
+    top:10px;
+    left:500px;
+}
 
-    .btn-add-commodity{
-        position:relative;
-        top:10px;
-        left:600px;
-    }
+.btn-next-commodity{
+    position:relative;
+    top:10px;
+    left:550px;
+}
 
-    .small-form-text {
-        width: 130px;
-    }
-    .attribute-table{
-        width: 250px;
-    }
+.btn-add-commodity{
+    position:relative;
+    top:10px;
+    left:600px;
+}
+
+.small-form-text {
+    width: 130px;
+}
+.attribute-table{
+    width: 250px;
+}
+
+.login-form {
+    position: relative;
+    width:600px;
+}
+
+.login-form-container {
+    margin: auto;
+    width: 40%;
+    padding: 10px;
+}
+
+.login-title {
+    text-align: center;
+    margin-top: 10%;
+}
+
+.draw-create-type-btn {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    z-index:52;
+}
+
+.left-action-container-buttons {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index:52;
+}
+
+.navigation-text {
+    position: absolute;
+    left: 120px;
+    top: 10px;
+    z-index:51;
+}
+
+.main-layout {
+    position: relative;
+    top: 35px;
+}

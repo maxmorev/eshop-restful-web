@@ -1,15 +1,9 @@
-        
-        
-        
-        
-        
-        
-
 <!--
                   Created by maxim.morev on 05/09/19.
                   USING
                   Material Design Lite
                   Copyright 2019. All rights reserved.
+
 
                   Licensed under the Apache License, Version 2.0 (the "License");
                   you may not use this file except in compliance with the License.
@@ -26,202 +20,96 @@
 <html>
 
 <head>
-    
-    
-    
-    
+
+
+
+
+
+
+
 
     <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="description" content="A portfolio template that uses Material Design Lite."/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
     <title>Welcome to Smart E-Shop</title>
-    <!--<title>MDL-Static Website</title>-->
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.grey-pink.min.css" />
-    <link rel="stylesheet" href="styles/style.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <link rel="stylesheet" href="styles/gallery.css" />
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="/styles/application.css" />
+    <link rel="stylesheet" href="/styles/admin-page.css" />
+    <link rel="stylesheet" href="/styles/style.css" />
     <!-- Get the user locale from the page context (it was set by Spring MVC's locale resolver) -->
-    
-    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <script src="/restful-eshop/scripts/gallery.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="/scripts/common.js"></script>
+    <script src="/scripts/application.js"></script>
+
+    <script type="text/javascript">
+        const URL_SERVICES = "/rest/api";
+        var SHOPPING_CART_ITEMS_AMOUNT = 2;
+        window.onload = function() {
+            showSpinner();
+        }
+    </script>
+
+    <style>
+    .portfolio-header {
+      position: relative;
+      background-image: url(/images/header-bg.jpg);
+    }
+
+    .portfolio-logo {
+      background: url(/images/logo.png) 50% no-repeat;
+      background-size: cover;
+      height: 150px;
+      width: 150px;
+      margin: auto auto 10px;
+    }
+
+    footer {
+      background-image: url(/images/footer-background.png);
+      background-size: cover;
+    }
+    </style>
 </head>
 
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-
-             
-     
-     
-     
-     
-     
-
-    
-    
-    
-    
-
-    <header class="mdl-layout__header mdl-layout__header--waterfall portfolio-header">
-        <div class="mdl-layout__header-row portfolio-logo-row">
-            <span class="mdl-layout__title">
-                <div class="portfolio-logo">△</div>
-                <span class="mdl-layout__title">FIRE YOUR WEAR WITH FIRE</span>
-            </span>
+<!-- Simple header with fixed tabs. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header
+            mdl-layout--fixed-tabs">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Title</span>
         </div>
-        <div class="mdl-layout__header-row portfolio-navigation-row mdl-layout--large-screen-only">
-            <nav class="mdl-navigation mdl-typography--body-1-force-preferred-font">
-                <a class="mdl-navigation__link is-active" href="#t-shirts">T-SHIRTS</a>
-                <a class="mdl-navigation__link" href="#ceramics">CERAMICS</a>
-                <a class="mdl-navigation__link" href="#about">ABOUT</a>
-                <a class="mdl-navigation__link" href="#contacts">CONTACTS</a>
-                <a class="mdl-navigation__link" href="#contacts"><i class="material-icons">shopping_cart</i></a>
-                
-            </nav>
+        <!-- Tabs -->
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+            <a href="#fixed-tab-1" class="mdl-layout__tab is-active">Tab 1</a>
+            <a href="#fixed-tab-2" class="mdl-layout__tab">Tab 2</a>
+            <a href="#fixed-tab-3" class="mdl-layout__tab">Tab 3</a>
         </div>
     </header>
-
-    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
-        <nav class="mdl-navigation mdl-typography--body-1-force-preferred-font">
-            <a class="mdl-navigation__link is-active" href="#t-shirts">T-SHIRTS</a>
-            <a class="mdl-navigation__link" href="#caramics">CERAMICS</a>
-            <a class="mdl-navigation__link" href="#about">ABOUT</a>
-            <a class="mdl-navigation__link" href="#contacts">CONTACTS</a>
-            <a class="mdl-navigation__link" href="#contacts"><i class="material-icons">shopping_cart</i></a>
-        </nav>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Title</span>
     </div>
 
-
-
-
-        <!-- main grid of parts -->
-        <main class="mdl-layout__content">
-            
-
-
-
-
-
-
-    
-    
-    
-    
-
-
-    <div class="mdl-grid portfolio-max-width">
-        <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
-            
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text commodity-name">T-SHIRT&#160;<b>OCTOPUS DREAMS 3</b></h2>
-                </div>
-                <div class="mdl-card__media" style="background-color:white" >
-
-                    <div class="images">
-
-                        <img id="mainImage" width="100%" src="http://localhost:8080/img/01_cp.jpg"/>
-
-                    </div>
-                    <div class="gallery-navigation" align="center">
-                        
-                            
-                                <img  id="img-nav" src="http://localhost:8080/img/01_cp.jpg" width="100px" onClick="mark(this, 'http://localhost:8080/img/01_cp.jpg')" style="border:3px solid rgb(255,64,129)"/>
-                            
-                            
-                        
-                            
-                            
-                                <img id="img-nav" src="http://localhost:8080/img/02_cp.jpg" width="100px" onClick="mark(this, 'http://localhost:8080/img/02_cp.jpg')"/>
-                            
-                        
-                            
-                            
-                                <img id="img-nav" src="http://localhost:8080/img/03_cp.jpg" width="100px" onClick="mark(this, 'http://localhost:8080/img/03_cp.jpg')"/>
-                            
-                        
-                            
-                            
-                                <img id="img-nav" src="http://localhost:8080/img/octopusn-big.jpg" width="100px" onClick="mark(this, 'http://localhost:8080/img/octopusn-big.jpg')"/>
-                            
-                        
-                    </div>
-
-
-                </div>
-                <div class="mdl-card__supporting-text">
-                    <strong>T-SHIRT</strong>&#160;<span>Ручной пошив, 100% хлопок, уникальный принт. С ручной окраской и принтами</span>
-                </div>
-                <div class="mdl-grid portfolio-copy">
-                    <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">T-SHIRT&#160; OCTOPUS DREAMS 3</h3>
-                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >COST &#160;<b>3500.0 ₽</b></div>
-                    <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
-                        <p class="mdl-layout__text">Осьминог Ося поел грибов, забрался на самую красивую пальму и наблюдал, как теплые кожанные мешки таяли под солнцем и басами чилл-аутного звучания балианского прибоя. Вокруг копашился бриз и жужули мартыны, немного подсохнув и загорев, Ося прыгнул с пальмы в лазурь океана и растворился в пучине блаженства. 
-                        </p>
-                    </div>
-                    <div class="mdl-cell mdl-cell--6-col">
-                        <img class="article-image" src="http://localhost:8080/img/octopusn-big.jpg" width="200px" border="0" alt=""/>
-                    </div>
-
-                    <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline">CHOOSE COLOR, SIZE AND CHECKOUT</h3>
-
-                    <div class="mdl-cell mdl-cell--8-col mdl-card__supporting-text no-padding ">
-                
-                                <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline">
-                                Цвет: <div class="colorCircleSelect" style="background:pink">&#160;&#160;&#160;&#160;&#160;</div>&#160;<div class="colorCircleSelect" style="background:black; border:2px solid black;">&#160;&#160;&#160;&#160;&#160;</div>&#160;
-                                <br/><br/>
-                                Размер:
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-                                    <input commodityType="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked="true"/>
-                                    <span class="mdl-radio__label">XS</span>
-                                </label>&#160;
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
-                                    <input commodityType="radio" id="option-2" class="mdl-radio__button" name="options" value="2"/>
-                                    <span class="mdl-radio__label">S</span>
-                                </label>&#160;
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
-                                    <input commodityType="radio" id="option-3" class="mdl-radio__button" name="options" value="3"/>
-                                    <span class="mdl-radio__label">M</span>
-                                </label>&#160;
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4">
-                                    <input commodityType="radio" id="option-4" class="mdl-radio__button" name="options" value="4"/>
-                                    <span class="mdl-radio__label">L</span>
-                                </label>
-                                </h3>
-
-                    </div>
-                    <div class="mdl-cell mdl-cell--4-col"><!-- ACTIONS WITH commodity -->
-                                <!-- Accent-colored raised button with ripple -->
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                                ADD TO BASKET
-                                </button><br/><br/>
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                                CKECKOUT
-                                </button>
-                    </div>
-                </div>
-            
-        </div>
-    </div>
-    <footer class="mdl-mini-footer">
-        <div class="mdl-mini-footer__left-section">
-            <div class="mdl-logo">Smart E-Shop</div>
-        </div>
-        <div class="mdl-mini-footer__right-section">
-            <ul class="mdl-mini-footer__link-list">
-                <li><a href="#help">Help</a></li>
-                <li><a href="#privacy">Privacy &amp; Terms</a></li>
-            </ul>
-        </div>
-    </footer>
-
-
-        </main>
-    </div>
-
+    <main class="mdl-layout__content">
+        <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+            <div class="page-content"><!-- Your content goes here --></div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+            <div class="page-content"><!-- Your content goes here --></div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+            <div class="page-content"><!-- Your content goes here --></div>
+        </section>
+    </main>
+</div>
 </body>
-
 </html>
- 

@@ -30,18 +30,18 @@ import java.util.Properties;
 @ComponentScan(basePackages = "ru.maxmorev.restful.eshop")
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"ru.maxmorev.restful.eshop.repos"})
-@PropertySource("classpath:db/jdbc.properties")
+@PropertySource("classpath:db/db.properties")
 public class AdvancedDataBaseConfig {
 
     private final static Logger logger = LoggerFactory.getLogger(AdvancedDataBaseConfig.class);
 
-    @Value("${driverClassName}")
+    @Value("${jdbc.driverClassName}")
     private String driverClassName;
-    @Value("${url}")
+    @Value("${jdbc.url}")
     private String url;
-    @Value("${username}")
+    @Value("${jdbc.username}")
     private String username;
-    @Value("${password}")
+    @Value("${jdbc.password}")
     private String password;
 
     @Bean

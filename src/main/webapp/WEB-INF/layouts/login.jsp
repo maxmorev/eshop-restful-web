@@ -9,28 +9,32 @@
 <spring:theme code="mdlPath" var="mdl_Path" />
 <spring:url value="/${mdl_Path}" var="mdl_url" />
 
-
 <html>
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <!--<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">-->
+    <meta charset="utf-8"/>
+    <meta name="description" content="A portfolio template that uses Material Design Lite."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-        <!--local scripts -->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/fonts.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/mdl/material.min.css">
-        <!-- shop css -->
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/application.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin-page.css">
+    <title>Welcome to Smart E-Shop Security</title>
 
-        <script defer src="${pageContext.request.contextPath}/mdl/material.min.js"></script>
-        <script src="${pageContext.request.contextPath}/mdl/jquery.min.js"></script>
-        <!-- commodity css -->
-        <!-- end of commodity css -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.yellow-pink.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/application.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin-page.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/style.css" />
+
+    <!-- Get the user locale from the page context (it was set by Spring MVC's locale resolver) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
     <script type="text/javascript">
-    var URL_SERVICES = "<%=request.getScheme()%>://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
+        var URL_SERVICES = "<%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
     </script>
-     <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/admin-page.js"></script>
 
 </head>
 
