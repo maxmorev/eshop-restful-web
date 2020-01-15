@@ -183,6 +183,21 @@ public class CommodityServiceImpl implements CommodityService {
     /*
         COMMODITY
      */
+    private List<CommodityImage> createImageListOf(Commodity commodity, RequestCommodity requestCommodity){
+        List<CommodityImage> commodityImages = new ArrayList<>(requestCommodity.getImages().size());
+        log.info("requestCommodity.getImages() > {}", requestCommodity.getImages());
+        Short imageIndex = 0;
+        for (String imageUrl : requestCommodity.getImages()) {
+            CommodityImage image = new CommodityImage();
+            image.setImageOrder(imageIndex);
+            image.setUri(imageUrl);
+            image.setCommodity(commodity);
+            //commodityImageRepository.save( image );
+            commodityImages.add(image);
+            imageIndex++;
+        }
+        return commodityImages;
+    }
 
     private Commodity createCommodityFromRequest(RequestCommodity requestCommodity) {
         CommodityType commodityType;
@@ -201,21 +216,10 @@ public class CommodityServiceImpl implements CommodityService {
         commodity.setOverview(requestCommodity.getOverview());
         commodity.setType(commodityType);
         //commodityRepository.save( commodity );
-
+        commodity.getImages().addAll(createImageListOf(commodity, requestCommodity));
         //create images of commodity
-        List<CommodityImage> commodityImages = new ArrayList<>(requestCommodity.getImages().size());
-        log.info("requestCommodity.getImages() > {}", requestCommodity.getImages());
-        Short imageIndex = 0;
-        for (String imageUrl : requestCommodity.getImages()) {
-            CommodityImage image = new CommodityImage();
-            image.setImageOrder(imageIndex);
-            image.setUri(imageUrl);
-            image.setCommodity(commodity);
-            //commodityImageRepository.save( image );
-            commodityImages.add(image);
-            imageIndex++;
-        }
-        commodity.setImages(commodityImages);
+
+
         return commodity;
     }
 
@@ -313,23 +317,11 @@ public class CommodityServiceImpl implements CommodityService {
             commodity.setShortDescription(requestCommodity.getShortDescription());
             commodity.setOverview(requestCommodity.getOverview());
             commodity.setName(requestCommodity.getName());
-            List<CommodityImage> images = commodity.getImages();
-            log.info("requestCommodity.getImages().size() = {}", requestCommodity.getImages().size());
-            log.info("images.size() = " + images.size());
-            if (requestCommodity.getImages().size() == images.size()) {
-                for (int imgIdx = 0; imgIdx < requestCommodity.getImages().size(); imgIdx++) {
-                    CommodityImage img = images.get(imgIdx);
-                    log.info("img.getUri()={}", img.getUri());
-                    log.info("requestCommodity.getImages().get(imgIdx)={}", requestCommodity.getImages().get(imgIdx));
-                    if (!img.getUri().equals(requestCommodity.getImages().get(imgIdx))) {
-                        img.setUri(requestCommodity.getImages().get(imgIdx));
-                        log.info("save img");
-                        //commodityImageRepository.save(img);
-                    }
-                }
-            }
-            log.info("commodity fields updated");
+            commodity.getImages().forEach(commodityImage -> commodityImage.setCommodity(null));
+            commodity.getImages().clear();
+            commodity.getImages().addAll(createImageListOf(commodity, requestCommodity));
             //commodityBranchRepository.save(branch);
+            log.info("CREATE IMAGE LIST 2");
             commodityRepository.save(commodity);
 
         });

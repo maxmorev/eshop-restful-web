@@ -1,14 +1,26 @@
 package ru.maxmorev.restful.eshop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-@Data
+
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
 public class CommodityInfo extends AbstractEntity {
@@ -19,27 +31,28 @@ public class CommodityInfo extends AbstractEntity {
     @Column(nullable = false)
     protected String name;
 
-    @Column(name="short_description",nullable = false, length = 256)
+    @Column(name = "short_description", nullable = false, length = 256)
     protected String shortDescription;
 
     @Column(nullable = false, length = 2048)
     protected String overview;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="date_of_creation", nullable = false, updatable = false)
+    @Column(name = "date_of_creation", nullable = false, updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     protected Date dateOfCreation;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="type_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
     protected CommodityType type;
 
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval=true, mappedBy = "commodity", targetEntity=CommodityImage.class, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "commodity", targetEntity = CommodityImage.class, fetch = FetchType.EAGER)
     @org.hibernate.annotations.OrderBy(clause = "image_order asc")
-    @org.hibernate.annotations.BatchSize(size=10)
+    @org.hibernate.annotations.BatchSize(size = 10)
     protected List<CommodityImage> images = new ArrayList<>();
-    
-    @Override public boolean equals(Object object) {
+
+    @Override
+    public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityInfo)) return false;
         if (!super.equals(object)) return false;
@@ -52,7 +65,8 @@ public class CommodityInfo extends AbstractEntity {
                 getType().equals(that.getType());
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getShortDescription(), getOverview(), getType());
     }
 }

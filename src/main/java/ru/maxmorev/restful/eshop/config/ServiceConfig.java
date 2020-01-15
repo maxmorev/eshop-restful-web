@@ -16,17 +16,11 @@ import ru.maxmorev.restful.eshop.services.*;
 @ComponentScan(basePackages = {"ru.maxmorev.restful.eshop.entities", "ru.maxmorev.restful.eshop.services", "ru.maxmorev.restful.eshop.rest.controllers", "ru.maxmorev.restful.eshop.web"})
 public class ServiceConfig {
 
-    @Bean
-    CommodityService getCommodityService(){
-        return new CommodityServiceImpl();
-    }
-
-    @Bean
-    ShoppingCartService getShoppingCartService(){ return new ShoppingCartServiceImpl(); }
+    private final CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
 
     @Bean(name = { "customerService" })
-    public CustomerService getCustomerService(){ return new CustomerServiceImpl();}
+    public CustomerService getCustomerService(){ return customerServiceImpl;}
 
     @Bean(name = {"userDetailsService"})
-    UserDetailsService getUserDetailsService(){ return new CustomerServiceImpl();}
+    UserDetailsService getUserDetailsService(){ return customerServiceImpl;}
 }

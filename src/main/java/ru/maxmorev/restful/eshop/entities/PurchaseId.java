@@ -10,18 +10,18 @@ import java.util.Objects;
 public class PurchaseId implements Serializable {
 
     @Column(name = "branch_id")
-    Long  branchId;
+    Long branchId;
     @Column(name = "order_id")
     Long orderId;
 
     protected PurchaseId() {
     }
 
-    public PurchaseId(CommodityBranch branch, CustomerOrder customerOrder){
-        if(branch == null) throw new IllegalArgumentException("branch cannot be null");
-        if(customerOrder == null) throw new IllegalArgumentException("order cannot be null");
-        if(branch.getId() == null) throw new IllegalArgumentException("branch.id cannot be null");
-        if(customerOrder.getId() == null) throw new IllegalArgumentException("order.id cannot be null");
+    public PurchaseId(CommodityBranch branch, CustomerOrder customerOrder) {
+        if (branch == null) throw new IllegalArgumentException("branch cannot be null");
+        if (customerOrder == null) throw new IllegalArgumentException("order cannot be null");
+        if (branch.getId() == null) throw new IllegalArgumentException("branch.id cannot be null");
+        if (customerOrder.getId() == null) throw new IllegalArgumentException("order.id cannot be null");
         this.branchId = branch.getId();
         this.orderId = customerOrder.getId();
     }

@@ -1,8 +1,12 @@
 package ru.maxmorev.restful.eshop.entities;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,7 +15,8 @@ import java.util.Objects;
  * "Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools 5th ed. Edition"
  * https://www.apress.com/gp/book/9781484228074
  */
-@Data
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 

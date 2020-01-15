@@ -33,7 +33,9 @@
             </div>
         </section>
         <section class="mdl-layout__tab-panel" id="fixed-tab-2">
-            <div class="page-content"><!-- Your content goes here --></div>
+            <div class="page-content">
+            <tiles:insertAttribute name="section-commodity"/>
+            </div>
         </section>
         <section class="mdl-layout__tab-panel" id="fixed-tab-3">
             <div class="page-content"><!-- Your content goes here --></div>

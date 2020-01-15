@@ -1,7 +1,6 @@
 package ru.maxmorev.restful.eshop.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +10,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@Slf4j
 @Profile("dev")
 @Configuration
 public class MailSenderConfig {
-    private final static Logger logger = LoggerFactory.getLogger(MailSenderConfig.class);
 
     @Autowired
     private MailConfiguration mailConfiguration;

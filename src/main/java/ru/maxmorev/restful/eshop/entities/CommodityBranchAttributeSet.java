@@ -5,31 +5,37 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Objects;
-@Data
+
+@Getter
+@Setter
 @Entity
 @Table(name = "commodity_branch_attribute_set")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommodityBranchAttributeSet extends AbstractEntity {
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="branch_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "branch_id", referencedColumnName = "id")
     @JsonIgnore
     private CommodityBranch branch;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="attribute_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "attribute_id", referencedColumnName = "id")
     private CommodityAttribute attribute;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="attribute_value_id", referencedColumnName="id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "attribute_value_id", referencedColumnName = "id")
     private CommodityAttributeValue attributeValue;
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
@@ -44,8 +50,8 @@ public class CommodityBranchAttributeSet extends AbstractEntity {
         if (!(object instanceof CommodityBranchAttributeSet)) return false;
         if (!super.equals(object)) return false;
         CommodityBranchAttributeSet that = (CommodityBranchAttributeSet) object;
-        return Objects.equals( getBranch().getId(), that.getBranch().getId() ) &&
-                Objects.equals( getAttribute().getId(), that.getAttribute().getId()) &&
+        return Objects.equals(getBranch().getId(), that.getBranch().getId()) &&
+                Objects.equals(getAttribute().getId(), that.getAttribute().getId()) &&
                 getAttributeValue().equals(that.getAttributeValue());
     }
 

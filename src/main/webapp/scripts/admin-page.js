@@ -1,4 +1,26 @@
+/**
+COMMONS
+*/
+function showNavigationCaption(text, idx){
+    if(idx==undefined) {
+        $("#navigation-text").empty();
+        $("#navigation-text").append(text);
+    }else{
+        $("#navigation-text-" + idx).empty();
+        $("#navigation-text-" + idx).append(text);
+    }
 
+}
+
+const ERROR_CONTAINERS = 2;
+
+function errorContainerHide(i){
+    $('#error-container-'+i).empty();
+    $('#error-container-'+i).hide();
+}
+/**
+ Commodity Type Section
+**/
 
 function deleteType(typeId){
 
@@ -46,10 +68,8 @@ function refreshTypes(){
 
 	 })
 	 .fail(function(json, status) {
-	  		//$("#status").text(status);
+	    showToast("Error on load types");
 	 });
-
-
 };
 
 function deletePropertyValue(valueId){
@@ -183,35 +203,20 @@ function onEditTypeClick(typeId) {
         if( typeId ){
             drawEditType();
             getCommodityType(typeId);
-            //loadDataTypes();
-            //refreshProperties(typeId);
         }
 };
 
+function cleanCreateType() {
+  $( "#commodityTypeName" ).val("");
+  $( "#commodityTypeDesc" ).val("");
+};
 
-function showNavigationCaption(text){
-     $("#navigation-text").empty();
-     $("#navigation-text").append(text);
-}
+function cleanProperty() {
+  $( "#propertyName" ).val("");
+  $( "#attributeValue" ).val("");
+};
 
-  function cleanCreateType(){
-    $( "#commodityTypeName" ).val("");
-    $( "#commodityTypeDesc" ).val("");
-  };
-
-  function cleanProperty(){
-    $( "#propertyName" ).val("");
-    $( "#attributeValue" ).val("");
-  };
-
-const ERROR_CONTAINERS = 2;
-
-function errorContainerHide(i){
-    $('#error-container-'+i).empty();
-    $('#error-container-'+i).hide();
-}
-
-function drawCreateTypeBtnAction(){
+function drawCreateTypeBtnAction() {
     //
     $("#form-create").show();
     $("#form-create-btns").show();
@@ -219,7 +224,7 @@ function drawCreateTypeBtnAction(){
     $("#type-list").hide();
 }
 
-function drawEditType(){
+function drawEditType() {
   errorContainerHide(1);
   $("#type-list").hide();
   $("#form-edit-type").show();
@@ -228,7 +233,7 @@ function drawEditType(){
   componentHandler.upgradeDom();
 };
 
-function drawTypeList(){
+function drawTypeList() {
     //show
     window.location = '#view/typeList';
     showNavigationCaption("Here you can Create/Edit Type of your Commodities");
@@ -248,7 +253,7 @@ function drawTypeList(){
     componentHandler.upgradeDom();
 };
 
-function addAttributeAction(){
+function addAttributeAction() {
     var typeId = getTypeIdFromUrl();
 
     var measure = null;
@@ -272,7 +277,7 @@ function addAttributeAction(){
     cleanProperty();
 }
 
-function setupType(typeId){
+function setupType(typeId) {
     if(typeId==undefined){
         typeId = getTypeIdFromUrl();
     }
@@ -290,7 +295,7 @@ function setupType(typeId){
     showNavigationCaption("Edit type attributes");
 }
 
-function drawAddAttributes(){
+function drawAddAttributes() {
     var typeId = getTypeIdFromUrl();
     window.location = '#typeId/'+typeId+'/view/addAttribute/';
 
@@ -333,86 +338,88 @@ function drawAddAttributes(){
     }
   };
 
-  function getTypeIdFromUrl(){
-    var currentURL = window.location.href;
-    var splited = currentURL.split("#");
+var currentURLcache;
+var currentTypeId;
+function getTypeIdFromUrl(){
+  var currentURL = window.location.href;
+  if(currentURL == currentURLcache){
+    return currentTypeId;
+  }
+  currentURLcache = currentURL;
+  var splited = currentURL.split("#");
 
-    if( splited.length==1 ){
+  if( splited.length==1 ){
+      currentTypeId = null;
+      return null;
+  }else{
+      if( splited.length>1 && splited[1].includes("typeId") ){
+          var typeIdPara = splited[1].split("/");
+          currentTypeId = typeIdPara[1];
+          return currentTypeId;
+      }else{
+        currentTypeId = null;
         return null;
-    }else{
-        if( splited.length>1 && splited[1].includes("typeId") ){
-            var typeIdPara = splited[1].split("/");
-            return typeIdPara[1];
-        }else{
-            return null;
-        }
-    }
+      }
+  }
 
-  };
+};
 
 function drawChip(text){
     var chip = '<span class="mdl-chip"><span class="mdl-chip__text">'+text+'</span></span>';
     return chip;
 }
 
-  function showError(json, errorTab) {
-    console.log(json);
-    var errorContent = drawChip(json.responseJSON.message.replace(/\n/g, "<br/>"));
-    if(json.responseJSON.errors && json.responseJSON.errors.length>0){
-        errorContent = "";
-        json.responseJSON.errors.forEach(function(val){ console.log(val.field); errorContent += drawChip(val.message); });
+function showError(json, errorTab) {
+  console.log(json);
+  var errorContent = drawChip(json.responseJSON.message.replace(/\n/g, "<br/>"));
+  if(json.responseJSON.errors && json.responseJSON.errors.length>0){
+      errorContent = "";
+      json.responseJSON.errors.forEach(function(val){ console.log(val.field); errorContent += drawChip(val.message); });
 
-    }
-    var message = errorContent;
-    if(errorTab===undefined){
-        $('#error-container-1').empty();
-        $('#error-container-1').append(message);
-        $('#error-container-1').show();
-    }else{
-        $('#error-container-'+errorTab).empty();
-        $('#error-container-'+errorTab).append(message);
-        $('#error-container-'+errorTab).show();
-    }
-    componentHandler.upgradeDom();
   }
+  var message = errorContent;
+  if(errorTab===undefined){
+      $('#error-container-1').empty();
+      $('#error-container-1').append(message);
+      $('#error-container-1').show();
+  }else{
+      $('#error-container-'+errorTab).empty();
+      $('#error-container-'+errorTab).append(message);
+      $('#error-container-'+errorTab).show();
+  }
+  componentHandler.upgradeDom();
+}
 
-  function showErrorFromText(text, errorTab) {
+function showErrorFromText(text, errorTab) {
 
-      var message = text;
-      if(errorTab===undefined){
-        $('#error-message-content-1').empty();
-        $('#error-message-content-1').append(message);
-        $('#error-message-content-1').show();
-        $('#error-message-1').show();
-        $('#error-container-1').show();
-      }else{
-        $('#error-message-content-'+errorTab).empty();
-        $('#error-message-content-'+errorTab).append(message);
-        $('#error-message-content-'+errorTab).show();
-        $('#error-message-'+errorTab).show();
-        $('#error-container-'+errorTab).show();
-      }
+    var message = text;
+    if(errorTab===undefined){
+      $('#error-message-content-1').empty();
+      $('#error-message-content-1').append(message);
+      $('#error-message-content-1').show();
+      $('#error-message-1').show();
+      $('#error-container-1').show();
+    }else{
+      $('#error-message-content-'+errorTab).empty();
+      $('#error-message-content-'+errorTab).append(message);
+      $('#error-message-content-'+errorTab).show();
+      $('#error-message-'+errorTab).show();
+      $('#error-container-'+errorTab).show();
+    }
 
-   }
+}
 
 function addAttribute(data, errorTab, callback){
-    var options = {
-                    url: URL_SERVICES + "/private/attribute/",
-                    type: 'post',
-                    dataType: 'json',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(data), // Our valid JSON string
-                    success: function( json, status, xhr ) {
-                        showToast('Adding property Success');
-                        callback.call();
-                   },
-                   error: function(  json, status  ) {
-                        //...
-                        showToast('Error while creating attribute');
-                        showError(json, errorTab);
-                   }
-        };
-    $.ajax( options );
+    sendDataAsJson(URL_SERVICES + "/private/attribute/",
+    'POST',
+    data,
+    function( json){
+        showToast('Adding property Success');
+        callback.call();},
+    function(json){
+        showToast('Error while creating attribute');
+        showError(json, errorTab);
+    });
 }
 
 function addTypeSuccess(json){
@@ -446,6 +453,10 @@ function btnAttributeBackAction(){
     window.location = '#commodityTypes';
     showCreateType();
 }
+
+/**
+ END: Commodity Type Section
+**/
 
 $(document).ready(function () {
 
@@ -482,27 +493,329 @@ $(document).ready(function () {
      sendDataAsJson(URL_SERVICES + "/private/type/", 'PUT', data, updateTypeSuccess, updateTypeError);
   });
 
+
+  var btnStep2 = document.querySelector('#btn-create-commodity-step-2');
+  btnStep2.addEventListener('click', addCommodityStep2Action);
+
+  var btnStep3 = document.querySelector('#btn-create-commodity-step-3');
+  btnStep3.addEventListener('click', addCommodityAttributesAction);
+
+
 });
 
 /****
     section tab2 COMMODITY
 ****/
-var IMAGE_COUNT = 4;
 
-function loadCreateCommodityForm() {
+/* list commodities */
 
-    showCommodityForm();
-    initializeBehaviorOptions();
-    $("#btn-add-commodity").hide();
-    $("#btn-update-commodity").hide();
-    selectType();
-    $("#commodity-properties").empty();
+var page = 1;
+var rows = 5;
+var totalPages;
+var currentPage;
+
+function loadBeforeListCommodity(){
+    if(currentPage>1) {
+        page = currentPage-1;
+        loadListCommodity(page, 5);
+    }
+}
+
+function loadNextListCommodity(){
+    if(currentPage<totalPages) {
+        page = currentPage+1;
+        loadListCommodity(page, 5);
+    }
+}
+
+function showCommodityNavigate() {
+            if(currentPage<totalPages){
+                //show next
+                $('#navigate_next').show();
+            }else{
+                //hide next
+                $('#navigate_next').hide();
+            }
+            if(currentPage>1){
+                //show prev
+                $('#navigate_before').show();
+
+            }else{
+                //hide prev
+                $('#navigate_before').hide();
+            }
+}
+
+function hideCommodityNavigate() {
+    $('#navigate_before').hide();
+    $('#navigate_next').hide();
+}
+
+function loadListCommodity(pageParam, rowsParam) {
+
+    if(pageParam===undefined){
+        page = 1;
+    }else{
+        page = pageParam;
+    }
+    if(rowsParam===undefined){
+        rows = 5;
+    }else{
+        rows = rowsParam;
+    }
+
+    var snackbarContainer = document.querySelector('#demo-toast-example');
+    var getURL = "/public/commodities/?page="+page+"&rows="+rows;
+
+    $.getJSON( URL_SERVICES + getURL, function(json, status){
+        console.log("commodities");
+        console.log(json);
+        var content = "";
+        var commodities = json.commodityData;
+        totalPages = json.totalPages;
+        currentPage = json.currentPage;
+        showCommodityNavigate();
+        //show controls
+        for(var i=0; i<commodities.length; i++){
+            var cm = commodities[i];
+
+            for(var ci=0; ci<cm.branches.length; ci++){
+                var branch = cm.branches[ci];
+
+                var properties = branch.attributeSet;
+                var propsContent = '';
+                //process properties
+                for(var pi = 0; pi < properties.length; pi++){
+                    if(properties[pi].attribute.name=="color"){
+                        propsContent += properties[pi].attribute.name + ":" + showColorElement(properties[pi].attributeValue.value) + "<br/>";
+                    }else{
+                        propsContent += properties[pi].attribute.name + ' : ' + properties[pi].attributeValue.value + '<br/>';
+                    }
+                };
+                content += '<tr onclick="loadCommodityBranch(' + branch.id + ');">';
+                content += '<td class="mdl-data-table__cell--non-numeric">' + cm.type.name + '<br/>';
+                content += propsContent;
+                content += '</td>';
+                content += '<td class="mdl-data-table__cell--non-numeric">' + branch.code + ' ' + cm.name + '<br/>';
+                content += 'amount: <b>' + branch.amount + '</b><br/>price: <b>' + branch.price + '</b> ' + branch.currency + '<br/>';
+                content += '</td>';
+                content += '</tr>';
+            }
+
+        }
+        $('#commodities').empty();
+        $('#commodities').append(content);
+
+        toastMessage = {message: "Commodities loaded" };
+        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
+
+	 })
+	 .fail(function(json, status) {
+
+	    toastMessage = {message: "Error on load commodities." };
+        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
+
+	 });
+
+
 
 };
 
-function postFile(imageIndex){
-        var snackbarContainer = document.querySelector('#demo-toast-example');
+function loadBranchList(){
+    //initialize behaviour options
+    showNavigationCaption("List of commodities", 2);
+    window.location = '#commodities';
+    initializeBehaviorOptions();
+    loadListCommodity();
+    errorContainerHide(2);
+    $('#create-commodity-step-1').hide();
+    $('#create-commodity-step-2').hide();
+    $('#create-commodity-step-3').hide();
+    $('#edit-commodity-tabs').hide();
+    $('#commodity-list-bottom-btn').show();
+    $('#commodities-container').show();
+    componentHandler.upgradeDom();
+};
 
+/* end: list commodities */
+
+/*
+    section: add commodity
+*/
+
+var IMAGE_COUNT = 6;
+//options of UI Behavior
+var COMMODITY_TYPE = -1;
+var BRANCH_ID = -1;
+var PROPERTIES = [];
+var IMAGES = [];
+const PLACE_HOLDER = "../images/placeholder.png";
+
+var commodityObject = null;
+var commodityObjectValidator = null;
+
+function initializeBehaviorOptions() {
+    COMMODITY_TYPE = -1;
+    BRANCH_ID = -1;
+    PROPERTIES = [];
+    IMAGES = [];
+    for(var i=0; i<IMAGE_COUNT;i++){IMAGES.push(PLACE_HOLDER);}
+    commodityObject = {
+            name: null,
+            shortDescription: null,
+            overview: null,
+            amount: null,
+            price: null,
+            currencyCode: 'EUR',
+            typeId: null,
+            propertyValues: [],
+            images: []
+         };
+    commodityObject.currencyCode = 'EUR';
+}
+
+function isInPROPERTIES(valId) {
+    for(var i=0; i<PROPERTIES.length; i++){
+        if(PROPERTIES[i]===valId){
+            return true;
+        }
+    }
+    return false;
+}
+
+function drawAddCommodity() {
+    initializeBehaviorOptions();
+    selectType();
+    showNavigationCaption("Add commodity to E-SHOP", 2);
+    drawAddCommodityStep1();
+};
+
+var validators = new Map();
+function validateElementPattern(elementName){
+    var validator = validators.get(elementName);
+    if(validator==undefined){
+        validator = new RegExp(document.getElementById(elementName).getAttribute("pattern"));
+        validators.set(elementName, validator);
+    }
+    var isValid = true;
+    var el = document.getElementById(elementName);
+    var parent = $('#'+elementName).parent();
+    if(validator.test(el.value)){
+        //parent.removeClass("is-dirty");
+        parent.removeClass("is-invalid");
+        parent.addClass("is-upgraded");
+        parent.addClass("is-dirty");
+        componentHandler.upgradeDom();
+    }else{
+        parent.addClass("is-upgraded");
+        parent.addClass("is-dirty");
+        parent.addClass("is-invalid");
+        componentHandler.upgradeDom();
+        isValid = false;
+    }
+    return isValid;
+}
+
+function validateForm(className){
+    var elements = document.getElementsByClassName(className);
+    var isValid = true;
+    for(var i=0; i < elements.length; i++){
+       var element = elements[i];
+       console.log("element.id " + element.id);
+       isValid = isValid && validateElementPattern(element.id);
+    }
+    console.log("validateForm " + isValid);
+    return isValid;
+}
+
+function validateAddCommodityStep1() {
+    $("#btn-create-commodity-step-2").hide();
+    var isValid = true;
+    isValid = validateForm("create-commodity-step-1");
+    if(!isValid){
+        return false;
+    }
+    commodityObject.currencyCode = 'EUR';
+    $("#btn-create-commodity-step-2").show();
+    return true;
+}
+
+function addCommodityStep2Action(){
+    bindCommodityInfo(commodityObject);
+    drawAddCommodityStep2();
+}
+
+function drawAddCommodityStep1(){
+    errorContainerHide(2);
+    validateAddCommodityStep1();
+    $("#commodities-container").hide();
+    $("#commodity-list-bottom-btn").hide();
+
+    $("#create-commodity-step-1").show();
+    $('#create-commodity-step-2').hide();
+    $('#create-commodity-step-3').hide();
+    componentHandler.upgradeDom();
+};
+
+function bindCommodityInfo(commodityObject){
+    commodityObject.name = $( "#commodityName" ).val();
+    commodityObject.overview = $( "#commodityOverview" ).val();
+    commodityObject.shortDescription = $( "#commodityShortDesc" ).val();
+    commodityObject.amount = $( "#commodityAmount" ).val();
+    commodityObject.price = $( "#commodityPrice" ).val();
+}
+
+function drawImageContainer(postFileCallback) {
+    var content = "";
+    var callBackName = postFileCallback==undefined? 'undefined': postFileCallback.name;
+    for(var i=0; i < IMAGE_COUNT; i++) {
+        content += '<div class="img-parent mdl-cell mdl-cell--6-col-phone mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--6-col-desktop">';
+        content += '<img src="'+IMAGES[i]+'" id="img'+i+'" class="img-placeholder" alt="'+IMAGES[i]+'"/>';
+        content += '<div id="img-spinner-'+i+'" class="mdl-spinner mdl-js-spinner is-active img-upload-spinner" ></div>';
+        content += '<div class="header-content imgupload imgupload img-upload-btn" >';
+        content += '<label class="input-custom-file mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">';
+        content += '<i class="material-icons">add</i>';
+        content += '<input id="file'+i+'" type="file" onchange="postFile('+i+','+callBackName+');">';
+        content += '</label></div></div>';
+    }
+    $('#image-container').empty();
+    $('#image-container').append(content);
+    componentHandler.upgradeDom();
+
+}
+
+function hideSpinners() {
+    for(var i=0; i < IMAGE_COUNT; i++) {
+        $("#img-spinner-" + i).hide();
+    }
+}
+
+function validateAddCommodityStep2(){
+    console.log("call validateAddCommodityStep2");
+    $("#btn-create-commodity-step-3").hide();
+    var isValid = true;
+    isValid = !IMAGES.some(function(val){return PLACE_HOLDER==val;});
+    if(!isValid){
+        return false;
+    }
+
+    $("#btn-create-commodity-step-3").show();
+    return true;
+}
+
+function drawAddCommodityStep2() {
+    errorContainerHide(2);
+    $("#create-commodity-step-1").hide();
+    $('#create-commodity-step-2').show();
+    $('#create-commodity-step-3').hide();
+    drawImageContainer(validateAddCommodityStep2);
+    hideSpinners();
+    validateAddCommodityStep2();
+    componentHandler.upgradeDom();
+};
+
+function postFile(imageIndex, callback){
+        var snackbarContainer = document.querySelector('#demo-toast-example');
         $("#img-spinner-" + imageIndex).show();
         var fd = new FormData();
         //var files = $('#file')[0].files[0];
@@ -516,23 +829,67 @@ function postFile(imageIndex){
             contentType: false,
             processData: false,
             success: function(data){
+                console.log(data);
                 if(data != 0){
                     var image = document.getElementById("img"+imageIndex);
                     image.src = data.uri;
+                    IMAGES[imageIndex] = data.uri;
                 }else{
                     //error handling
                 }
                 $("#img-spinner-" + imageIndex).hide();
+                if(callback!=undefined){
+                    callback.call();
+                }
             },
             error: function( xhr, status, error ) {
                     //...
-                    var toastMessage = {message: 'Error' };
+                    console.log(xhr);
+                    console.log(error);
+                    var toastMessage = {message: 'Error file upload' };
                     snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-                    refreshTypes();
-                    cleanCreateType()
+                    //refreshTypes();
+                    //cleanCreateType()
                }
         });
 }
+
+
+function addCommodityAttributesAction(){
+    commodityObject.images = IMAGES;
+    errorContainerHide(2);
+    $("#create-commodity-step-1").hide();
+    $('#create-commodity-step-2').hide();
+    $('#create-commodity-step-3').show();
+    selectType();
+    componentHandler.upgradeDom();
+}
+
+
+function drawCommodityUpdateForm() {
+    showNavigationCaption("Update commodity", 2);
+    errorContainerHide(2);
+    $("#commodities-container").hide();
+    $("#commodity-list-bottom-btn").hide();
+
+    $("#create-commodity-step-1").show();
+    componentHandler.upgradeDom();
+}
+
+function openCommodityTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
 
 function selectType(){
 
@@ -542,7 +899,7 @@ function selectType(){
             var typeid = "selectType-"+i;
             content += '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="'+typeid+'">';
             content += '<input type="radio" id="' + typeid + '" class="mdl-radio__button" name="selectType" value="'+json[i].id+'" onclick="loadCreateCFProperties(' +json[i].id+ ');"';
-            if(COMMODITY_TYPE>0){
+            if(COMMODITY_TYPE>0) {
                 if(COMMODITY_TYPE==json[i].id){
                     content += ' checked>';
                 }else{
@@ -564,26 +921,6 @@ function selectType(){
 	 });
 
 };
-
-//options of UI Behavior
-var COMMODITY_TYPE = -1;
-var BRANCH_ID = -1;
-var PROPERTIES = [];
-
-function initializeBehaviorOptions(){
-    COMMODITY_TYPE = -1;
-    BRANCH_ID = -1;
-    PROPERTIES = [];
-}
-
-function isInPROPERTIES(valId){
-    for(var i=0; i<PROPERTIES.length; i++){
-        if(PROPERTIES[i]===valId){
-            return true;
-        }
-    }
-    return false;
-}
 
 var LOADED_ATTRIBUTES = [];
 
@@ -638,7 +975,8 @@ function loadCreateCFProperties(typeId){
         }else{
             $("#btn-update-commodity").show();
         }
-        COMMODITY_TYPE = typeId;
+        //COMMODITY_TYPE = typeId;
+        commodityObject.typeId = typeId;
         $("#attributes-cm-container").show();
         //RELOAD
         componentHandler.upgradeDom();
@@ -656,9 +994,9 @@ function loadCreateCFProperties(typeId){
 
 };
 
-
 function addCommoditySuccess(json){
     showToast('Operation with Commodity Success');
+    loadBranchList();
 }
 
 function addCommodityError(json){
@@ -679,262 +1017,26 @@ function btnClickAddCommodity(branchId){
         propertyList.push( $(this).val() );
     });
 
+//    for(var i=0; i < IMAGE_COUNT; i++){
+//        imageList.push( $("#img" + i).attr("src") );
+//    }
 
-
-    for(var i=0; i < IMAGE_COUNT; i++){
-        imageList.push( $("#img" + i).attr("src") );
-    }
-
-
-    var data = {
-        name: $( "#commodityName" ).val(),
-        shortDescription: $( "#commodityShortDesc" ).val(),
-        overview: $( "#commodityOverview" ).val(),
-        amount: $( "#commodityAmount" ).val(),
-        price: $( "#commodityPrice" ).val(),
-        currencyCode: 'EUR',
-        typeId: COMMODITY_TYPE,
-        propertyValues: propertyList,
-        images: imageList
-
-     };
-
+    commodityObject.propertyValues = propertyList;
+    var data = commodityObject;
 
     var urlFunction = URL_SERVICES + "/private/commodity/";
     var method;
-    if(branchId===undefined){
+    branchId = BRANCH_ID;
+    if(branchId<0){
         method = "POST";
     }else{
         method = "PUT";
         data["branchId"] = branchId;
     }
+    console.log("prepared commodityObject");
+    console.log(data);
     sendDataAsJson(urlFunction, method, data, addCommoditySuccess, addCommodityError);
 
-};
-
-function btnClickUpdateCommodity(){
-    if(BRANCH_ID>0){
-        btnClickAddCommodity(BRANCH_ID);
-    }
-};
-
-
-function showCommodityForm(){
-    for(var i=0; i < IMAGE_COUNT; i++){
-        $("#img-spinner-" + i).hide();
-    }
-    $('#create-commodity').show();
-    $('#commodities-container').hide();
-    $("#attributes-cm-container").hide();
-    $("#btn-add-commodity").hide();
-    $('#btn-createupdate-back').show();
-    $('#error-container-2').hide();
-    componentHandler.upgradeDom();
-};
-
-function loadCommodity(id){
-
-    var snackbarContainer = document.querySelector('#demo-toast-example');
-
-    var getURL = "/public/commodity/id/" + id;
-
-    $.getJSON( URL_SERVICES + getURL, function(json, status){
-
-        //$("#create-commodity").show();
-        COMMODITY_TYPE = json.type.id;
-        selectType();
-        loadCreateCFProperties(COMMODITY_TYPE);
-        //load images
-        var images = json.images;
-        for(var i=0; i < images.length; i++){
-            $("#img" + i).attr("src", images[i].uri);
-        }
-        //end load images
-        $('#commodityName').val( json.name );
-            $('#commodityName').parent().addClass("is-dirty");
-        //$('#commodityName').attr("class", "mdl-textfield mdl-js-textfield is-upgraded");
-        $('#commodityShortDesc').val( json.shortDescription );
-            $('#commodityShortDesc').parent().addClass("is-dirty");
-        $('#commodityOverview').val( json.overview );
-            $('#commodityOverview').parent().addClass("is-dirty");
-        componentHandler.upgradeDom();
-
-    })
-	 .fail(function(json, status) {
-
-	    toastMessage = {message: 'Error in Load Commodity id = ' + id };
-        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-	 });
-
-};
-
-function loadCommodityBranch(branchId){
-
-
-    showCommodityForm();
-
-    var snackbarContainer = document.querySelector('#demo-toast-example');
-    BRANCH_ID = branchId;
-
-    window.location = '#branchId/' + BRANCH_ID;
-
-
-    var getURL = "/public/commodityBranch/" + BRANCH_ID;
-
-    $.getJSON( URL_SERVICES + getURL, function(json, status){
-
-        loadCommodity(json.commodityId);
-
-        //load properties
-        PROPERTIES = [];
-        var props = json.attributeSet;
-        for(var pi=0; pi<props.length; pi++){
-            PROPERTIES.push( props[pi].attributeValue.id );
-        }
-
-        $('#commodityAmount').val( json.amount );
-            $('#commodityAmount').parent().addClass("is-dirty");
-        $('#commodityPrice').val( json.price );
-            $('#commodityPrice').parent().addClass("is-dirty");
-        var toastMessage = {message: 'Load Commodity Branch id = ' + branchId };
-        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-	 })
-	 .fail(function(json, status) {
-
-	    toastMessage = {message: 'Error in Load Commodity Branch id = ' + branchId };
-        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-	 });
-
-
-
-
-};
-
-var page = 1;
-var rows = 5;
-var totalPages;
-var currentPage;
-
-function loadBeforeListCommodity(){
-    if(currentPage>1) {
-        page = currentPage-1;
-        loadListCommodity(page, 5);
-    }
-}
-
-function loadNextListCommodity(){
-    if(currentPage<totalPages) {
-        page = currentPage+1;
-        loadListCommodity(page, 5);
-    }
-}
-
-function showCommodityNavigate(){
-            if(currentPage<totalPages){
-                //show next
-                $('#navigate_next').show();
-            }else{
-                //hide next
-                $('#navigate_next').hide();
-            }
-            if(currentPage>1){
-                //show prev
-                $('#navigate_before').show();
-
-            }else{
-                //hide prev
-                $('#navigate_before').hide();
-            }
-}
-
-function hideCommodityNavigate(){
-    $('#navigate_before').hide();
-    $('#navigate_next').hide();
-}
-
-function loadListCommodity(pageParam, rowsParam){
-
-    if(pageParam===undefined){
-        page = 1;
-    }else{
-        page = pageParam;
-    }
-    if(rowsParam===undefined){
-        rows = 5;
-    }else{
-        rows = rowsParam;
-    }
-
-    var snackbarContainer = document.querySelector('#demo-toast-example');
-    var getURL = "/public/commodities/?page="+page+"&rows="+rows;
-
-    $.getJSON( URL_SERVICES + getURL, function(json, status){
-
-        var content = "";
-        var commodities = json.commodityData;
-        totalPages = json.totalPages;
-        currentPage = json.currentPage;
-        showCommodityNavigate();
-        //show controls
-        for(var i=0; i<commodities.length; i++){
-            var cm = commodities[i];
-
-            for(var ci=0; ci<cm.branches.length; ci++){
-                var branch = cm.branches[ci];
-                content += '<tr><td onclick="loadCommodityBranch('+branch.id+');">'+branch.code+'</td>';
-                content += '<td class="mdl-data-table__cell--non-numeric" onclick="loadCommodityBranch('+branch.id+');">'+ cm.name +'</td>';
-                content += '<td class="mdl-data-table__cell--non-numeric">' + cm.type.name + '</td>';
-                content += '<td class="mdl-data-table__cell--non-numeric">';
-                //process properties
-                var properties = branch.attributeSet;
-                for(var pi = 0; pi < properties.length; pi++){
-                    if(properties[pi].attribute.name=="color"){
-                        content += properties[pi].attribute.name + ":" + showColorElement(properties[pi].attributeValue.value) + "<br/>";
-                    }else{
-                        content += properties[pi].attribute.name + ' : ' + properties[pi].attributeValue.value + '<br/>';
-                    }
-                };
-                content += '</td>';
-                content += '<td>' + branch.amount + '</td>';
-                content += '<td>' + branch.price + '</td>';
-                content += '<td class="mdl-data-table__cell--non-numeric">Button for action</td>';
-                content += '</tr>';
-            }
-
-        }
-        $('#commodities').empty();
-        $('#commodities').append(content);
-
-        toastMessage = {message: "Commodities loaded" };
-        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-	 })
-	 .fail(function(json, status) {
-
-	    toastMessage = {message: "Error on load commodities." };
-        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
-
-	 });
-
-
-
-};
-
-
-function loadBranchList(){
-    //initialize behaviour options
-    window.location = '#commodities';
-    initializeBehaviorOptions();
-    $('#btn-createupdate-back').hide();
-    $('#create-commodity').hide();
-    hideCommodityNavigate();
-    loadListCommodity();
-    $('#error-container-2').hide();
-    $('#commodities-container').show();
-    componentHandler.upgradeDom();
 };
 
 function addAttributeToCm(){
@@ -967,3 +1069,90 @@ function addAttributeToCm(){
 
 };
 
+/*
+    end: section: add commodity
+*/
+
+function btnClickUpdateCommodity(){
+    if(BRANCH_ID>0){
+        btnClickAddCommodity(BRANCH_ID);
+    }
+};
+
+function loadCommodity(id){
+
+    var snackbarContainer = document.querySelector('#demo-toast-example');
+
+    var getURL = "/public/commodity/id/" + id;
+
+    $.getJSON( URL_SERVICES + getURL, function(json, status){
+
+        //$("#create-commodity").show();
+        COMMODITY_TYPE = json.type.id;
+        selectType();
+        loadCreateCFProperties(COMMODITY_TYPE);
+        //load images
+        var images = json.images;
+        console.log(json);
+        console.log(images);
+        IMAGES = [];
+        for(var i=0; i < images.length; i++){
+            IMAGES.push(images[i].uri);
+            //$("#img" + i).attr("src", images[i].uri);
+        }
+        //end load images
+        $('#commodityName').val( json.name );
+        $('#commodityName').parent().addClass("is-dirty");
+        //$('#commodityName').attr("class", "mdl-textfield mdl-js-textfield is-upgraded");
+        $('#commodityShortDesc').val( json.shortDescription );
+        $('#commodityShortDesc').parent().addClass("is-dirty");
+        $('#commodityOverview').val( json.overview );
+        $('#commodityOverview').parent().addClass("is-dirty");
+        componentHandler.upgradeDom();
+
+    })
+	 .fail(function(json, status) {
+	    toastMessage = {message: 'Error in Load Commodity id = ' + id };
+        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
+	 });
+
+};
+
+function loadCommodityBranch(branchId){
+    drawCommodityUpdateForm();
+    var snackbarContainer = document.querySelector('#demo-toast-example');
+    BRANCH_ID = branchId;
+    window.location = '#branchId/' + BRANCH_ID;
+    var getURL = "/public/commodityBranch/" + BRANCH_ID;
+
+    $.getJSON( URL_SERVICES + getURL, function(json, status){
+
+        loadCommodity(json.commodityId);
+        console.log(IMAGES);
+
+        //load properties
+        PROPERTIES = [];
+        var props = json.attributeSet;
+        for(var pi=0; pi<props.length; pi++){
+            PROPERTIES.push( props[pi].attributeValue.id );
+        }
+
+        $('#commodityAmount').val( json.amount );
+        $('#commodityAmount').parent().addClass("is-dirty");
+        $('#commodityPrice').val( json.price );
+        $('#commodityPrice').parent().addClass("is-dirty");
+        var toastMessage = {message: 'Load Commodity Branch id = ' + branchId };
+        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
+
+	 })
+	 .fail(function(json, status) {
+
+	    toastMessage = {message: 'Error in Load Commodity Branch id = ' + branchId };
+        snackbarContainer.MaterialSnackbar.showSnackbar(toastMessage);
+
+	 });
+
+
+
+
+};

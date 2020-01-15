@@ -7,7 +7,7 @@ label.input-custom-file input[type=file] {
 }
 .img-parent {
     position: relative;
-    border: 1px solid gray;
+    border: 0px solid gray;
     width: 200px;
     height: 200px;
 }
@@ -96,3 +96,11 @@ label.input-custom-file input[type=file] {
     position: relative;
     top: 35px;
 }
+
+.draw-commodity-bottom-btn {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    z-index:53;
+}
+

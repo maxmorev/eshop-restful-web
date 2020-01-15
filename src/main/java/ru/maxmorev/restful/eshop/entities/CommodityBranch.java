@@ -4,12 +4,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import java.util.Currency;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "commodity_branch")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -64,7 +77,7 @@ public class CommodityBranch extends AbstractEntity {
         return version == that.version &&
                 getCommodity().equals(that.getCommodity()) &&
                 getAmount().equals(that.getAmount()) &&
-                getPrice().equals(that.getPrice()) &&
+                (Float.compare(getPrice(), that.getPrice()) == 0) &&
                 getCurrency().equals(that.getCurrency());
     }
 
