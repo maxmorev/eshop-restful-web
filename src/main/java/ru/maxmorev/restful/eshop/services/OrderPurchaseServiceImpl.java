@@ -1,47 +1,36 @@
 package ru.maxmorev.restful.eshop.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
-import ru.maxmorev.restful.eshop.entities.*;
+import ru.maxmorev.restful.eshop.config.OrderConfiguration;
+import ru.maxmorev.restful.eshop.entities.CommodityBranch;
+import ru.maxmorev.restful.eshop.entities.Customer;
+import ru.maxmorev.restful.eshop.entities.CustomerOrder;
+import ru.maxmorev.restful.eshop.entities.Purchase;
+import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
 import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
 import ru.maxmorev.restful.eshop.repository.PurchaseRepository;
 import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service("orderPurchaseService")
 @Transactional
+@AllArgsConstructor
 public class OrderPurchaseServiceImpl implements OrderPurchaseService {
 
     private CustomerOrderRepository customerOrderRepository;
     private PurchaseRepository purchaseRepository;
     private CommodityBranchRepository commodityBranchRepository;
     private ShoppingCartRepository shoppingCartRepository;
-
-    @Autowired
-    public void setCustomerOrderRepository(CustomerOrderRepository customerOrderRepository) {
-        this.customerOrderRepository = customerOrderRepository;
-    }
-
-    @Autowired
-    public void setPurchaseRepository(PurchaseRepository purchaseRepository) {
-        this.purchaseRepository = purchaseRepository;
-    }
-
-    @Autowired
-    public void setCommodityBranchRepository(CommodityBranchRepository commodityBranchRepository) {
-        this.commodityBranchRepository = commodityBranchRepository;
-    }
-
-    @Autowired
-    public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
-        this.shoppingCartRepository = shoppingCartRepository;
-    }
+    private OrderConfiguration orderConfiguration;
 
     @Override
     public CustomerOrder createOrderFor(Customer customer) {
@@ -86,7 +75,20 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         return customerOrderRepository.findById(id);
     }
 
+    @Override
     public void cleanExpiredOrders() {
         //DO NOTHING
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.MINUTE, -orderConfiguration.getOrderExpiredMinutes());
+        Date teenMinutesFromNow = now.getTime();
+        List<CustomerOrder> expiredOrders = customerOrderRepository.findExpiredOrdersByStatus(CustomerOrderStatus.AWAITING_PAYMENT, teenMinutesFromNow);
+        expiredOrders.forEach(co -> {
+            co.getPurchases().forEach(p -> {
+                CommodityBranch branch = p.getBranch();
+                branch.setAmount( branch.getAmount().intValue() + p.getAmount().intValue() );
+                commodityBranchRepository.save(branch);
+            });
+            customerOrderRepository.delete(co);
+        });
     }
 }

@@ -1,26 +1,26 @@
 spring:
+  application:
+    name: e-shop
   profiles:
     active: dev
   main:
     allow-bean-definition-overriding: true
   jpa:
+    ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     show-sql: true
-    hibernate:
-      ddl-auto: update
     properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
-      hibernate.hbm2ddl.auto: update
-      hibernate.use_sql_comments: true
-      hibernate.format_sql: false
-      hibernate.show_sql: true
-      hibernate.max_fetch_depth: 5
-      hibernate.jdbc.batch_size: 10
-      hibernate.jdbc.fetch_size: 50
-      hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.cache.use_query_cache: false
-      hibernate.cache.use_second_level_cache: false
-      hibernate.cache.use_structured_entries: false
-      hibernate.cache.use_minimal_puts: false
+     hibernate:
+       dialect: org.hibernate.dialect.PostgreSQL9Dialect
+       hbm2ddl.auto: update
+       use_sql_comments: true
+       format_sql: false
+       show_sql: true
+       max_fetch_depth: 5
+       jdbc:
+         fetch_size: 50
+         batch_size: 10
+         lob.non_contextual_creation: true
   datasource:
     url: jdbc:postgresql://localhost:5432/eshop
     driverClassName: org.postgresql.Driver

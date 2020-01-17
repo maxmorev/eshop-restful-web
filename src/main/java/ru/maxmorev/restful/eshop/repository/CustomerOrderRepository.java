@@ -16,6 +16,6 @@ public interface CustomerOrderRepository extends CrudRepository<CustomerOrder, L
 
     List<CustomerOrder> findByCustomer(Customer customer);
     @Query("select co from CustomerOrder co where co.dateOfCreation < :expiredDate and co.status=:status")
-    List<CustomerOrder> findByCustomerOrderStatus(@Param("status") CustomerOrderStatus status, @Param("expiredDate") Date expiredDate);
+    List<CustomerOrder> findExpiredOrdersByStatus(@Param("status") CustomerOrderStatus status, @Param("expiredDate") Date expiredDate);
 
 }

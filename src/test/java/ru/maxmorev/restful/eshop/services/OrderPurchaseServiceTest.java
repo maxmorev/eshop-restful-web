@@ -2,6 +2,8 @@ package ru.maxmorev.restful.eshop.services;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.Branch;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -22,6 +24,8 @@ import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 import ru.maxmorev.restful.eshop.entities.Purchase;
+import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
+import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,6 +54,10 @@ public class OrderPurchaseServiceTest {
     private CommodityService commodityService;
     @PersistenceContext
     private EntityManager em;
+    @Autowired
+    CommodityBranchRepository commodityBranchRepository;
+    @Autowired
+    CustomerOrderRepository customerOrderRepository;
 
     @Value
     public static class ShoppingCartInfo {
@@ -212,6 +220,31 @@ public class OrderPurchaseServiceTest {
         List<CustomerOrder> orders = orderPurchaseService.findCustomerOrders(customer.get());
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should clean expired orders")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void cleanExpiredOrdersTest() {
+        Assert.assertEquals(1, customerOrderRepository.count());
+        Optional<CommodityBranch> optionalBranch = commodityBranchRepository.findById(5L);
+        assertTrue(optionalBranch.isPresent());
+        CommodityBranch branch = optionalBranch.get();
+        assertEquals(5, branch.getAmount().intValue());
+        orderPurchaseService.cleanExpiredOrders();
+        Assert.assertEquals(0, customerOrderRepository.count());
+        optionalBranch = commodityBranchRepository.findById(5L);
+        assertTrue(optionalBranch.isPresent());
+        branch = optionalBranch.get();
+        assertEquals(7, branch.getAmount().intValue());
     }
 
 }

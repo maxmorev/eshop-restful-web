@@ -11,4 +11,5 @@ import org.springframework.context.annotation.Configuration;
 public class OrderConfiguration {
     @Value("${order.expired.minutes}")
     private Integer orderExpiredMinutes;
+
 }

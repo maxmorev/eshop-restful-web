@@ -70,7 +70,7 @@ public class CustomerOrderRepositoryTest {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.MINUTE, -orderConfiguration.getOrderExpiredMinutes());
         Date teenMinutesFromNow = now.getTime();
-        List<CustomerOrder> expiredOrders = customerOrderRepository.findByCustomerOrderStatus(CustomerOrderStatus.AWAITING_PAYMENT, teenMinutesFromNow);
+        List<CustomerOrder> expiredOrders = customerOrderRepository.findExpiredOrdersByStatus(CustomerOrderStatus.AWAITING_PAYMENT, teenMinutesFromNow);
 
         assertEquals(1, expiredOrders.size());
     }
