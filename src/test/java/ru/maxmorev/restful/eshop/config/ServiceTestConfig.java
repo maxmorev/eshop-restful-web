@@ -1,27 +1,25 @@
 package ru.maxmorev.restful.eshop.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dbunit.DataSourceDatabaseTester;
-import org.dbunit.util.fileloader.XlsDataFileLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.maxmorev.restful.eshop.init.DBInitializer;
-
-import javax.sql.DataSource;
 
 @Slf4j
 @Profile("test")
 @Configuration
 @ComponentScan(
-        basePackages={"ru.maxmorev.restful.eshop"},
-        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DBInitializer.class)}
-        )
+        basePackages = {"ru.maxmorev.restful.eshop"},
+        excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DBInitializer.class)}
+)
 public class ServiceTestConfig {
 
     @Bean
@@ -41,27 +39,7 @@ public class ServiceTestConfig {
     }
 
     @Bean
-    public DataSource dataSource() {
-        try {
-            EmbeddedDatabaseBuilder dbBuilder = new EmbeddedDatabaseBuilder();
-            return dbBuilder
-                    .setType(EmbeddedDatabaseType.H2)
-                    .build();
-        } catch (Exception e) {
-            log.error("Embedded DataSource bean cannot be created!", e);
-            return null;
-        }
-    }
-
-    @Bean(name="databaseTester")
-    public DataSourceDatabaseTester dataSourceDatabaseTester() {
-        DataSourceDatabaseTester databaseTester =
-                new DataSourceDatabaseTester(dataSource());
-        return databaseTester;
-    }
-
-    @Bean(name="xlsDataFileLoader")
-    public XlsDataFileLoader xlsDataFileLoader() {
-        return new XlsDataFileLoader();
+    public JpaVendorAdapter jpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
     }
 }

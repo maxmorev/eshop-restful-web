@@ -4,21 +4,26 @@ package ru.maxmorev.restful.eshop.services;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
 import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
-import ru.maxmorev.restful.eshop.entities.*;
+import ru.maxmorev.restful.eshop.entities.Commodity;
+import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
+import ru.maxmorev.restful.eshop.entities.CommodityBranch;
+import ru.maxmorev.restful.eshop.entities.CommodityBranchAttributeSet;
+import ru.maxmorev.restful.eshop.entities.CommodityImage;
+import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 
@@ -40,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class})
+@SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class})
 @DisplayName("Integration CommodityService Test")
 public class CommodityServiceTest {
 

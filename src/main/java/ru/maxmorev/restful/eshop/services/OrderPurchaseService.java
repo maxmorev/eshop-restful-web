@@ -19,4 +19,6 @@ public interface OrderPurchaseService {
 
     List<CustomerOrder> findCustomerOrders(Customer customer);
 
+    void cleanExpiredOrders();
+
 }

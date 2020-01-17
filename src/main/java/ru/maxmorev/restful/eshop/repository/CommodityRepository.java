@@ -1,4 +1,4 @@
-package ru.maxmorev.restful.eshop.repos;
+package ru.maxmorev.restful.eshop.repository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

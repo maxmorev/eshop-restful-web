@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @DisplayName("Mail Service Test")
-@SpringJUnitConfig(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
+@SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
 public class MailServiceTest {
 
     @Autowired

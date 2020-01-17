@@ -1,7 +1,7 @@
 package ru.maxmorev.restful.eshop.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.maxmorev.restful.eshop.repos.ShoppingCartRepository;
+import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

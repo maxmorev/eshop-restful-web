@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.entities.CommodityAttribute;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
-import ru.maxmorev.restful.eshop.repos.CommodityAttributeRepository;
-import ru.maxmorev.restful.eshop.repos.CommodityTypeRepository;
+import ru.maxmorev.restful.eshop.repository.CommodityAttributeRepository;
+import ru.maxmorev.restful.eshop.repository.CommodityTypeRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

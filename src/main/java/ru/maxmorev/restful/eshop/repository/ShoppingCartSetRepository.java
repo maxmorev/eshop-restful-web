@@ -1,9 +1,8 @@
-package ru.maxmorev.restful.eshop.repos;
+package ru.maxmorev.restful.eshop.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
-import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 

@@ -12,7 +12,7 @@ import ru.maxmorev.restful.eshop.services.*;
  * Created by maxim.morev on 04/30/19.
  */
 @Configuration
-@EnableJpaRepositories(basePackages = {"ru.maxmorev.restful.eshop.repos"})
+@EnableJpaRepositories(basePackages = {"ru.maxmorev.restful.eshop.repository"})
 @ComponentScan(basePackages = {"ru.maxmorev.restful.eshop.entities", "ru.maxmorev.restful.eshop.services", "ru.maxmorev.restful.eshop.rest.controllers", "ru.maxmorev.restful.eshop.web"})
 public class ServiceConfig {
 

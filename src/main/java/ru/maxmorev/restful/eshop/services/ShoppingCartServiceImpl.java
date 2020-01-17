@@ -8,8 +8,8 @@ import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
-import ru.maxmorev.restful.eshop.repos.ShoppingCartRepository;
-import ru.maxmorev.restful.eshop.repos.ShoppingCartSetRepository;
+import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
+import ru.maxmorev.restful.eshop.repository.ShoppingCartSetRepository;
 
 import java.util.HashSet;
 import java.util.Objects;

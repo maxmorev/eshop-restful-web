@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
 import ru.maxmorev.restful.eshop.entities.*;
-import ru.maxmorev.restful.eshop.repos.CommodityBranchRepository;
-import ru.maxmorev.restful.eshop.repos.CustomerOrderRepository;
-import ru.maxmorev.restful.eshop.repos.PurchaseRepository;
-import ru.maxmorev.restful.eshop.repos.ShoppingCartRepository;
+import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
+import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
+import ru.maxmorev.restful.eshop.repository.PurchaseRepository;
+import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,5 +84,9 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
     @Override
     public Optional<CustomerOrder> findOrder(Long id) {
         return customerOrderRepository.findById(id);
+    }
+
+    public void cleanExpiredOrders() {
+        //DO NOTHING
     }
 }

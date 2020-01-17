@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.AttributeDataType;
 import ru.maxmorev.restful.eshop.entities.*;
-import ru.maxmorev.restful.eshop.repos.*;
+import ru.maxmorev.restful.eshop.repository.*;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
 

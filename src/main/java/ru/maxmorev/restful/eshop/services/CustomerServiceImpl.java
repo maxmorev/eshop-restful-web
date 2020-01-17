@@ -16,7 +16,7 @@ import ru.maxmorev.restful.eshop.domain.Mail;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
-import ru.maxmorev.restful.eshop.repos.CustomerRepository;
+import ru.maxmorev.restful.eshop.repository.CustomerRepository;
 
 import java.util.Objects;
 import java.util.Optional;
