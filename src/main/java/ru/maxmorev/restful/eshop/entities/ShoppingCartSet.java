@@ -29,7 +29,7 @@ import java.util.Objects;
 public class ShoppingCartSet extends AbstractEntity {
 
     @Column(name = "amount", nullable = false)
-    private Integer amount = 1;
+    private Integer amount;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "branch_id", referencedColumnName = "id")

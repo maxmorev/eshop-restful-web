@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "purchase")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Purchase implements Serializable {
+public class Purchase implements Serializable, Comparable<Purchase> {
 
     @EmbeddedId
     private PurchaseId id;
@@ -32,6 +33,7 @@ public class Purchase implements Serializable {
     @JoinColumn(name = "branch_id", referencedColumnName = "id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "FK_PURCHASE_BRANCH"))
     private CommodityBranch branch;
 
+    @JsonIgnore
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "FK_PURCHASE_CUSTOMER_ORDER"))
     private CustomerOrder customerOrder;
@@ -58,5 +60,10 @@ public class Purchase implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getAmount());
+    }
+
+    @Override
+    public int compareTo(Purchase purchase) {
+        return Long.compare(getBranch().getId(), purchase.getBranch().id);
     }
 }

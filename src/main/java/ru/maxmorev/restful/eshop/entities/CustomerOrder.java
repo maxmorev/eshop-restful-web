@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "customer_order")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomerOrder extends AbstractEntity {
+public class CustomerOrder extends AbstractEntity implements Comparable<CustomerOrder> {
 
     @Version
     @Column(name = "VERSION")
@@ -50,7 +51,7 @@ public class CustomerOrder extends AbstractEntity {
 
     @Column(name = "paymentID")
     private String paymentID;
-
+    @JsonIgnore
     @ManyToOne(optional=false)
     @JoinColumn(name="customer_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_ORDER_CUSTOMER"))
     private Customer customer;
@@ -77,5 +78,10 @@ public class CustomerOrder extends AbstractEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getVersion(), getDateOfCreation(), getStatus(), getPaymentProvider(), getPaymentID(), getCustomer().getId());
+    }
+
+    @Override
+    public int compareTo(CustomerOrder customerOrder) {
+        return Long.compare(getId(), customerOrder.getId());
     }
 }

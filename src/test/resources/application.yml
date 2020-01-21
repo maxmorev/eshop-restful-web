@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: e-shop
   profiles:
     active: test
   main:

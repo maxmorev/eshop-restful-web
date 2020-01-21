@@ -19,7 +19,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "commodity_image")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityImage {
+public class CommodityImage implements Comparable<CommodityImage> {
     @Id
     @Column(name = "uri", nullable = false, unique = true)
     private String uri;
@@ -47,5 +47,10 @@ public class CommodityImage {
         if (!super.equals(object)) return false;
         CommodityImage that = (CommodityImage) object;
         return getUri().equals(that.getUri());
+    }
+
+    @Override
+    public int compareTo(CommodityImage commodityImage) {
+        return Short.compare(getImageOrder(), commodityImage.getImageOrder());
     }
 }

@@ -19,10 +19,12 @@ import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.OrderPaymentConfirmation;
+import ru.maxmorev.restful.eshop.rest.request.OrderIdRequest;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Integration controller (OrderPurchaseController) test")
 @SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class})
 public class OrderPurchaseControllerTest {
+
+    private static final Long APPROVED_ORDER_ID = 25L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +58,7 @@ public class OrderPurchaseControllerTest {
                 .orderId(16L)
                 .paymentProvider(PaymentProvider.Paypal.name())
                 .build();
-        mockMvc.perform(post(Constants.REST_CUSTOMER_URI+"order/confirm/")
+        mockMvc.perform(post(Constants.REST_CUSTOMER_URI + "order/confirm/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(opc.toString())
                 .with(user("customer")
@@ -64,6 +68,166 @@ public class OrderPurchaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Success")));
 
+    }
+
+    @Test
+    @DisplayName("Should except validation errors: Wrond orderId")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void confirmOrderWrongOrderIdErrorTest() throws Exception {
+        OrderPaymentConfirmation opc = OrderPaymentConfirmation
+                .builder()
+                .paymentId("3HW05364355651909")
+                .orderId(166L)
+                .paymentProvider(PaymentProvider.Paypal.name())
+                .build();
+        mockMvc.perform(post(Constants.REST_CUSTOMER_URI + "order/confirm/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(opc.toString())
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "CUSTOMER")))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Validation error")));
+
+    }
+
+    @Test
+    @DisplayName("Should except validation errors: Invalid order status")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void confirmOrderWrongOrderStatusErrorTest() throws Exception {
+        OrderPaymentConfirmation opc = OrderPaymentConfirmation
+                .builder()
+                .paymentId("3HW05364355651909")
+                .orderId(25L)
+                .paymentProvider(PaymentProvider.Paypal.name())
+                .build();
+        mockMvc.perform(post(Constants.REST_CUSTOMER_URI + "order/confirm/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(opc.toString())
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "CUSTOMER")))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Invalid order status")));
+
+    }
+
+    @Test
+    @DisplayName("Should return customer's order list")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void customerOrderListTest() throws Exception {
+        mockMvc.perform(get(Constants.REST_CUSTOMER_URI + "order/list/10")
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "CUSTOMER")))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].customerId", is(10)))
+                .andExpect(jsonPath("$[0].status", is("AWAITING_PAYMENT")));
+    }
+
+
+    @Test
+    @DisplayName("Should expect error with wrong Authorities")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void prepareToShipException() throws Exception {
+        mockMvc.perform(post(Constants.REST_PRIVATE_URI + "order/PREPARING_TO_SHIP/" + APPROVED_ORDER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "CUSTOMER")))
+                .andDo(print())
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Should change order status")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void prepareToShipOk() throws Exception {
+        mockMvc.perform(post(Constants.REST_PRIVATE_URI + "order/PREPARING_TO_SHIP/" + APPROVED_ORDER_ID)
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "ADMIN")))
+                .andDo(print())
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    @DisplayName("Should expect error with invalid order id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void prepareToShipInvalidIdTest() throws Exception {
+        mockMvc.perform(post(Constants.REST_PRIVATE_URI + "order/PREPARING_TO_SHIP/" + 2929)
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "ADMIN")))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Invalid order id")));
+    }
+
+    @Test
+    @DisplayName("Should expect error with invalid Status")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void prepareToShipInvalidStatusTest() throws Exception {
+        mockMvc.perform(post(Constants.REST_PRIVATE_URI + "order/PREPARING_TO_ROCK/" + APPROVED_ORDER_ID)
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "ADMIN")))
+                .andDo(print())
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.message", is("Internal server error")));
     }
 
 }

@@ -46,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("Integration Purchase Service Test")
 public class OrderPurchaseServiceTest {
 
+    private static final Long APPROVED_ORDER_ID = 25L;
     @Autowired
     private OrderPurchaseService orderPurchaseService;
     @Autowired
@@ -215,11 +216,9 @@ public class OrderPurchaseServiceTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     public void findCustomerOrdersTest() {
-        Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
-        assertTrue(customer.isPresent());
-        List<CustomerOrder> orders = orderPurchaseService.findCustomerOrders(customer.get());
+        List<CustomerOrder> orders = orderPurchaseService.findCustomerOrders(10L);
         assertFalse(orders.isEmpty());
-        assertEquals(1, orders.size());
+        assertEquals(2, orders.size());
     }
 
     @Test
@@ -234,17 +233,38 @@ public class OrderPurchaseServiceTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     public void cleanExpiredOrdersTest() {
-        Assert.assertEquals(1, customerOrderRepository.count());
+        Assert.assertEquals(2, customerOrderRepository.count());
         Optional<CommodityBranch> optionalBranch = commodityBranchRepository.findById(5L);
         assertTrue(optionalBranch.isPresent());
         CommodityBranch branch = optionalBranch.get();
         assertEquals(5, branch.getAmount().intValue());
+
         orderPurchaseService.cleanExpiredOrders();
-        Assert.assertEquals(0, customerOrderRepository.count());
+
+        Assert.assertEquals(1, customerOrderRepository.count());
         optionalBranch = commodityBranchRepository.findById(5L);
         assertTrue(optionalBranch.isPresent());
         branch = optionalBranch.get();
         assertEquals(7, branch.getAmount().intValue());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should change order status to PREPARING_TO_SHIP")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void confirmOrderPreparingToShipTest() {
+        Optional<CustomerOrder> order = orderPurchaseService.findOrder(APPROVED_ORDER_ID);
+        assertTrue(order.isPresent());
+        assertEquals(CustomerOrderStatus.PAYMENT_APPROVED, order.get().getStatus());
+        CustomerOrder co = orderPurchaseService.setOrderStatus(APPROVED_ORDER_ID, CustomerOrderStatus.PAYMENT_APPROVED);
+        assertEquals(CustomerOrderStatus.PREPARING_TO_SHIP, co.getStatus());
     }
 
 }

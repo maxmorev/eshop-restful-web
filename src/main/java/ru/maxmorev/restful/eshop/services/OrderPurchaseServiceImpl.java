@@ -13,10 +13,10 @@ import ru.maxmorev.restful.eshop.entities.Purchase;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
 import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
-import ru.maxmorev.restful.eshop.repository.PurchaseRepository;
 import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +26,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class OrderPurchaseServiceImpl implements OrderPurchaseService {
 
+    private CustomerService customerService;
     private CustomerOrderRepository customerOrderRepository;
-    private PurchaseRepository purchaseRepository;
     private CommodityBranchRepository commodityBranchRepository;
     private ShoppingCartRepository shoppingCartRepository;
     private OrderConfiguration orderConfiguration;
@@ -52,6 +52,8 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
 
     @Override
     public CustomerOrder confirmPaymentOrder(CustomerOrder order, PaymentProvider paymentProvider, String paymentID) {
+        if (!CustomerOrderStatus.AWAITING_PAYMENT.equals(order.getStatus()))
+            throw new IllegalArgumentException("Invalid order status");
         order.setStatus(CustomerOrderStatus.PAYMENT_APPROVED);
         order.setPaymentProvider(paymentProvider);
         order.setPaymentID(paymentID);
@@ -66,8 +68,12 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CustomerOrder> findCustomerOrders(Customer customer) {
-        return customerOrderRepository.findByCustomer(customer);
+    public List<CustomerOrder> findCustomerOrders(Long customerId) {
+        Optional<Customer> customer = customerService.findById(customerId);
+        if (customer.isPresent()) {
+            return customerOrderRepository.findByCustomer(customer.get());
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -85,10 +91,19 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         expiredOrders.forEach(co -> {
             co.getPurchases().forEach(p -> {
                 CommodityBranch branch = p.getBranch();
-                branch.setAmount( branch.getAmount().intValue() + p.getAmount().intValue() );
+                branch.setAmount(branch.getAmount().intValue() + p.getAmount().intValue());
                 commodityBranchRepository.save(branch);
             });
             customerOrderRepository.delete(co);
         });
     }
+
+    @Override
+    public CustomerOrder setOrderStatus(Long id, CustomerOrderStatus status) {
+        CustomerOrder order = findOrder(id).orElseThrow(() -> new IllegalArgumentException("Invalid order id"));
+        order.setStatus(status);
+        return customerOrderRepository.save(order);
+    }
+
+
 }

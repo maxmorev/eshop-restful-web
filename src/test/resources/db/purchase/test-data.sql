@@ -107,6 +107,9 @@ insert into commodity (id, type_id, name, short_description, overview, date_of_c
 values (19, 1,	'ceramics', 'test description ceramics',	'Overview ceramics test',	'2019-08-25 18:46:23.918',	1);
 insert into commodity_image (image_order,	commodity_id, uri,	width,	height)
 values(0, 19, 'https://upload.wikimedia.org/wikipedia/commons/d/da/TheOffspringLogo.png', null, null);
+insert into commodity_image (image_order,	commodity_id, uri,	width,	height)
+values(0, 19, 'https://upload.wikimedia.org/wikipedia/commons/d/da/TheOffspringLogo2.png', null, null);
+
 --amount=0
 insert into commodity_branch (id, commodity_id, amount,	price, VERSION,	currency)
 values (20, 19, 0, 1000, 1, 'EUR');
@@ -117,3 +120,23 @@ insert into shopping_cart (id, version) values (22, 1);
 insert into shopping_cart_set (id, amount, branch_id, shopping_cart_id) values(23, 2, 20, 22);
 
 insert into commodity_type (name, description, VERSION, id) values ('TypeTestDelete', 'test delete', 1, 24);
+
+-- payment approved
+insert into customer_order (
+        id,
+        date_of_creation,
+        paymentid,
+        payment_provider,
+        status,
+        version,
+        customer_id)
+        values (
+        25,
+        '2019-08-23 18:46:23.918',
+         'PAYPALZX1293',
+         'Paypal',
+         'PAYMENT_APPROVED',
+         1,
+         10);
+insert into PURCHASE (branch_id, order_id, amount) values (5,25,1);
+insert into PURCHASE (branch_id, order_id, amount) values (20,25,1);
