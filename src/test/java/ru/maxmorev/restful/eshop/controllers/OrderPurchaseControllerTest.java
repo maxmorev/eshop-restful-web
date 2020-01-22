@@ -227,7 +227,7 @@ public class OrderPurchaseControllerTest {
                         .authorities((GrantedAuthority) () -> "ADMIN")))
                 .andDo(print())
                 .andExpect(status().is(500))
-                .andExpect(jsonPath("$.message", is("Internal server error")));
+                .andExpect(jsonPath("$.message", is("Invalid status")));
     }
 
 }

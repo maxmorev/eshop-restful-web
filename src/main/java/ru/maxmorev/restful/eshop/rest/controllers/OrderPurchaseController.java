@@ -1,5 +1,7 @@
 package ru.maxmorev.restful.eshop.rest.controllers;
 
+import com.google.common.base.Enums;
+import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,8 +73,10 @@ public class OrderPurchaseController {
             @PathVariable(name = "status", required = true) String status,
             @PathVariable(name = "id", required = true) Long id,
             Locale locale) {
-        CustomerOrderStatus orderStatus = CustomerOrderStatus.valueOf(status);
-        orderPurchaseService.setOrderStatus(id, orderStatus);
+        Optional<CustomerOrderStatus> orderStatus = Enums.getIfPresent(CustomerOrderStatus.class, status);
+        if (!orderStatus.isPresent())
+            throw new IllegalArgumentException("Invalid status");
+        orderPurchaseService.setOrderStatus(id, orderStatus.get());
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 

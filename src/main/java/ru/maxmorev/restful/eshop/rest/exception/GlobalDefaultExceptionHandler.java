@@ -1,6 +1,5 @@
 package ru.maxmorev.restful.eshop.rest.exception;
 
-import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -70,4 +69,13 @@ public class GlobalDefaultExceptionHandler {
         return responseMessage;
     }
 
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    @ResponseBody
+    public Message handleIllegalArgumentException(HttpServletRequest req, Exception ex) {
+        logger.error(ex.getLocalizedMessage(), ex);
+        Message responseMessage = new Message(Message.ERROR, req.getRequestURL().toString(), ex.getLocalizedMessage(), Collections.EMPTY_LIST);
+        return responseMessage;
+    }
 }
