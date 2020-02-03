@@ -11,6 +11,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,14 +30,19 @@ import java.util.Set;
 @Table(name = "commodity_branch")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @org.hibernate.annotations.BatchSize(size = 10)
-public class CommodityBranch extends AbstractEntity {
+public class CommodityBranch {
+
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_BRANCH)
+    @Column(updatable = false)
+    protected Long id;
 
     @Version
     @Column(name = "VERSION")
     private int version;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "commodity_id", referencedColumnName = "id")
+    @JoinColumn(name = "commodity_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_COMMODITY_BRANCH"))
     @JsonIgnore
     private Commodity commodity;
 
@@ -72,9 +80,9 @@ public class CommodityBranch extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityBranch)) return false;
-        if (!super.equals(object)) return false;
         CommodityBranch that = (CommodityBranch) object;
         return version == that.version &&
+                Objects.equals(getId(), that.getId()) &&
                 getCommodity().equals(that.getCommodity()) &&
                 getAmount().equals(that.getAmount()) &&
                 (Float.compare(getPrice(), that.getPrice()) == 0) &&

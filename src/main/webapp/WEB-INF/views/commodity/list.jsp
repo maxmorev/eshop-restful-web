@@ -25,10 +25,10 @@ function showWearAttributes(id, sizes, colors){
 }
 
 
-function showAttributes(id, attributeSet){
+function showAttributes(id, attributes){
 
     var content="";
-    attributeSet.forEach(function(prop){
+    attributes.forEach(function(prop){
         content += showCommodityAttribute(prop);
     });
     $('#attribute-container-'+id).empty();
@@ -48,7 +48,7 @@ $(document).ready(function () {
 
     commodities.forEach( function(commodity) {
         //process commodity
-        const attributes = commodity.branches[0].attributeSet;
+        const attributes = commodity.branches[0].attributes;
         var notWearAttributes = getNotWearAttributes(attributes);
         if(notWearAttributes.length>0){
 
@@ -60,17 +60,17 @@ $(document).ready(function () {
             var sizes = [];
             commodity.branches.forEach( function(branch){
 
-                var wearAttributes = branch.attributeSet;
+                var wearAttributes = branch.attributes;
 
                 wearAttributes.forEach(function(a){
-                                        if(a.attribute.name=="color"){
-                                            if( !colors.includes(a.attributeValue.value) ){
-                                                colors.push(a.attributeValue.value);
+                                        if(a.name=="color"){
+                                            if( !colors.includes(a.value) ){
+                                                colors.push(a.value);
                                             }
                                         }
-                                        if(a.attribute.name=="size"){
-                                             if( !sizes.includes(a.attributeValue.value) ){
-                                                sizes.push(a.attributeValue.value);
+                                        if(a.name=="size"){
+                                             if( !sizes.includes(a.value) ){
+                                                sizes.push(a.value);
                                              }
                                         }
                                     });
@@ -88,7 +88,7 @@ $(document).ready(function () {
             <c:forEach items="${commodities}" var="commodity">
                 <div class="mdl-cell mdl-card mdl-shadow--4dp portfolio-card">
                     <div class="mdl-card__media">
-                        <a href="${showCommodityUrl}/${commodity.id}"><img class="article-image" src="${commodity.images[0].uri}" border="0" alt="" /></a>
+                        <a href="${showCommodityUrl}/${commodity.id}"><img class="article-image" src="${commodity.images[0]}" border="0" alt="" /></a>
                     </div>
                     <div class="mdl-card__title">
                         <h2 class="mdl-card__title-text">${commodity.name}</h2>
@@ -98,11 +98,10 @@ $(document).ready(function () {
                         <div id="attribute-container-${commodity.id}">
 
                         </div>
-
                     </div>
                     <div class="mdl-card__actions mdl-card--border" style="height:50px">
                         <div class="portfolio-list-action">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="${showCommodityUrl}/${commodity.id}">${labelPrice} &#160; ${commodity.price} ${commodity.currencyCode}</a>
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="${showCommodityUrl}/${commodity.id}">${labelPrice} &#160; ${commodity.branches[0].price} ${commodity.branches[0].currency}</a>
                         </div>
                     </div>
                 </div>

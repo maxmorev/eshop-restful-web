@@ -20,7 +20,12 @@ import java.util.Set;
 @Entity
 @Table(name = "commodity_type")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityType extends AbstractEntity {
+public class CommodityType {
+
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_COMMODITY_TYPE)
+    @Column(updatable = false)
+    protected Long id;
 
     @Version
     @Column(name = "VERSION")
@@ -58,16 +63,16 @@ public class CommodityType extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityType)) return false;
-        if (!super.equals(object)) return false;
         CommodityType that = (CommodityType) object;
-        return version == that.version &&
+        return Objects.equals(getId(), that.getId()) &&
+                version == that.version &&
                 getName().equals(that.getName()) &&
                 getDescription().equals(that.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), version, getName(), getDescription());
+        return Objects.hash(getId(), version, getName(), getDescription());
     }
 }
 

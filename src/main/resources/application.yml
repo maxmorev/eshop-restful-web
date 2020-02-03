@@ -30,8 +30,3 @@ spring:
 order.expired.minutes: 15
 server:
   port: 8888
-
-styleSheet: resources/styles/style.css
-styleSheetApp: resources/styles/application.css
-galleryJS: resources/scripts/gallery.js
-mdlPath: resources/mdl

@@ -6,7 +6,7 @@
     <definition extends="default" name="customer/createAccount">
         <put-attribute name="body">
             <definition template="/WEB-INF/views/customer/createAccount.jsp">
-            <put-attribute name="customer_info" value="/WEB-INF/views/customer/info.jsp"/>
+                <put-attribute name="customer_info" value="/WEB-INF/views/customer/info.jsp"/>
             </definition>
         </put-attribute>
     </definition>
@@ -14,8 +14,10 @@
     <definition extends="default" name="customer/updateAccount">
         <put-attribute name="body">
             <definition template="/WEB-INF/views/customer/updateAccount.jsp">
-            <put-attribute name="customer_info" value="/WEB-INF/views/customer/info.jsp"/>
+                <put-attribute name="customer_info" value="/WEB-INF/views/customer/info.jsp"/>
+                <put-attribute name="orders_container" value="/WEB-INF/views/customer/orders-container.jsp"/>
             </definition>
+
         </put-attribute>
     </definition>
 

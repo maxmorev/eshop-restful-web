@@ -32,31 +32,54 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     private MailService mailService;
     private ShoppingCartService shoppingCartService;
 
-    @Autowired public void setMessageSource(MessageSource messageSource) {
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
-    @Autowired public void setBcryptEncoder(PasswordEncoder bcryptEncoder) {
+
+    @Autowired
+    public void setBcryptEncoder(PasswordEncoder bcryptEncoder) {
         this.bcryptEncoder = bcryptEncoder;
     }
-    @Autowired public void setMailService(MailService ms){ this.mailService = ms; }
-    @Autowired public void setShoppingCartService(ShoppingCartService shoppingCartService) { this.shoppingCartService = shoppingCartService; }
-    @Autowired public void setCustomerRepository(CustomerRepository customerRepository) { this.customerRepository = customerRepository; }
 
-    protected void checkEmail(Customer customer){
+    @Autowired
+    public void setMailService(MailService ms) {
+        this.mailService = ms;
+    }
+
+    @Autowired
+    public void setShoppingCartService(ShoppingCartService shoppingCartService) {
+        this.shoppingCartService = shoppingCartService;
+    }
+
+    @Autowired
+    public void setCustomerRepository(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+    protected void checkEmail(Customer customer) {
         findByEmail(customer.getEmail())
-                .ifPresent(c-> new IllegalArgumentException(
+                .ifPresent(c -> new IllegalArgumentException(
                         messageSource.getMessage("customer.error.unique.email",
                                 new Object[]{c.getEmail()},
-                                LocaleContextHolder.getLocale() )
-                ) );
+                                LocaleContextHolder.getLocale())
+                ));
     }
 
     @Override
     public Customer createCustomerAndVerifyByEmail(Customer customer) {
         Customer created = null;
-
         checkEmail(customer);
-
+        customer.setVerifyCode(RandomStringUtils.randomAlphabetic(5));
+        customer.setPassword(bcryptEncoder.encode(customer.getPassword()));
+        customer.removeAllAuthorities();
+        customer.addAuthority(AuthorityValues.CUSTOMER);
+        ShoppingCart sc = null;
+        if (Objects.nonNull(customer.getShoppingCartId())) {
+            sc = shoppingCartService.findShoppingCartById(customer.getShoppingCartId()).get();
+            customer.setShoppingCart(sc);
+        }
+        created = customerRepository.save(customer);
         Mail mail = Mail
                 .builder()
                 .to(customer.getEmail())
@@ -64,20 +87,11 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
                 .text(messageSource.getMessage("mail.plain.text", new Object[]{customer.getFullName(), customer.getVerifyCode()}, LocaleContextHolder.getLocale()))
                 .build();
         Boolean isMailSend = mailService.sendPlainEmail(mail);
-        if(isMailSend){
-            customer.setVerifyCode(RandomStringUtils.randomAlphabetic(5));
-            customer.setPassword(bcryptEncoder.encode(customer.getPassword()));
-            customer.removeAllAuthorities();
-            customer.addAuthority(AuthorityValues.CUSTOMER);
-            ShoppingCart sc = null;
-            if(Objects.nonNull(customer.getShoppingCartId())) {
-                sc = shoppingCartService.findShoppingCartById(customer.getShoppingCartId()).get();
-                customer.setShoppingCart(sc);
-            }
-            created = customerRepository.save(customer);
-        }else{
+        if (!isMailSend) {
             log.info("Mail sending error");
-            throw new RuntimeException( messageSource.getMessage("mail.sending.error", new Object[]{created.getFullName(), created.getVerifyCode()}, LocaleContextHolder.getLocale()) );
+            throw new RuntimeException(messageSource.getMessage("mail.sending.error", new Object[]{
+                    created.getFullName(), created.getVerifyCode()
+            }, LocaleContextHolder.getLocale()));
         }
 
         return created;
@@ -97,8 +111,8 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     @Override
     public Optional<Customer> verify(Long customerId, String code) {
         Optional<Customer> c = customerRepository.findById(customerId);
-        c.ifPresent(customer->{
-            if(code.equals(customer.getVerifyCode())) {
+        c.ifPresent(customer -> {
+            if (code.equals(customer.getVerifyCode())) {
                 customer.setVerified(true);
                 customerRepository.save(customer);
             }
@@ -116,14 +130,14 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return findByEmail(username)
-                .orElseThrow( ()-> new UsernameNotFoundException(messageSource.getMessage("customer.error.notFound",
-                        new Object[]{username}, LocaleContextHolder.getLocale() )) );
+                .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("customer.error.notFound",
+                        new Object[]{username}, LocaleContextHolder.getLocale())));
     }
 
     @Override
     public Customer updateInfo(CustomerInfo i) {
         Customer findByEmail = findByEmail(i.getEmail())
-                .orElseThrow(()->new IllegalArgumentException(
+                .orElseThrow(() -> new IllegalArgumentException(
                         messageSource.getMessage("customer.error.notFound",
                                 new Object[]{i.getEmail()}, LocaleContextHolder.getLocale()))
                 );

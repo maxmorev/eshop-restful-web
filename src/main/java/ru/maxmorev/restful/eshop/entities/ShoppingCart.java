@@ -10,9 +10,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,7 +24,12 @@ import java.util.Set;
 @Entity
 @Table(name = "shopping_cart")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShoppingCart extends AbstractEntity {
+public class ShoppingCart {
+
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_SHOPPING_CART)
+    @Column(updatable = false)
+    protected Long id;
 
     @Version
     @Column(name = "VERSION")
@@ -29,7 +37,7 @@ public class ShoppingCart extends AbstractEntity {
 
     @org.hibernate.annotations.BatchSize(size = 5)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "shoppingCart", targetEntity = ShoppingCartSet.class, fetch = FetchType.LAZY)
-    private Set<ShoppingCartSet> shoppingSet;
+    private Set<ShoppingCartSet> shoppingSet = new HashSet<>();
 
     public int getItemsAmount() {
         return shoppingSet != null ? shoppingSet.stream().mapToInt(ShoppingCartSet::getAmount).sum() : 0;
@@ -49,13 +57,13 @@ public class ShoppingCart extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof ShoppingCart)) return false;
-        if (!super.equals(object)) return false;
         ShoppingCart that = (ShoppingCart) object;
-        return version == that.version;
+        return Objects.equals(getId(), that.getId())
+                && version == that.version;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), version);
+        return Objects.hash(getId(), version);
     }
 }

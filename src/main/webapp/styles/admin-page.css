@@ -104,3 +104,7 @@ label.input-custom-file input[type=file] {
     z-index:53;
 }
 
+.card-order.mdl-card {
+    width: 400px;
+    height: 400px;
+}

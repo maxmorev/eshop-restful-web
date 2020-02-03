@@ -23,11 +23,13 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function () {
-  showToast("Please login or create account!");
+
   var btnCreateAcc = document.querySelector('#btn-create-account');
   btnCreateAcc.addEventListener('click', function() {
+    console.log("${createAccountUrl}");
     window.location.href = "${createAccountUrl}";
   } );
+
 });
 
 
@@ -59,12 +61,12 @@ $(document).ready(function () {
                 </button>
 
             </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <button id="btn-create-account" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                    CREATE ACCOUNT
-                </button>
-            </div>
         </form>
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="btn-create-account" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                CREATE ACCOUNT
+            </button>
+        </div>
     </div>
     <div class="mdl-cell mdl-cell--2-col mdl-cell--12-col-phone mdl-cell--2-col-tablet mdl-cell--4-col-desktop"></div>
     <div class="mdl-cell mdl-cell--12-col"></div>

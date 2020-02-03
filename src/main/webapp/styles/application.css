@@ -1,16 +1,22 @@
 .images {
-    width:97%;
     border:0;
-    height: 650px;
+    height: 100%;
     margin: 5px auto;
     padding: 5px;
     max-width: 650px;
     min-width: 320px;
 }
+.card-image {
+    height: 99%;
+}
+
+.item-image {
+    width: 100%;
+}
 
 .gallery-navigation img{
-    height: 100px;
-    width: 100px;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
     border: 3px solid gray;
     margin: 3px;
@@ -18,8 +24,8 @@
 }
 
 .circleImgUnselected {
-    height: 90px;
-    width: 90px;
+    height: 43px;
+    width: 43px;
     border-radius: 50%;
     border: 3px solid gray;
     margin: 3px;
@@ -27,13 +33,20 @@
 }
 
 .circleImgSelection {
-    height: 100px;
-    width: 100px;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
     margin: 3px;
     align: center;
     border:3px solid rgb(255,64,129);
 }
+
+.images-navi {
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+
 
 .commodity-overview {
     font-size: 14pt;
@@ -111,3 +124,14 @@
       background-image: url(${app_img_url}/footer-background.png);
       background-size: cover;
     }
+
+.orders-info {
+    width: 100%;
+}
+
+.mdl-card-small {
+    height:200px;
+}
+.cart-container {
+    width: 100%;
+}

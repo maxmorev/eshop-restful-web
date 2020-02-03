@@ -18,6 +18,7 @@
 
 
 <script type="text/javascript">
+const shoppingCartJson = '${shoppingCart}';
 const shoppingCart = ${ShoppingCartCookie};
 const commodityId = ${commodity.id};
 var BRANCHES = [];
@@ -32,6 +33,7 @@ function addToShoppingCartSuccess(json){
     shoppingCartObj = json;
     var shoppingCartReview = getAmountItemsInShoppingCart(shoppingCartObj);
     showShoppingCartIconDataBadge(shoppingCartReview.amount);
+    drawButtonProceed();
     showToast("Added to Shopping Cart");
 }
 
@@ -130,7 +132,21 @@ function showSizes(){
     $('#size-container').append(content);
 };
 
+
+function drawButtonProceed() {
+    $('#btn-proceed').hide();
+    if( shoppingCartObj != undefined) {
+        if(shoppingCartObj.shoppingSet!=undefined && shoppingCartObj.shoppingSet.length>0) {
+            $('#btn-proceed').show();
+        }
+    } else {
+        $('#btn-proceed').hide();
+    }
+
+}
+
 $(document).ready(function () {
+shoppingCartObj = JSON.parse(shoppingCartJson);
 <c:if test="${not empty commodity}">
 var str_branches = '${commodity.branches}';
 var objJson = JSON.parse(str_branches);
@@ -138,9 +154,9 @@ for(var i=0; i<objJson.length; i++){
     var br = objJson[i];
     var sizes = [];
     var colors = [];
-    br.attributeSet.forEach( function(propertySet){
-        if(propertySet.attribute.name=="size"){sizes.push({ id: propertySet.attributeValue.id, value: propertySet.attributeValue.value });}
-        if(propertySet.attribute.name=="color"){colors.push({ id: propertySet.attributeValue.id, value: propertySet.attributeValue.value });}
+    br.attributes.forEach( function(attribute){
+        if(attribute.name=="size"){sizes.push({ id: attribute.name, value: attribute.value });}
+        if(attribute.name=="color"){colors.push({ id: attribute.name, value: attribute.value });}
     });
     var branch = {
         id : br.id,
@@ -160,7 +176,7 @@ var btnProceed = document.querySelector('#btn-proceed');
 btnProceed.addEventListener('click', function() {
     window.location.href = "${proceedToCheckoutUrl}";
 } );
-
+drawButtonProceed();
 });
 
 </script>
@@ -171,19 +187,19 @@ btnProceed.addEventListener('click', function() {
                 <div class="mdl-card__title">
                     <h2 class="mdl-card__title-text commodity-name">${commodity.type.name}&#160;<b>${commodity.name}</b></h2>
                 </div>
-                <div class="mdl-card__media" style="background-color:white" >
+                <div class="mdl-card__media card-image" style="background-color:white" >
                     <div class="images">
-                        <img id="mainImage" width="100%" src="${commodity.images[0].uri}"/>
-                    </div>
-                    <div align="center">
+                        <img id="mainImage" class="item-image" src="${commodity.images[0]}"/>
+                    <div class="images-navi">
                         <c:forEach items="${commodity.images}" var="image" varStatus="loop">
                             <c:if test="${loop.index==0}">
-                                <img  id="img-nav" src="${image.uri}" width="100px" onClick="mark(this, '${image.uri}');" class="circleImgSelection"/>
+                                <img  id="img-nav" src="${image}" onClick="mark(this, '${image}');" class="circleImgSelection"/>
                             </c:if>
                             <c:if test="${loop.index>0}">
-                                <img id="img-nav" src="${image.uri}" width="100px" onClick="mark(this, '${image.uri}');" class="circleImgUnselected"/>
+                                <img id="img-nav" src="${image}" onClick="mark(this, '${image}');" class="circleImgUnselected"/>
                             </c:if>
                         </c:forEach>
+                        </div>
                     </div>
                 </div>
                 <div class="mdl-card__supporting-text">
@@ -192,12 +208,12 @@ btnProceed.addEventListener('click', function() {
                 <div class="mdl-grid portfolio-copy">
                     <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name} </h3>
                     <div id="vendor-code" class="mdl-cell mdl-cell--12-col mdl-typography--headline"></div>
-                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ${commodity.currencyCode}</b></div>
+                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.branches[0].price} ${commodity.branches[0].currency}</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
                     </div>
                     <div class="mdl-cell mdl-cell--6-col">
-                        <img class="article-image" src="${commodity.lastImageUri}" width="200px" border="0" alt=""/>
+                        <img class="article-image" src="${commodity.lastImageUri}" border="0" alt=""/>
                     </div>
 
                     <div class="mdl-grid mdl-cell--12-col">

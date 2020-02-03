@@ -13,6 +13,9 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -26,7 +29,12 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Table(name = "shopping_cart_set")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShoppingCartSet extends AbstractEntity {
+public class ShoppingCartSet {
+
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_SHOPPING_CART_SET)
+    @Column(updatable = false)
+    protected Long id;
 
     @Column(name = "amount", nullable = false)
     private Integer amount;
@@ -37,7 +45,7 @@ public class ShoppingCartSet extends AbstractEntity {
 
     @JsonIgnore
     @ManyToOne(optional = false)
-    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_SHOPPING_CART_SET_CART"))
     private ShoppingCart shoppingCart;
 
     public CommodityInfo getCommodityInfo() {
@@ -58,9 +66,9 @@ public class ShoppingCartSet extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof ShoppingCartSet)) return false;
-        if (!super.equals(object)) return false;
         ShoppingCartSet that = (ShoppingCartSet) object;
-        return getAmount().equals(that.getAmount()) &&
+        return Objects.equals(getId(), that.getId())
+                && getAmount().equals(that.getAmount()) &&
                 getBranch().equals(that.getBranch()) &&
                 getShoppingCart().equals(that.getShoppingCart());
     }

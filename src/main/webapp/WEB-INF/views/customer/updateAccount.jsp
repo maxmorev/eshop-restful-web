@@ -4,11 +4,14 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-    <spring:message code="label_update_account" var="labelWelcome"/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<spring:message code="label_update_account" var="labelWelcome"/>
 
 <script type="text/javascript">
 const customer = '${customer}';
+const orders = '${orders}'
 var customerObj = JSON.parse(customer);
+var ordersObj = JSON.parse(orders);
 
 function errorUpdate(json){
     showErrorFromJson(json);
@@ -54,16 +57,40 @@ function loadForm(customerObj){
 $(document).ready(function () {
     activateTab('tab-account-update');
     $('#error-container').hide();
+    $('#update-info').hide();
+    $('#orders-info').hide();
     loadForm(customerObj);
+
     var btnUpdate = document.querySelector('#btn-update-account');
     btnUpdate.addEventListener('click', function() {
         updateAccount();
     });
+
+    var btnShowUpdate = document.querySelector('#show-update');
+    btnShowUpdate.addEventListener('click', function() {
+        $('#update-info').show();
+        $('#orders-info').hide();
+    });
+
+    var btnShowOrders = document.querySelector('#show-orders');
+    btnShowOrders.addEventListener('click', function() {
+        $('#update-info').hide();
+        $('#orders-info').show();
+    });
+
 });
 
 </script>
 <div class="mdl-grid portfolio-max-width">
-     <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
+     <div class="mdl-cell mdl-cell--12-col mdl-cell--6-col-tablet mdl-cell--6-col-phone">
+     <button id="show-update" class="mdl-button mdl-js-button mdl-button--accent">
+       Update delivery info
+     </button>
+     <button id="show-orders" class="mdl-button mdl-js-button mdl-button--accent">
+       My Orders
+     </button>
+     </div>
+     <div id="update-info" class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--2dp">
         <c:if test="${not empty customer}">
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text commodity-name"></b></h2>
@@ -94,6 +121,17 @@ $(document).ready(function () {
                 </div>
             </div>
 
+        </c:if>
+    </div>
+
+    <div id="orders-info">
+        <c:if test="${not empty orders}">
+        <tiles:insertAttribute name="orders_container"/>
+        </c:if>
+        <c:if test="${empty orders}">
+        <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--2dp">
+        <h2>You have no orders yet</h2>
+        </div>
         </c:if>
     </div>
 </div>

@@ -9,6 +9,9 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,7 +22,12 @@ import java.util.Objects;
 @Entity
 @Table(name = "commodity_attribute_value")
 @JsonIgnoreProperties(ignoreUnknown= true)
-public class CommodityAttributeValue extends AbstractEntity {
+public class CommodityAttributeValue {
+
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_ATTRIBUTE_VALUE)
+    @Column(updatable = false)
+    protected Long id;
 
     @Column(length = 256)
     private String string;
@@ -34,7 +42,7 @@ public class CommodityAttributeValue extends AbstractEntity {
     private Long integer;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "attribute_id", referencedColumnName = "id")
+    @JoinColumn(name = "attribute_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_ATTRIBUTE_VALUE_ATTRIBUTE"))
     @JsonIgnore
     private CommodityAttribute attribute;
 
@@ -113,9 +121,9 @@ public class CommodityAttributeValue extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityAttributeValue)) return false;
-        if (!super.equals(object)) return false;
         CommodityAttributeValue that = (CommodityAttributeValue) object;
-        return Objects.equals(getString(), that.getString()) &&
+        return Objects.equals(getId(), that.getId())
+                && Objects.equals(getString(), that.getString()) &&
                 Objects.equals(getText(), that.getText()) &&
                 Objects.equals(getReal(), that.getReal()) &&
                 Objects.equals(getInteger(), that.getInteger()) &&
@@ -124,6 +132,6 @@ public class CommodityAttributeValue extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getString(), getText(), getReal(), getInteger(), getAttribute());
+        return Objects.hash(getId(), getString(), getText(), getReal(), getInteger(), getAttribute());
     }
 }

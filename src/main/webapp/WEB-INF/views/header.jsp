@@ -13,8 +13,6 @@
     <spring:url value="/shopping/cart/" var="shoppingCartUrl"/>
     <spring:url value="/customer/account/update/" var="accountUrl"/>
 
-
-
     <header class="mdl-layout__header mdl-layout__header--waterfall portfolio-header">
         <div class="mdl-layout__header-row portfolio-logo-row">
             <span class="mdl-layout__title">

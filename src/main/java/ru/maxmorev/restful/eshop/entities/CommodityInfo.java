@@ -7,6 +7,9 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -23,7 +26,12 @@ import java.util.Objects;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
-public class CommodityInfo extends AbstractEntity {
+public class CommodityInfo {
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_COMMODITY)
+    @Column(updatable = false)
+    protected Long id;
+
     @Version
     @Column(name = "VERSION")
     protected int version;
@@ -43,7 +51,7 @@ public class CommodityInfo extends AbstractEntity {
     protected Date dateOfCreation;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    @JoinColumn(name = "type_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_COMMODITY_TYPE"))
     protected CommodityType type;
 
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "commodity", targetEntity = CommodityImage.class, fetch = FetchType.EAGER)
@@ -55,9 +63,9 @@ public class CommodityInfo extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityInfo)) return false;
-        if (!super.equals(object)) return false;
         CommodityInfo that = (CommodityInfo) object;
-        return getVersion() == that.getVersion() &&
+        return Objects.equals(getId(), that.getId())
+                && getVersion() == that.getVersion() &&
                 getName().equals(that.getName()) &&
                 getShortDescription().equals(that.getShortDescription()) &&
                 getOverview().equals(that.getOverview()) &&
@@ -67,6 +75,6 @@ public class CommodityInfo extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getShortDescription(), getOverview(), getType());
+        return Objects.hash(getId(), getName(), getShortDescription(), getOverview(), getType());
     }
 }

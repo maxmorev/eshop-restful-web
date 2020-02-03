@@ -20,7 +20,7 @@
                     </div>
                     </div>
                     <div class="mdl-cell mdl-cell--12-col">
-                    Be careful when entering information for the delivery service
+                    Be careful when entering information for the <b>delivery service</b>
                     </div>
                     <div class="mdl-cell mdl-cell--6-col">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

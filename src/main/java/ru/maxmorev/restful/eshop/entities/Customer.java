@@ -16,6 +16,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -55,7 +56,7 @@ public class Customer extends CustomerInfo implements UserDetails {
     private Boolean verified = false;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_CUSTOMER_SHOPPING_CART"))
     private ShoppingCart shoppingCart;
 
     @Column(name = "authorities", nullable = false)
@@ -65,8 +66,8 @@ public class Customer extends CustomerInfo implements UserDetails {
     private Long shoppingCartId;
 
     @Builder
-    public Customer(@NotBlank(message = "{validation.customer.email}") String email, @NotBlank(message = "{validation.customer.fullName}") String fullName, @NotBlank(message = "{validation.customer.country}") String country, @NotBlank(message = "{validation.customer.postcode}") String postcode, @NotBlank(message = "{validation.customer.city}") String city, @NotBlank(message = "{validation.customer.address}") String address, @NotBlank(message = "{validation.customer.password}") String password, String verifyCode, String authorities) {
-        super(email, fullName, country, postcode, city, address);
+    public Customer(Long id, @NotBlank(message = "{validation.customer.email}") String email, @NotBlank(message = "{validation.customer.fullName}") String fullName, @NotBlank(message = "{validation.customer.country}") String country, @NotBlank(message = "{validation.customer.postcode}") String postcode, @NotBlank(message = "{validation.customer.city}") String city, @NotBlank(message = "{validation.customer.address}") String address, @NotBlank(message = "{validation.customer.password}") String password, String verifyCode, String authorities) {
+        super(id, email, fullName, country, postcode, city, address);
         this.password = password;
         this.verifyCode = verifyCode;
         this.authorities = authorities;

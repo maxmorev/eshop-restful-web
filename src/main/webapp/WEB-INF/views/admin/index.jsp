@@ -18,8 +18,8 @@
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
             <a href="#fixed-tab-1" class="mdl-layout__tab is-active" onclick="showCreateType()">Types of commodity</a>
-            <a href="#fixed-tab-2" class="mdl-layout__tab" onclick="loadBranchList();">Commodities</a>
-            <a href="#fixed-tab-3" class="mdl-layout__tab">Tab 3</a>
+            <a href="#fixed-tab-2" class="mdl-layout__tab" onclick="loadBranchList()">Commodities</a>
+            <a href="#fixed-tab-3" class="mdl-layout__tab" onclick="initOrders()">Orders</a>
         </div>
     </header>
     <div class="mdl-layout__drawer">
@@ -38,7 +38,9 @@
             </div>
         </section>
         <section class="mdl-layout__tab-panel" id="fixed-tab-3">
-            <div class="page-content"><!-- Your content goes here --></div>
+            <div class="page-content">
+            <tiles:insertAttribute name="section-orders"/>
+            </div>
         </section>
     </main>
 </div>

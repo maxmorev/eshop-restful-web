@@ -1,16 +1,17 @@
 package ru.maxmorev.restful.eshop.web;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
-import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
-import ru.maxmorev.restful.eshop.services.CommodityService;
+import ru.maxmorev.restful.eshop.rest.response.CommodityTypeDto;
+import ru.maxmorev.restful.eshop.rest.response.ShoppingCartDto;
+import ru.maxmorev.restful.eshop.services.CommodityDtoService;
 import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
 import javax.servlet.http.Cookie;
@@ -19,26 +20,19 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@AllArgsConstructor
 public abstract class CommonWebController {
 
-    protected ShoppingCartService shoppingCartService;
+    protected final ShoppingCartService shoppingCartService;
 
-    protected CommodityService commodityService;
-
-    @Autowired
-    public void setCommodityService(CommodityService commodityService) {
-        this.commodityService = commodityService;
-    }
-
-    @Autowired
-    public void setShoppingCartService(ShoppingCartService shoppingCartService) { this.shoppingCartService = shoppingCartService; }
+    protected final CommodityDtoService commodityDtoService;
 
     /**
      * Add common attributes for UI Layer for header layout and so on
      * @param uiModel
      */
     protected void addCommonAttributesToModel(Model uiModel){
-        List<CommodityType> typeList = commodityService.findAllTypes();
+        List<CommodityTypeDto> typeList = commodityDtoService.findAllTypes();
         uiModel.addAttribute("types", typeList);
     }
 
@@ -50,7 +44,7 @@ public abstract class CommonWebController {
         ShoppingCart shoppingCart = getShoppingCart(cartCookie, response);
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, shoppingCart.getId());
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, shoppingCart.getItemsAmount());
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, shoppingCart );
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, ShoppingCartDto.of(shoppingCart));
     }
 
     protected ShoppingCart setShoppingCartCookie(ShoppingCart shoppingCart, HttpServletResponse response){

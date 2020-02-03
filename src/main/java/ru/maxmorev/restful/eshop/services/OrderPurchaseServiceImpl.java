@@ -1,11 +1,14 @@
 package ru.maxmorev.restful.eshop.services;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
 import ru.maxmorev.restful.eshop.config.OrderConfiguration;
+import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
@@ -103,6 +106,13 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         CustomerOrder order = findOrder(id).orElseThrow(() -> new IllegalArgumentException("Invalid order id"));
         order.setStatus(status);
         return customerOrderRepository.save(order);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CustomerOrder> findAllOrdersByPage(Pageable pageable) {
+        return customerOrderRepository.findAll(pageable);
     }
 
 

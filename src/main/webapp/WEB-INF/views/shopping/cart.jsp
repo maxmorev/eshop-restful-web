@@ -29,10 +29,29 @@ var currentBranchId; //current branchId for update
 var shoppingCartUpdate;
 var fromAmountName;
 
+function showCartElements() {
+    $("#cart-empty").hide();
+    $("#cart-title").show();
+    $("#cart-card").show();
+    $("#cart-btn-proceed").show();
+}
+
+function hideShoppingCart(){
+    $("#cart-empty").show();
+    $("#cart-title").hide();
+    $("#cart-card").hide();
+    $("#cart-btn-proceed").hide();
+}
 
 $(document).ready(function () {
   activateTab('tab-shopping-cart');
-  showShoppingCart(shoppingCartObj);
+  if(shoppingCartObj.shoppingSet.length==0){
+    hideShoppingCart();
+  }else{
+    showShoppingCart(shoppingCartObj);
+    showCartElements();
+  }
+
   showToast("Welcome to shopping cart!");
 
   var btnProceed = document.querySelector('#cart-btn-proceed');
@@ -44,29 +63,21 @@ $(document).ready(function () {
 
 </script>
 <div class="mdl-grid portfolio-max-width">
-     <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
-        <c:if test="${not empty shoppingCart}">
-            <div class="mdl-card__title">
-                MY SHOPPING CART
-            </div>
-            <div class="mdl-card__media" style="background-color:white"></div>
-            <div class="mdl-card__supporting-text">
-            <span>Товары будут зарезервированы на 60 минут</span>
-            </div>
-
-            <div class="mdl-grid portfolio-copy">
-               <div class="mdl-cell mdl-cell--12-col">
-               Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div>
-               </div>
-               <div class="mdl-cell mdl-cell--6-col">
-               <tiles:insertAttribute name="cart-container"/>
-               </div>
-               <div class="mdl-cell mdl-cell--6-col">
-               <button id="cart-btn-proceed" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">${labelProceedCheckout}</button>
-               </div>
-
-            </div>
-
-        </c:if>
+     <div class="mdl-cell mdl-cell--12-col ">
+     SHOPPING CART
      </div>
+     <div id="cart-empty" class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--2dp">
+        <h4>Cart is Empty image</h4>
+     </div>
+
+     <div class="mdl-cell mdl-cell--12-col" id="cart-title">
+     <h4>Items will be reserved for 15 minutes</h4>
+     Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div>
+     </div>
+
+     <tiles:insertAttribute name="cart-container"/>
+     <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-phone">&nbsp;</div>
+     <button id="cart-btn-proceed" class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+     ${labelProceedCheckout}
+     </button>
 </div>

@@ -1,5 +1,7 @@
 package ru.maxmorev.restful.eshop.rest.response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Value;
 import ru.maxmorev.restful.eshop.entities.CommodityImage;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 public class PurchaseDto {
     private Integer amount;//amount of items
     private Long branchId;//branchId
+    private Long commodityId;
     private String name;
     private String shortDescription;
     private String overview;
@@ -23,12 +26,13 @@ public class PurchaseDto {
     private List<String> images;
     private Float price; //price for 1 item in branch
     private Currency currency; //current price currency
-    private List<AttrubuteDto> attrubutes;
+    private List<AttributeDto> attributes;
 
     public static PurchaseDto of(Purchase p) {
         return PurchaseDto.builder()
                 .amount(p.getAmount())
                 .branchId(p.getBranch().getId())
+                .commodityId(p.getBranch().getCommodity().getId())
                 .name(p.getBranch().getCommodity().getName())
                 .shortDescription(p.getBranch().getCommodity().getShortDescription())
                 .overview(p.getBranch().getCommodity().getOverview())
@@ -43,11 +47,21 @@ public class PurchaseDto {
                         .collect(Collectors.toList()))
                 .price(p.getBranch().getPrice())
                 .currency(p.getBranch().getCurrency())
-                .attrubutes(p.getBranch()
+                .attributes(p.getBranch()
                         .getAttributeSet()
                         .stream()
-                        .map(AttrubuteDto::of)
+                        .map(AttributeDto::of)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return e.getMessage();
+        }
     }
 }

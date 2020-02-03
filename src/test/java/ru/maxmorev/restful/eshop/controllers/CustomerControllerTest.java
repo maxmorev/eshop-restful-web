@@ -55,7 +55,7 @@ public class CustomerControllerTest {
     @SqlGroup({
             @Sql(value = "classpath:db/purchase/clean-up.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
     })
     public void createCustomerTest() throws Exception {
         Customer customer = Customer
@@ -73,7 +73,9 @@ public class CustomerControllerTest {
                 .content(customer.toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", is("test@titsonfire.store")));
+                .andExpect(jsonPath("$.email", is("test@titsonfire.store")))
+                .andExpect(jsonPath("$.id").isNumber())
+                ;
     }
 
     @Test
@@ -84,7 +86,7 @@ public class CustomerControllerTest {
                     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
             @Sql(value = "classpath:db/purchase/clean-up.sql",
                     config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
-                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     })
     public void createCustomerUniqueErrorTest() throws Exception {
         assertTrue(customerService.findByEmail("test@titsonfire.store").isPresent());

@@ -367,4 +367,5 @@ public class CommodityServiceImpl implements CommodityService {
     public Optional<Commodity> findCommodityById(Long id) {
         return commodityRepository.findById(id);
     }
+
 }

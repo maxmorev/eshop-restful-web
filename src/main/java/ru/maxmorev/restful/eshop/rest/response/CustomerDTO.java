@@ -3,35 +3,32 @@ package ru.maxmorev.restful.eshop.rest.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 
-@Data
+@Getter
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerDTO {
-
+    private Long id;
     private String email;
-
     private String fullName;
-
     private String country;
-
     private String postcode;
-
     private String city;
-
     private String address;
 
     public static CustomerDTO of(CustomerInfo info){
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setEmail(info.getEmail());
-        customerDTO.setFullName(info.getFullName());
-        customerDTO.setCountry(info.getCountry());
-        customerDTO.setPostcode(info.getPostcode());
-        customerDTO.setCity(info.getCity());
-        customerDTO.setAddress(info.getAddress());
-        return customerDTO;
-
+        return CustomerDTO.builder()
+                .id(info.getId())
+                .email(info.getEmail())
+                .fullName(info.getFullName())
+                .country(info.getCountry())
+                .city(info.getCity())
+                .address(info.getAddress())
+                .build();
     }
 
     @Override

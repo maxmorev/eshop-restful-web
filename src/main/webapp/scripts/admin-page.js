@@ -1156,3 +1156,121 @@ function loadCommodityBranch(branchId){
 
 
 };
+
+
+/**
+ORDERS SECTION
+**/
+function initOrders(){
+    CURRENT_ORDERS = [];
+    $("#btn-order-back").hide();
+    $("#customer-order").hide();
+    errorContainerHide(3);
+    showNavigationCaption("E-SHOP Orders ", 3);
+    loadOrders();
+    $("#customer-orders").show();
+}
+
+var CURRENT_ORDERS = [];
+function loadOrders() {
+    var ordersURL = "/private/order/list/";
+
+    $.getJSON( URL_SERVICES + ordersURL, function(json, status) {
+        console.log(json);
+        CURRENT_ORDERS = json;
+        var content = "";
+        for(var i=0; i<json.length; i++) {
+            var totalPrice = 0;
+            json[i].purchases.forEach(function(purchase){totalPrice += purchase.amount*purchase.price});
+            content += "<tr>";
+            content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].id + "<br/>" + formatDate(new Date(json[i].dateOfCreation)) + "</td>";
+            content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].status + "<br/>total price: <b>" + totalPrice + "</b></td>";
+            content += "<td class='mdl-data-table__cell--non-numeric'><button class='mdl-button mdl-js-button mdl-button--icon mdl-button--colored' onclick='onEditOrderClick(" + json[i].id + ");'><i class='material-icons'>edit</i></button></td>";
+            content += "</tr>";
+        }
+        $('#container-orders').empty();
+        $('#container-orders').append(content);
+    })
+    .fail(function(json, status) {
+        showToast("Error on load orders");
+    });
+}
+
+function onEditOrderClick(orderId) {
+    $("#btn-order-back").show();
+    $("#customer-orders").hide();
+    errorContainerHide(3);
+    showNavigationCaption("E-SHOP Order #"+orderId, 3);
+    loadOrder(orderId);
+    $("#customer-order").show();
+}
+
+function drawPurchase(purchase) {
+ var content = '<div class="mdl-cell mdl-cell--6 card-order mdl-card mdl-shadow--2dp">';
+ var str = '<div id="order-title" class="mdl-card__title mdl-card--expand" style="background: url(\'{img}\') center / cover;">';
+ var res = str.replace("{img}", purchase.images[0]);
+ content += res;
+ content += '<h2 class="mdl-card__title-text">' + purchase.type + '</h2>'
+ content += '</div>';
+ content += '<div class="mdl-card__supporting-text">';
+ content += 'ATTRIBUTES';
+ content += '</div>';
+ content += '<div class="mdl-card__actions mdl-card--border">';
+ content += 'amount: <b>' + purchase.amount+'</b><br/>';
+ var attrContent = '';
+ purchase.attributes.forEach(function(attr) {
+    if(attr.name=='color') {
+        attrContent += attr.name + ': '+ showColorElement(attr.value);
+    } else {
+        attrContent += attr.name + ': '+ attr.value;
+    }
+    attrContent += '<br/>'
+ });
+ content += attrContent;
+ content += '</div>';
+ content += '</div>';
+ return content;
+}
+var ORDER_ID;
+function loadOrder(orderId) {
+    ORDER_ID = orderId;
+    var order = CURRENT_ORDERS.find(obj => {
+                  return obj.id === orderId
+                });
+    var content = '';
+    order.purchases.forEach(function(p) {
+        content += drawPurchase(p);
+    });
+    $('#container-purchases').empty();
+    $('#container-purchases').append(content);
+
+    $('#order-action').empty();
+    $('#order-action').append(order.actions[0].action);
+    componentHandler.upgradeDom();
+}
+
+function btnOrderBackAction() {
+  showNavigationCaption("E-SHOP Orders ", 3);
+  $("#btn-order-back").hide();
+  $("#customer-order").hide();
+  $("#customer-orders").show();
+}
+
+function orderActionOk(json){
+    console.log(json);
+    showToast("Status changed");
+    initOrders();
+}
+
+function orderActionFail(json){
+    showError(json, 3);
+    showToast("Status changed error");
+}
+
+function orderAction(element) {
+    var status = $("#order-action").text();
+    var orderStatusURL = "/private/order/"+status+"/"+ORDER_ID;
+
+    sendDataAsJson(URL_SERVICES + orderStatusURL, 'POST', null, orderActionOk, orderActionFail)
+
+}

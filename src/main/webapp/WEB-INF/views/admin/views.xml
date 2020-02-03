@@ -12,6 +12,7 @@
             <definition template="/WEB-INF/views/admin/index.jsp">
                 <put-attribute name="section-type" value="/WEB-INF/views/admin/section-type.jsp"/>
                 <put-attribute name="section-commodity" value="/WEB-INF/views/admin/section-commodity.jsp"/>
+                <put-attribute name="section-orders" value="/WEB-INF/views/admin/section-orders.jsp"/>
             </definition>
         </put-attribute>
     </definition>

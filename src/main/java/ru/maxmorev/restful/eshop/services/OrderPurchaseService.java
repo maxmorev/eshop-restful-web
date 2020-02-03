@@ -1,7 +1,10 @@
 package ru.maxmorev.restful.eshop.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
+import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 
@@ -21,4 +24,6 @@ public interface OrderPurchaseService {
     void cleanExpiredOrders();
 
     CustomerOrder setOrderStatus(Long id, CustomerOrderStatus status);
+
+    Page<CustomerOrder> findAllOrdersByPage(Pageable pageable);
 }

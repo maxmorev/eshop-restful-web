@@ -53,7 +53,7 @@ function showPaymentContent(){
     $('#payment-info').show();
 }
 
-function showPaymentConfirmed(){
+function showPaymentConfirmed() {
     $('#shopping-cart').hide();
     $('#payment-info').hide();
     $('#error-container').hide();
@@ -65,7 +65,7 @@ $(document).ready(function () {
     showPaymentContent();
     shoppingCartObj = JSON.parse(shoppingCartJson);
     if(shoppingCartObj.itemsAmount>0){
-        showShoppingCart(shoppingCartObj);
+        //showShoppingCart(shoppingCartObj);
         showToast("Please checkout for selected items!");
     }else{
         showToast("Shopping cart is empty");
@@ -122,10 +122,14 @@ $(document).ready(function () {
                     <p id="error-message"></p>
                 </div>
                 <div class="mdl-cell mdl-cell--12-col">
-                Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div>
+                Shopping Cart Subtotal (<div class="data-holder" id="total-items">${shoppingCart.itemsAmount}</div> items):&nbsp;<div class="data-holder" id="total-cart-price">${shoppingCart.totalPrice} </div>
                 </div>
-                <div class="mdl-cell mdl-cell--6-col">
-                    <tiles:insertAttribute name="cart-container"/>
+
+                <div id="delivery-info" class="mdl-cell mdl-cell--6-col">
+                <b>Delivery Address:</b><br/>
+                ${customer.email}<br/>
+                ${customer.fullName}<br/>
+                ${customer.country}, ${customer.postcode}, ${customer.city}, ${customer.address}
                 </div>
                 <div id="payment-info" class="mdl-cell mdl-cell--6-col">
                     <div class="mdl-grid">
@@ -137,6 +141,7 @@ $(document).ready(function () {
 
                     </div>
                 </div>
+
                 <div id="payment-confirmed" class="mdl-cell mdl-cell--6-col">
                     <div class="mdl-grid">
                         <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
@@ -144,8 +149,8 @@ $(document).ready(function () {
                         Thank you for your purchase!<br/>
                         Order #<b id="order-id"></b> confirmed<br/>
                         You can track the order status in your <a href="${profileUrl}">profile</a>:
-                        You will receive order status updates by mail.<br/>
-                        Estimated time of dispatch:
+                        You will receive order status updates by email.<br/>
+                        Estimated time of dispatch: 1-3 days
                         </div>
                         <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>
                     </div>

@@ -44,7 +44,6 @@ public class CommodityImage implements Comparable<CommodityImage> {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityImage)) return false;
-        if (!super.equals(object)) return false;
         CommodityImage that = (CommodityImage) object;
         return getUri().equals(that.getUri());
     }

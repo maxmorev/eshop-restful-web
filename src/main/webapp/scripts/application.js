@@ -69,23 +69,23 @@ function isWear(name){
 }
 
 function getNotWearAttributes(attributes){
-    var notWearAttributes = attributes.filter( function(a){return !isWear(a.attribute.name) ; });
+    var notWearAttributes = attributes.filter( function(a){return !isWear(a.name) ; });
     if(notWearAttributes.length>0)
-        notWearAttributes.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
+        notWearAttributes.sort(function(a,b){ return a.measure>b.measure});
     return notWearAttributes;
 }
 
 
 function showCommodityAttribute(prop){
-    return prop.attribute.name + ": " + prop.attributeValue.value + " " + prop.attribute.measure + "<br/>";
+    return prop.name + ": " + prop.value + " " + prop.measure + "<br/>";
 }
 function showWearAttrubute(attr){
     var attributesContent = '';
-    if(attr.attribute.name=="size"){
-        attributesContent += attr.attribute.name + ':' + showSizeElement(attr.attributeValue.value);
+    if(attr.name=="size"){
+        attributesContent += attr.name + ':' + showSizeElement(attr.value);
     }
-    if(attr.attribute.name=="color"){
-        attributesContent += attr.attribute.name + ':' + showColorElement(attr.attributeValue.value);
+    if(attr.name=="color"){
+        attributesContent += attr.name + ':' + showColorElement(attr.value);
     }
     return attributesContent;
 }
@@ -134,17 +134,21 @@ function getAmountByBranch(shoppingCart, branchId){
     }
 }
 
-
 function refreshShoppingCart(json){
     shoppingCartUpdate = json;
     showShoppingCart(json);
-    var oldAmount = getAmountByBranch(shoppingCartObj, currentBranchId);
-    var newAmount = getAmountByBranch(shoppingCartUpdate, currentBranchId);
-    shoppingCartObj = shoppingCartUpdate;
-    if( oldAmount!=newAmount ){
-        showToast("Done!");
+    if(json.shoppingSet.length==0){
+        hideShoppingCart();
+        showToast("Shopping cart is Empty");
     }else{
-        showToast("Total available: "+oldAmount +" " + fromAmountName);
+        var oldAmount = getAmountByBranch(shoppingCartObj, currentBranchId);
+        var newAmount = getAmountByBranch(shoppingCartUpdate, currentBranchId);
+        shoppingCartObj = shoppingCartUpdate;
+        if( oldAmount!=newAmount ){
+            showToast("Done!");
+        }else{
+            showToast("Total available: "+oldAmount +" " + fromAmountName);
+        }
     }
 }
 
@@ -167,7 +171,7 @@ function showShoppingCart(shoppingCart){
     shoppingSet.forEach(function(set){
 
         //show attributes
-        var attributes = set.branch.attributeSet;
+        var attributes = set.branch.attributes;
         var attributesContent = '';
         var notWearAttributes = getNotWearAttributes(attributes);
         if(notWearAttributes.length>0){
@@ -179,21 +183,18 @@ function showShoppingCart(shoppingCart){
                 attributesContent += showWearAttrubute(attr)+'<br/>';
             });
         }
-        content += '<tr>';
-        content += '<td class="mdl-data-table__cell--non-numeric"><a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'"><img src="'+set.commodityInfo.images[0].uri+'" width="100px"/></a></td>';
-        content += '<td class="mdl-data-table__cell--non-numeric">';
-        content += '<b>'+set.branch.price+' £</b><br/>';
+        content += '<a class="mdl-cell mdl-cell--4-col"  href="'+showCommodityUrl+'/'+set.commodityInfo.id+'"><img src="'+set.commodityInfo.images[0]+'" width="250px"/>';
+        content += '</a>'
+        content += '<div class="mdl-cell mdl-cell--4-col">';
+        content += '<b>'+set.branch.price+' £</b>&nbsp;';
         content += '<a href="'+showCommodityUrl+'/'+set.commodityInfo.id+'">'+set.commodityInfo.name+'</a><br/>';
         content += attributesContent;
-        content += 'quantity: ' + set.amount +' | price: '+set.branch.price;
-        content += '</td>';
-        content += '</tr>';
-        //show attributes
-        //buttons
-        content += '<tr><td></td>'
-        content += '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addToSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">add</i></button>&nbsp;';
-        content += '<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="removeFromSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">remove</i></button></td>';
-        content += '</tr>';
+        content += 'quantity: ' + set.amount +' | price: '+set.branch.price +'<br/><br/>';
+        content += '<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="addToSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">add</i></button>';
+        content += '&nbsp;<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onclick="removeFromSet('+shoppingCart.id+','+set.branch.id+','+set.id+')"><i class="material-icons">remove</i></button>';
+        content += '</div>';
+        content += '<div class="mdl-cell mdl-cell--4-col">';
+        content += '</div>';
         totalItems += set.amount;
         totalPrice += set.amount*set.branch.price;
     });
@@ -227,6 +228,6 @@ function showSpinner(){
 }
 
 function hideSpinner(){
-    var timeoutID = window.setTimeout(function(){ $('#spinner').hide(); }, 500);
+    var timeoutID = window.setTimeout(function(){ $('#spinner').hide(); }, 50);
 
 }

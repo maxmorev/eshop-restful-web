@@ -10,30 +10,39 @@ import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
+import ru.maxmorev.restful.eshop.rest.response.ShoppingCartDto;
+import ru.maxmorev.restful.eshop.services.CommodityDtoService;
 import ru.maxmorev.restful.eshop.services.CustomerService;
 import ru.maxmorev.restful.eshop.services.OrderPurchaseService;
+import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j
 @Controller
 public class ShoppingCartWebController extends CommonWebController {
 
+    private static final String SHOPPING_CART_URL = "/shopping/cart/";
     private CustomerService customerService;
     private OrderPurchaseService orderPurchaseService;
 
-    @Autowired public void setOrderPurchaseService(OrderPurchaseService orderPurchaseService) {
+    public ShoppingCartWebController(ShoppingCartService shoppingCartService, CommodityDtoService commodityDtoService) {
+        super(shoppingCartService, commodityDtoService);
+    }
+
+    @Autowired
+    public void setOrderPurchaseService(OrderPurchaseService orderPurchaseService) {
         this.orderPurchaseService = orderPurchaseService;
     }
 
-    @Autowired public void setCustomerService(CustomerService customerService) {
+    @Autowired
+    public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
     }
 
-    @GetMapping(path = {"/shopping/cart/"})
+    @GetMapping(path = {SHOPPING_CART_URL})
     public String getShoppingCart(
             HttpServletResponse response,
             @CookieValue(value = ShoppingCookie.SHOPPiNG_CART_NAME, required = false) Cookie cartCookie,
@@ -53,19 +62,23 @@ public class ShoppingCartWebController extends CommonWebController {
         //merge shopping cart after login
 
         String id = getAuthenticationCustomerId();
-        if(id==null)
+        if (id == null)
             throw new IllegalAccessError("Not Authenticated");
 
         ShoppingCart scFromCookie = getShoppingCart(cartCookie, response);
         Customer authCustomer = customerService.findByEmail(id).get();
 
-        scFromCookie = shoppingCartService.mergeCartFromCookieWithCustomer( scFromCookie, authCustomer);
+        scFromCookie = shoppingCartService.mergeCartFromCookieWithCustomer(scFromCookie, authCustomer);
+        if (scFromCookie.getShoppingSet().size() == 0) {
+            //redirect to cart
+            response.sendRedirect(SHOPPING_CART_URL);
+        }
 
         setShoppingCartCookie(scFromCookie, response);
         addCommonAttributesToModel(uiModel);
         uiModel.addAttribute("customer", authCustomer);
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, scFromCookie );
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, scFromCookie.getItemsAmount() );
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, ShoppingCartDto.of(scFromCookie));
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, scFromCookie.getItemsAmount());
 
         //create transaction order and hold items for 10 minutes
         CustomerOrder order = orderPurchaseService.createOrderFor(authCustomer);
@@ -73,7 +86,6 @@ public class ShoppingCartWebController extends CommonWebController {
 
         return "shopping/proceedToCheckout";
     }
-
 
 
 }

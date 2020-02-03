@@ -29,12 +29,9 @@
     <!-- Get the user locale from the page context (it was set by Spring MVC's locale resolver) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-
     <script type="text/javascript">
         var URL_SERVICES = "<%=request.getContextPath().equals("")?"":request.getContextPath()%>/rest/api";
     </script>
-    <script src="${pageContext.request.contextPath}/scripts/common.js"></script>
-    <script src="${pageContext.request.contextPath}/scripts/admin-page.js"></script>
 
 </head>
 
@@ -42,14 +39,12 @@
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
      <main class="mdl-layout__content">
         <tiles:insertAttribute name="body"/>
-        <!-- Toast place -->
-        <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
-        <div class="mdl-snackbar__text"></div>
-        <button class="mdl-snackbar__action" type="button"></button>
-        </div>
      </main>
 </div>
-<!-- end Toast place -->
-<script defer src="${mdl_url}/material.min.js"></script>
+<!-- Toast place -->
+<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+<div class="mdl-snackbar__text"></div>
+<button class="mdl-snackbar__action" type="button"></button>
+</div>
 </body>
 </html>

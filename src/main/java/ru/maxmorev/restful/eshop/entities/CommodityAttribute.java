@@ -15,6 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -28,7 +31,12 @@ import java.util.Set;
 @Entity
 @Table(name = "commodity_attribute")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommodityAttribute extends AbstractEntity {
+public class CommodityAttribute {
+
+    @Id
+    @GeneratedValue(generator = Constants.ID_GENERATOR_ATTRIBUTE)
+    @Column(updatable = false)
+    protected Long id;
 
     @Column(updatable = false, length = 64)
     private String name;
@@ -41,7 +49,7 @@ public class CommodityAttribute extends AbstractEntity {
     private String measure;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    @JoinColumn(name = "type_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_COMMODITY_ATTRIBUTE_TYPE"))
     @JsonIgnore
     private CommodityType commodityType;
 
@@ -68,9 +76,9 @@ public class CommodityAttribute extends AbstractEntity {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof CommodityAttribute)) return false;
-        if (!super.equals(object)) return false;
         CommodityAttribute that = (CommodityAttribute) object;
-        return getName().equals(that.getName()) &&
+        return Objects.equals(getId(), that.getId()) &&
+                getName().equals(that.getName()) &&
                 getDataType().equals(that.getDataType()) &&
                 Objects.equals(getMeasure(), that.getMeasure()) &&
                 Objects.equals(getCommodityType().getId(), that.getCommodityType().getId());
@@ -78,6 +86,6 @@ public class CommodityAttribute extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getDataType(), getCommodityType());
+        return Objects.hash(getId(), getName(), getDataType(), getCommodityType());
     }
 }

@@ -9,6 +9,7 @@ import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
+import ru.maxmorev.restful.eshop.rest.response.ShoppingCartDto;
 import ru.maxmorev.restful.eshop.services.CommodityService;
 import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
@@ -42,9 +43,10 @@ public class ShoppingCartController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + "shoppingCart/id/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ShoppingCart getShoppingCart(@PathVariable(name = "id", required = true) Long id, Locale locale) throws Exception {
+    public ShoppingCartDto getShoppingCart(@PathVariable(name = "id", required = true) Long id, Locale locale) throws Exception {
         return shoppingCartService
                 .findShoppingCartById(id)
+                .map(ShoppingCartDto::of)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
                                 messageSource
@@ -55,23 +57,23 @@ public class ShoppingCartController {
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.POST)
     @ResponseBody
-    public ShoppingCart addToShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
+    public ShoppingCartDto addToShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("POST:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
-        return shoppingCartService
+        return ShoppingCartDto.of(shoppingCartService
                 .addBranchToShoppingCart(
                         requestShoppingCartSet.getBranchId(),
                         requestShoppingCartSet.getShoppingCartId(),
-                        requestShoppingCartSet.getAmount());
+                        requestShoppingCartSet.getAmount()));
     }
 
     @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.DELETE)
     @ResponseBody
-    public ShoppingCart removeFromShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
+    public ShoppingCartDto removeFromShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
         log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
-        return shoppingCartService.removeBranchFromShoppingCart(
+        return ShoppingCartDto.of(shoppingCartService.removeBranchFromShoppingCart(
                 requestShoppingCartSet.getBranchId(),
                 requestShoppingCartSet.getShoppingCartId(),
-                requestShoppingCartSet.getAmount());
+                requestShoppingCartSet.getAmount()));
     }
 
 
