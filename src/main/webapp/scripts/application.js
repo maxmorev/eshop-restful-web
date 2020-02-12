@@ -22,6 +22,11 @@ function mark(el, imgURI) {
     APPLICATION PARAMETERS
 **/
 
+function getShoppingCart(id, callBack) {
+  var urlService = URL_SERVICES + "/public/shoppingCart/id/"+id;
+  return sendDataAsJson(urlService, 'GET', null, callBack);
+}
+
 function addToBasket(errorMessage, successMessage){
     var elms = document.getElementsByClassName("circleSelection");
     var colorId = elms[0].getAttribute("id");

@@ -77,7 +77,7 @@ public class ShoppingCartWebController extends CommonWebController {
         setShoppingCartCookie(scFromCookie, response);
         addCommonAttributesToModel(uiModel);
         uiModel.addAttribute("customer", authCustomer);
-        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART, ShoppingCartDto.of(scFromCookie));
+        uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_NAME, scFromCookie.getId());
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, scFromCookie.getItemsAmount());
 
         //create transaction order and hold items for 10 minutes

@@ -15,6 +15,7 @@ import java.util.List;
 public interface CustomerOrderRepository  extends PagingAndSortingRepository<CustomerOrder, Long> {
 
     List<CustomerOrder> findByCustomer(Customer customer);
+    List<CustomerOrder> findByCustomerOrderByDateOfCreationDesc(Customer customer);
     @Query("select co from CustomerOrder co where co.dateOfCreation < :expiredDate and co.status=:status")
     List<CustomerOrder> findExpiredOrdersByStatus(@Param("status") CustomerOrderStatus status, @Param("expiredDate") Date expiredDate);
 

@@ -23,7 +23,7 @@
 <script src="https://www.paypal.com/sdk/js?client-id=AZLBDto98XnkWuOsGr78XH78ohzsHneaQY9vzVdWu9w5xSKRhv1HQl2KSCBvtIDoEEQpXzLcCvJ8d9BG&currency=USD"></script>
 
 <script type="text/javascript">
-const shoppingCartJson = '${shoppingCart}';
+const shoppingCartId = ${ShoppingCartCookie};
 const showCommodityUrl = '${showCommodityUrl}';
 const orderId = '${orderId}';
 const customerId = '${customer.id}';
@@ -60,16 +60,21 @@ function showPaymentConfirmed() {
     $('#payment-confirmed').show();
 }
 
-$(document).ready(function () {
-
-    showPaymentContent();
-    shoppingCartObj = JSON.parse(shoppingCartJson);
-    if(shoppingCartObj.itemsAmount>0){
+function loadCartSuccess(json) {
+    shoppingCartObj = json;
+    if(shoppingCartObj.itemsAmount>0) {
         //showShoppingCart(shoppingCartObj);
         showToast("Please checkout for selected items!");
     }else{
         showToast("Shopping cart is empty");
     }
+}
+
+$(document).ready(function () {
+
+    showPaymentContent();
+    getShoppingCart(shoppingCartId, loadCartSuccess);
+
     activateTab('tab-shopping-cart');
 
     paypal.Buttons({
@@ -110,7 +115,7 @@ $(document).ready(function () {
 </script>
 <div class="mdl-grid portfolio-max-width">
      <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
-        <c:if test="${not empty shoppingCart}">
+
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text commodity-name">${labelWelcome}</b></h2>
             </div>
@@ -158,6 +163,6 @@ $(document).ready(function () {
 
             </div>
 
-        </c:if>
+
     </div>
 </div>

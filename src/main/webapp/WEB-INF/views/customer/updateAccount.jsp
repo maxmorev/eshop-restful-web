@@ -9,9 +9,8 @@
 
 <script type="text/javascript">
 const customer = '${customer}';
-const orders = '${orders}'
 var customerObj = JSON.parse(customer);
-var ordersObj = JSON.parse(orders);
+var ordersObj;
 
 function errorUpdate(json){
     showErrorFromJson(json);
@@ -74,6 +73,7 @@ $(document).ready(function () {
 
     var btnShowOrders = document.querySelector('#show-orders');
     btnShowOrders.addEventListener('click', function() {
+
         $('#update-info').hide();
         $('#orders-info').show();
     });

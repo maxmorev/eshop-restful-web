@@ -21,10 +21,10 @@
     <spring:url value="/customer/account/create/cart/" var="createAccountUrl"/>
 
 <script type="text/javascript">
-const shoppingCartJson = '${shoppingCart}';
+const shoppingCartId = ${ShoppingCartCookie};
 const showCommodityUrl = '${showCommodityUrl}';
 
-var shoppingCartObj = JSON.parse(shoppingCartJson);
+var shoppingCartObj;
 var currentBranchId; //current branchId for update
 var shoppingCartUpdate;
 var fromAmountName;
@@ -42,16 +42,19 @@ function hideShoppingCart(){
     $("#cart-card").hide();
     $("#cart-btn-proceed").hide();
 }
+function loadCartSuccess(json) {
+    shoppingCartObj = json;
+    if(shoppingCartObj.shoppingSet.length==0){
+        hideShoppingCart();
+      }else{
+        showShoppingCart(shoppingCartObj);
+        showCartElements();
+      }
+}
 
 $(document).ready(function () {
   activateTab('tab-shopping-cart');
-  if(shoppingCartObj.shoppingSet.length==0){
-    hideShoppingCart();
-  }else{
-    showShoppingCart(shoppingCartObj);
-    showCartElements();
-  }
-
+  getShoppingCart(shoppingCartId, loadCartSuccess);
   showToast("Welcome to shopping cart!");
 
   var btnProceed = document.querySelector('#cart-btn-proceed');

@@ -21,7 +21,7 @@
 
 <script type="text/javascript">
 
-const shoppingCart = ${ShoppingCartCookie};
+const shoppingCartId = ${ShoppingCartCookie};
 var branches = [];
 var shoppingCartObj;
 
@@ -34,13 +34,13 @@ function addToShoppingCartSuccess(json){
 
 function findBranch(){
     var branchId = branches[0].id;
-    addToShoppingCartSet(shoppingCart, branchId, 1, addToShoppingCartSuccess);
+    addToShoppingCartSet(shoppingCartObj.id, branchId, 1, addToShoppingCartSuccess);
 }
 
 function showAttributes(propertySet){
   var content="";
   propertySet.forEach(function(prop){
-    content += prop.attribute.name + ": " + prop.attributeValue.value + " " + prop.attribute.measure + "<br/>";
+    content += prop.name + ": " + prop.value + " " + prop.measure + "<br/>";
   });
   $('#attribute-container').empty();
   $('#attribute-container').append(content);
@@ -53,11 +53,29 @@ function showAmount(branch){
     $('#amount-container').append(content);
 }
 
+function drawButtonProceed() {
+    $('#btn-proceed').hide();
+    if( shoppingCartObj != undefined) {
+        if(shoppingCartObj.shoppingSet!=undefined && shoppingCartObj.shoppingSet.length>0) {
+            $('#btn-proceed').show();
+        }
+    } else {
+        $('#btn-proceed').hide();
+    }
+
+}
+
+function loadCartSuccess(json){
+    shoppingCartObj = json;
+    drawButtonProceed();
+}
+
 $(document).ready(function () {
+    getShoppingCart(shoppingCartId, loadCartSuccess);
     var branches_str = '${commodity.branches}';
     branches = JSON.parse(branches_str);
-    var propertySet = branches[0].attributeSet;
-    propertySet.sort(function(a,b){ return a.attribute.measure>b.attribute.measure});
+    var propertySet = branches[0].attributes;
+    propertySet.sort(function(a,b){ return a.measure>b.measure});
     showAttributes(propertySet);
     showAmount(branches[0]);
     var btnAddToBasket = document.querySelector('#btn-add-to-basket');
@@ -74,30 +92,30 @@ $(document).ready(function () {
         <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--4dp">
             <c:if test="${not empty commodity}">
                 <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text commodity-name">${commodity.type.name}&#160;<b>${commodity.name}</b></h2>
-                </div>
-                <div class="mdl-card__media" style="background-color:white" >
-                    <div class="images">
-                        <img id="mainImage" width="100%" src="${commodity.images[0].uri}"/>
-                    </div>
-                    <div align="center">
-                        <c:forEach items="${commodity.images}" var="image" varStatus="loop">
-                            <c:if test="${loop.index==0}">
-                                <img  id="img-nav" src="${image.uri}" width="100px" onClick="mark(this, '${image.uri}');" class="circleImgSelection"/>
-                            </c:if>
-                            <c:if test="${loop.index>0}">
-                                <img id="img-nav" src="${image.uri}" width="100px" onClick="mark(this, '${image.uri}');" class="circleImgUnselected"/>
-                            </c:if>
-                        </c:forEach>
-                    </div>
-                </div>
-                <div class="mdl-card__supporting-text">
-                    <strong>${commodity.type.name}</strong>&#160;<span>${commodity.shortDescription}</span>
-                </div>
+                                    <h2 class="mdl-card__title-text commodity-name">${commodity.type.name}&#160;<b>${commodity.name}</b></h2>
+                                </div>
+                                <div class="mdl-card__media card-image" style="background-color:white" >
+                                    <div class="images">
+                                        <img id="mainImage" class="item-image" src="${commodity.images[0]}"/>
+                                    <div class="images-navi">
+                                        <c:forEach items="${commodity.images}" var="image" varStatus="loop">
+                                            <c:if test="${loop.index==0}">
+                                                <img  id="img-nav" src="${image}" onClick="mark(this, '${image}');" class="circleImgSelection"/>
+                                            </c:if>
+                                            <c:if test="${loop.index>0}">
+                                                <img id="img-nav" src="${image}" onClick="mark(this, '${image}');" class="circleImgUnselected"/>
+                                            </c:if>
+                                        </c:forEach>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <strong>${commodity.type.name}</strong>&#160;<span>${commodity.shortDescription}</span>
+                                </div>
                 <div class="mdl-grid portfolio-copy">
                     <h3 class="mdl-cell mdl-cell--12-col mdl-typography--headline commodity-name">${commodity.type.name}&#160; ${commodity.name}</h3>
-                    <div id="vendor-code" class="mdl-cell mdl-cell--12-col mdl-typography--headline">${labelVendorCode}: ${commodity.codeIfSingle}</div>
-                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.price} ${commodity.currencyCode}</b></div>
+                    <div id="vendor-code" class="mdl-cell mdl-cell--12-col mdl-typography--headline">${labelVendorCode}: ${commodity.id}-${commodity.branches[0].id}</div>
+                    <div class="mdl-cell mdl-cell--12-col mdl-typography--headline" >${labelPrice} &#160;<b>${commodity.branches[0].price} ${commodity.branches[0].currency}</b></div>
                     <div class="mdl-cell mdl-cell--6-col mdl-card__supporting-text no-padding">
                         <p class="commodity-overview">${commodity.overview}</p>
                     </div>
@@ -115,7 +133,7 @@ $(document).ready(function () {
 
                             </div>
                             <div id="vendor-code-container">
-                            ${labelVendorCode}: ${commodity.codeIfSingle}
+                            ${labelVendorCode}: ${commodity.id}-${commodity.branches[0].id}
                             </div>
                         </div>
                         <div class="mdl-cell mdl-cell--4-col">

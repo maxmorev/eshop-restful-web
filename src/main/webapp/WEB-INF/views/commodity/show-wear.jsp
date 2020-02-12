@@ -18,7 +18,7 @@
 
 
 <script type="text/javascript">
-const shoppingCartJson = '${shoppingCart}';
+const shoppingCartId = ${ShoppingCartCookie};
 const shoppingCart = ${ShoppingCartCookie};
 const commodityId = ${commodity.id};
 var BRANCHES = [];
@@ -145,8 +145,13 @@ function drawButtonProceed() {
 
 }
 
+function loadCartSuccess(json){
+    shoppingCartObj = json;
+    drawButtonProceed();
+}
+
 $(document).ready(function () {
-shoppingCartObj = JSON.parse(shoppingCartJson);
+getShoppingCart(shoppingCartId, loadCartSuccess);
 <c:if test="${not empty commodity}">
 var str_branches = '${commodity.branches}';
 var objJson = JSON.parse(str_branches);
@@ -176,7 +181,7 @@ var btnProceed = document.querySelector('#btn-proceed');
 btnProceed.addEventListener('click', function() {
     window.location.href = "${proceedToCheckoutUrl}";
 } );
-drawButtonProceed();
+
 });
 
 </script>

@@ -74,7 +74,7 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
     public List<CustomerOrder> findCustomerOrders(Long customerId) {
         Optional<Customer> customer = customerService.findById(customerId);
         if (customer.isPresent()) {
-            return customerOrderRepository.findByCustomer(customer.get());
+            return customerOrderRepository.findByCustomerOrderByDateOfCreationDesc(customer.get());
         }
         return Collections.emptyList();
     }
