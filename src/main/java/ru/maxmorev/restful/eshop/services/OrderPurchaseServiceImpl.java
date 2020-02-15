@@ -136,4 +136,10 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
     public Page<CustomerOrder> findAllOrdersByPageAndStatusNot(Pageable pageable, CustomerOrderStatus status) {
         return customerOrderRepository.findByStatusNot(pageable, status);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<CustomerOrder> findOrder(Long id, Long customerId) {
+        return customerOrderRepository.findByIdAndCustomerId(id, customerId);
+    }
 }

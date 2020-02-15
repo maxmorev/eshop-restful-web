@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
@@ -148,6 +149,49 @@ public class OrderPurchaseControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].customerId", is(10)))
                 .andExpect(jsonPath("$[0].status", is("AWAITING_PAYMENT")));
+    }
+
+    @Test
+    @DisplayName("Should return order by id and customer.id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void customerOrderTest() throws Exception {
+        mockMvc.perform(get(Constants.REST_CUSTOMER_URI + "order/25/customer/10/")
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "CUSTOMER")))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.id", is(25)))
+                .andExpect(jsonPath("$.customerId", is(10)))
+                .andExpect(jsonPath("$.status", is("PAYMENT_APPROVED")));
+    }
+
+    @Test
+    @DisplayName("Should return error by id and customer.id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void customerOrderErrorTest() throws Exception {
+        mockMvc.perform(get(Constants.REST_CUSTOMER_URI + "order/25/customer/15/")
+                .with(user("customer")
+                        .password("customer")
+                        .authorities((GrantedAuthority) () -> "CUSTOMER")))
+                .andDo(print())
+                .andExpect(status().is(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .andExpect(jsonPath("$.status", is("error")))
+                .andExpect(jsonPath("$.message", is("Internal server error")));
     }
 
 

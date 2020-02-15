@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.repository;
 
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,11 +14,14 @@ import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CustomerOrderRepository  extends PagingAndSortingRepository<CustomerOrder, Long> {
 
     List<CustomerOrder> findByCustomer(Customer customer);
+    //@Query("select co from CustomerOrder co where co.dateOfCreation < :expiredDate and co.status=:status")
+    Optional<CustomerOrder> findByIdAndCustomerId(Long id, Long customerId);
     List<CustomerOrder> findByCustomerOrderByDateOfCreationDesc(Customer customer);
     List<CustomerOrder> findByCustomerAndStatusOrderByDateOfCreationDesc(Customer customer, CustomerOrderStatus status);
     @Query("select co from CustomerOrder co where co.dateOfCreation < :expiredDate and co.status=:status")

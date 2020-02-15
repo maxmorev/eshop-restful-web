@@ -25,6 +25,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -61,9 +62,23 @@ public class OrderPurchaseController {
         return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
     }
 
+    @RequestMapping(path = Constants.REST_CUSTOMER_URI + "order/{id}/customer/{customerId}", method = RequestMethod.GET)
+    @ResponseBody
+    CustomerOrderDto customerOrder(
+            @PathVariable(name = "customerId") Long customerId,
+            @PathVariable(name = "id") Long orderId,
+            Locale locale) {
+        //TODO check auth customer.id with id in PathVariable
+        return orderPurchaseService
+                .findOrder(orderId, customerId)
+                .map(CustomerOrderDto::of)
+                .orElseThrow(()->new NoSuchElementException("No such order"));
+    }
+
     @RequestMapping(path = Constants.REST_CUSTOMER_URI + "order/list/{customerId}", method = RequestMethod.GET)
     @ResponseBody
     List<CustomerOrderDto> customerOrderList(@PathVariable(name = "customerId", required = true) Long customerId, Locale locale) {
+        //TODO check auth customer.id with id in PathVariable
         return orderPurchaseService
                 .findCustomerOrders(customerId)
                 .stream()

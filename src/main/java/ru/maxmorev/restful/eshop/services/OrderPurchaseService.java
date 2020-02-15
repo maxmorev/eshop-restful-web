@@ -15,6 +15,8 @@ public interface OrderPurchaseService {
 
     Optional<CustomerOrder> findOrder(Long id);
 
+    Optional<CustomerOrder> findOrder(Long id, Long customerId);
+
     CustomerOrder createOrderFor(Customer customer);
 
     CustomerOrder confirmPaymentOrder(CustomerOrder order, PaymentProvider paymentProvider, String paymentID);

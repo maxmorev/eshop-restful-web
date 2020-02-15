@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -74,4 +75,38 @@ public class CustomerOrderRepositoryTest {
 
         assertEquals(1, expiredOrders.size());
     }
+
+    @Test
+    @Transactional
+    @DisplayName("should get order by id and customer.id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void findOrderByIdAndCustomerIdTest() {
+        Optional<CustomerOrder> order = orderPurchaseService.findOrder(25L, 10L);
+        assertTrue(order.isPresent());
+        assertEquals(25L, order.get().getId().longValue());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should get empty order by id and customer.id")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void findOrderByIdAndCustomerIdEmptyTest() {
+        Optional<CustomerOrder> order = orderPurchaseService.findOrder(25L, 15L);
+        assertTrue(order.isEmpty());
+    }
+
 }
