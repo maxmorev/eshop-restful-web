@@ -27,6 +27,9 @@ spring:
     username: postgres
     password: postgres
 #APP PROPS
-order.expired.minutes: 15
+order:
+  expiredMinutes: 15
+cart:
+  maxItemsAmount: 3
 server:
   port: 8888

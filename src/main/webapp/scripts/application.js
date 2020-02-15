@@ -167,6 +167,25 @@ function removeFromSet(cartId, branchId, setId){
     removeFromShoppingCartSet(cartId, branchId, 1, refreshShoppingCart);
 }
 
+function showShoppingCartMeta(shoppingCart){
+
+    var shoppingSet = shoppingCart.shoppingSet;
+    var content = "";
+    var totalItems = 0;
+    var totalPrice = 0;
+    shoppingSet.forEach(function(set){
+        totalItems += set.amount;
+        totalPrice += set.amount*set.branch.price;
+    });
+    $('#total-items').empty();
+    $('#total-items').append('<b>'+totalItems+'</b>');
+    $('#total-cart-price').empty();
+    $('#total-cart-price').append('<b>£'+totalPrice+'</b>');
+    showShoppingCartIconDataBadge(totalItems);
+    componentHandler.upgradeDom();
+
+}
+
 function showShoppingCart(shoppingCart){
 
     var shoppingSet = shoppingCart.shoppingSet;

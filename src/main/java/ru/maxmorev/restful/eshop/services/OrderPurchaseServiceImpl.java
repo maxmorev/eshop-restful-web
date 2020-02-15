@@ -79,6 +79,16 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         return Collections.emptyList();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<CustomerOrder> findCustomerOrders(Long customerId, CustomerOrderStatus status) {
+        Optional<Customer> customer = customerService.findById(customerId);
+        if (customer.isPresent()) {
+            return customerOrderRepository.findByCustomerAndStatusOrderByDateOfCreationDesc(customer.get(), status);
+        }
+        return Collections.emptyList();
+    }
+
     @Override
     public Optional<CustomerOrder> findOrder(Long id) {
         return customerOrderRepository.findById(id);
@@ -88,7 +98,7 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
     public void cleanExpiredOrders() {
         //DO NOTHING
         Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, -orderConfiguration.getOrderExpiredMinutes());
+        now.add(Calendar.MINUTE, -orderConfiguration.getExpiredMinutes());
         Date teenMinutesFromNow = now.getTime();
         List<CustomerOrder> expiredOrders = customerOrderRepository.findExpiredOrdersByStatus(CustomerOrderStatus.AWAITING_PAYMENT, teenMinutesFromNow);
         expiredOrders.forEach(co -> {
@@ -115,5 +125,15 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         return customerOrderRepository.findAll(pageable);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CustomerOrder> findAllOrdersByPageAndStatus(Pageable pageable, CustomerOrderStatus status) {
+        return customerOrderRepository.findByStatus(pageable, status);
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CustomerOrder> findAllOrdersByPageAndStatusNot(Pageable pageable, CustomerOrderStatus status) {
+        return customerOrderRepository.findByStatusNot(pageable, status);
+    }
 }

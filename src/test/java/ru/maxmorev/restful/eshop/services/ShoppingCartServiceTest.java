@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
+import ru.maxmorev.restful.eshop.config.ShoppingCartConfig;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 
 import javax.persistence.EntityManager;
@@ -32,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class})
 public class ShoppingCartServiceTest {
 
+    @Autowired
+    private ShoppingCartConfig shoppingCartConfig;
     @Autowired
     private ShoppingCartService shoppingCartService;
     @Autowired
@@ -110,8 +113,6 @@ public class ShoppingCartServiceTest {
 
             });
         });
-
-
     }
 
     @Test
@@ -191,18 +192,42 @@ public class ShoppingCartServiceTest {
                                 shoppingCart.getId(),
                                 1);
                 em.flush();
-                res.getShoppingSet()
-                        .stream()
-                        .filter(
-                                s -> s
-                                        .getBranch()
-                                        .getId()
-                                        .equals(shoppingCartSet.getBranch().getId()))
-                        .findFirst()
-                        .ifPresent(scs -> {
-                            assertEquals(3, scs.getAmount().intValue());
-                        });
+                assertEquals(3, res.getItemsAmount());
 
+            });
+        });
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should not add amount for branch to shopping cart set")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void addBranchToShoppingCartMaximumCartItemsTest() {
+        shoppingCartService
+                .findShoppingCartById(11L).ifPresent(shoppingCart -> {
+            shoppingCart.getShoppingSet().forEach(shoppingCartSet -> {
+                assertEquals(2, shoppingCartSet.getAmount().intValue());
+                assertEquals(5, shoppingCartSet.getBranch().getAmount().intValue());
+                ShoppingCart res = shoppingCartService
+                        .addBranchToShoppingCart(
+                                shoppingCartSet.getBranch().getId(),
+                                shoppingCart.getId(),
+                                1);
+                assertEquals(shoppingCartConfig.getMaxItemsAmount(), res.getItemsAmount());
+                em.flush();
+                res = shoppingCartService
+                        .addBranchToShoppingCart(
+                                shoppingCartSet.getBranch().getId(),
+                                shoppingCart.getId(),
+                                1);
+                assertEquals(shoppingCartConfig.getMaxItemsAmount(), res.getItemsAmount());
             });
         });
     }
@@ -234,18 +259,7 @@ public class ShoppingCartServiceTest {
                                 shoppingCart.getId(),
                                 4);
                 em.flush();
-                res.getShoppingSet()
-                        .stream()
-                        .filter(
-                                s -> s
-                                        .getBranch()
-                                        .getId()
-                                        .equals(shoppingCartSet.getBranch().getId()))
-                        .findFirst()
-                        .ifPresent(scs -> {
-                            assertEquals(2, scs.getAmount().intValue());
-                        });
-
+                assertEquals(2, res.getItemsAmount());
             });
         });
     }

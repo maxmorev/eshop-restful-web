@@ -25,5 +25,9 @@ public interface OrderPurchaseService {
 
     CustomerOrder setOrderStatus(Long id, CustomerOrderStatus status);
 
+    List<CustomerOrder> findCustomerOrders(Long customerId, CustomerOrderStatus status);
+
     Page<CustomerOrder> findAllOrdersByPage(Pageable pageable);
+    Page<CustomerOrder> findAllOrdersByPageAndStatus(Pageable pageable, CustomerOrderStatus status);
+    Page<CustomerOrder> findAllOrdersByPageAndStatusNot(Pageable pageable, CustomerOrderStatus status);
 }

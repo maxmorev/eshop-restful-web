@@ -13,10 +13,10 @@ public class MockMailSender extends JavaMailSenderImpl {
 
     @Override
     public void send(SimpleMailMessage simpleMessage) throws MailException {
-        log.info( "sending test from: {}", simpleMessage.getFrom());
-        log.info("sending to {}", simpleMessage.getTo());
-        log.info("simpleMessage.getTo().length", simpleMessage.getTo().length);
-        if (Arrays.asList(simpleMessage.getTo()).stream().anyMatch(s->s.contains("@error"))){
+        log.info("sending test from: {}", simpleMessage.getFrom());
+        log.info("sending to {}", simpleMessage.getTo()[0]);
+        log.info("simpleMessage.getTo().length {}", simpleMessage.getTo().length);
+        if (Arrays.asList(simpleMessage.getTo()).stream().anyMatch(s -> s.contains("@error"))) {
             log.info("Error while sending email, to is null!");
             throw new MailPreparationException("Error while sending email, to is null");
         }

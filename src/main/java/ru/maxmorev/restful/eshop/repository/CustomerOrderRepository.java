@@ -1,5 +1,8 @@
 package ru.maxmorev.restful.eshop.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +19,11 @@ public interface CustomerOrderRepository  extends PagingAndSortingRepository<Cus
 
     List<CustomerOrder> findByCustomer(Customer customer);
     List<CustomerOrder> findByCustomerOrderByDateOfCreationDesc(Customer customer);
+    List<CustomerOrder> findByCustomerAndStatusOrderByDateOfCreationDesc(Customer customer, CustomerOrderStatus status);
     @Query("select co from CustomerOrder co where co.dateOfCreation < :expiredDate and co.status=:status")
     List<CustomerOrder> findExpiredOrdersByStatus(@Param("status") CustomerOrderStatus status, @Param("expiredDate") Date expiredDate);
 
+    Page<CustomerOrder> findByStatusNot(Pageable pageable, CustomerOrderStatus status);
+
+    Page<CustomerOrder> findByStatus(Pageable pageable, CustomerOrderStatus status);
 }

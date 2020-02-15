@@ -1,15 +1,16 @@
 package ru.maxmorev.restful.eshop.services;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.maxmorev.restful.eshop.config.ShoppingCartConfig;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
+import ru.maxmorev.restful.eshop.repository.CustomerRepository;
 import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
-import ru.maxmorev.restful.eshop.repository.ShoppingCartSetRepository;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -19,32 +20,13 @@ import java.util.Set;
 @Slf4j
 @Service("shoppingCartService")
 @Transactional
+@AllArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-    private ShoppingCartRepository shoppingCartRepository;
-    private ShoppingCartSetRepository shoppingCartSetRepository;
-    private CommodityService commodityService;
-    private CustomerService customerService;
-
-    @Autowired
-    public void setCommodityService(CommodityService commodityService) {
-        this.commodityService = commodityService;
-    }
-
-    @Autowired
-    public void setShoppingCartRepository(ShoppingCartRepository shoppingCartRepository) {
-        this.shoppingCartRepository = shoppingCartRepository;
-    }
-
-    @Autowired
-    public void setShoppingCartSetRepository(ShoppingCartSetRepository shoppingCartSetRepository) {
-        this.shoppingCartSetRepository = shoppingCartSetRepository;
-    }
-
-    @Autowired
-    public void setCustomerService(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    private final ShoppingCartConfig config;
+    private final ShoppingCartRepository shoppingCartRepository;
+    private final CommodityService commodityService;
+    private final CustomerRepository customerRepository;
 
     @Override
     public ShoppingCart createEmptyShoppingCart() {
@@ -110,6 +92,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         ShoppingCart shoppingCart = this.findShoppingCartById(shoppingCartId)
                 .orElseThrow(() -> new IllegalArgumentException("Cant find shopping cart by id"));
+        if (config.getMaxItemsAmount() == shoppingCart.getItemsAmount()
+                || (shoppingCart.getItemsAmount() + amount) > config.getMaxItemsAmount())
+            return shoppingCart;
         return shoppingCart
                 .getShoppingSet()
                 .stream()
@@ -186,7 +171,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         if (Objects.isNull(customer.getShoppingCartId())) {
             customer.setShoppingCart(sc);
-            customerService.update(customer);
+            customerRepository.save(customer);
         }
         return checkAvailabilityByBranches(sc);
     }

@@ -24,7 +24,10 @@ spring:
     driverClassName: org.h2.Driver
 
 #APP PROPS
-order.expired.minutes: 15
+order:
+  expiredMinutes: 15
+cart:
+  maxItemsAmount: 3
 server:
   port: 8888
 #SMTP from env
@@ -32,8 +35,3 @@ ESHOP_SMTP: smtp.test
 ESHOP_SMTP_PORT: 465
 ESHOP_SMTP_USERNAME: info@test
 ESHOP_SMTP_PASSWORD: test
-
-
-
-
-

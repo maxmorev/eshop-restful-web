@@ -1245,7 +1245,8 @@ function loadOrder(orderId) {
     $('#container-purchases').append(content);
 
     $('#order-action').empty();
-    $('#order-action').append(order.actions[0].action);
+    if(order.actions[0])
+        $('#order-action').append(order.actions[0].action);
     componentHandler.upgradeDom();
 }
 

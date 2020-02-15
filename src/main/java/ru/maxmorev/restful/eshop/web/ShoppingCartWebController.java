@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
@@ -19,6 +20,7 @@ import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -81,7 +83,14 @@ public class ShoppingCartWebController extends CommonWebController {
         uiModel.addAttribute(ShoppingCookie.SHOPPiNG_CART_ITEMS_AMOUNT, scFromCookie.getItemsAmount());
 
         //create transaction order and hold items for 10 minutes
-        CustomerOrder order = orderPurchaseService.createOrderFor(authCustomer);
+        CustomerOrder order;
+        List<CustomerOrder> awaitingForPayment = orderPurchaseService.findCustomerOrders(authCustomer.getId(), CustomerOrderStatus.AWAITING_PAYMENT);
+        log.info("awaitingForPayment.size() = {}", awaitingForPayment.size());
+        if (awaitingForPayment.size() > 0)
+            //TODO move all code to service and refresh dateOfCreated to order
+            order = awaitingForPayment.get(0);
+        else
+            order = orderPurchaseService.createOrderFor(authCustomer);
         uiModel.addAttribute("orderId", order.getId());
 
         return "shopping/proceedToCheckout";

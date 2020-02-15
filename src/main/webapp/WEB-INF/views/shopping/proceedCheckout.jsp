@@ -63,7 +63,7 @@ function showPaymentConfirmed() {
 function loadCartSuccess(json) {
     shoppingCartObj = json;
     if(shoppingCartObj.itemsAmount>0) {
-        //showShoppingCart(shoppingCartObj);
+        showShoppingCartMeta(shoppingCartObj);
         showToast("Please checkout for selected items!");
     }else{
         showToast("Shopping cart is empty");

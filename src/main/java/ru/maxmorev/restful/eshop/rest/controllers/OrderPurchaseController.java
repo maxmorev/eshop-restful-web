@@ -126,7 +126,7 @@ public class OrderPurchaseController {
         }
         List<CustomerOrderDto> mapedList = new ArrayList<>();
         orderPurchaseService
-                .findAllOrdersByPage(pageRequest)
+                .findAllOrdersByPageAndStatusNot(pageRequest, CustomerOrderStatus.AWAITING_PAYMENT)
                 .forEach(customerOrder -> mapedList.add(CustomerOrderDto.of(customerOrder)));
         return mapedList;
     }

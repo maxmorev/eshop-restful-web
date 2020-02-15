@@ -47,7 +47,7 @@ public class CustomerOrderRepositoryTest {
     @Test
     @DisplayName("should test value of order expired date interval in minutes")
     public void orderExpiredMinutesValueTest() {
-        assertNotNull(orderConfiguration.getOrderExpiredMinutes());
+        assertNotNull(orderConfiguration.getExpiredMinutes());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class CustomerOrderRepositoryTest {
         assertEquals(2, customerOrderRepository.count());
 
         Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, -orderConfiguration.getOrderExpiredMinutes());
+        now.add(Calendar.MINUTE, -orderConfiguration.getExpiredMinutes());
         Date teenMinutesFromNow = now.getTime();
         List<CustomerOrder> expiredOrders = customerOrderRepository.findExpiredOrdersByStatus(CustomerOrderStatus.AWAITING_PAYMENT, teenMinutesFromNow);
 
