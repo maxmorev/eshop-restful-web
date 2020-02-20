@@ -69,7 +69,6 @@ public class ShoppingCartController {
     @RequestMapping(path = Constants.REST_PUBLIC_URI + SHOPPING_CART, method = RequestMethod.DELETE)
     @ResponseBody
     public ShoppingCartDto removeFromShoppingCartSet(@RequestBody @Valid RequestShoppingCartSet requestShoppingCartSet, Locale locale) {
-        log.info("DELETE:> RequestShoppingCartSet :> {}", requestShoppingCartSet);
         return ShoppingCartDto.of(shoppingCartService.removeBranchFromShoppingCart(
                 requestShoppingCartSet.getBranchId(),
                 requestShoppingCartSet.getShoppingCartId(),

@@ -37,7 +37,7 @@ function paymentConfirm(json){
     showToast("Order #" + orderId +" successfully paid" );
 }
 
-function paymentConfirmError(json){
+function paymentConfirmError(json) {
     $('#error-container').hide();
     $('#payment-confirmed').hide();
     $('#shopping-cart').hide();
@@ -46,9 +46,10 @@ function paymentConfirmError(json){
     $('#spinner').hide();
 }
 
-function showPaymentContent(){
+function showPaymentContent() {
     $('#error-container').hide();
     $('#payment-confirmed').hide();
+    $('#order-cancel-btn').show();
     $('#shopping-cart').show();
     $('#payment-info').show();
 }
@@ -57,7 +58,16 @@ function showPaymentConfirmed() {
     $('#shopping-cart').hide();
     $('#payment-info').hide();
     $('#error-container').hide();
+    $('#order-cancel-btn').hide();
     $('#payment-confirmed').show();
+}
+
+function showPaymentCanceled() {
+    $('#error-container').hide();
+    $('#payment-confirmed').hide();
+    $('#order-cancel-btn').hide();
+    $('#shopping-cart').hide();
+    $('#payment-info').hide();
 }
 
 function loadCartSuccess(json) {
@@ -70,12 +80,29 @@ function loadCartSuccess(json) {
     }
 }
 
+function cancelSuccess(json) {
+    window.location.href = "${backUrl}";
+}
+
+function cancelError(json) {
+    showToast("Can not cancel the Order #"+orderId);
+}
+
+function cancelOrderAction() {
+    cancelCustomerOrder(orderId, customerId, cancelSuccess, cancelError);
+}
+
 $(document).ready(function () {
 
     showPaymentContent();
     getShoppingCart(shoppingCartId, loadCartSuccess);
 
     activateTab('tab-shopping-cart');
+
+    var btnCancel = document.querySelector('#order-cancel-btn');
+      btnCancel.addEventListener('click', function() {
+        cancelOrderAction();
+      } );
 
     paypal.Buttons({
                 // Set up the transaction
@@ -102,6 +129,7 @@ $(document).ready(function () {
                     return actions.order.capture().then(function(details) {
                         // Show a success message to the buyer
                         $('#spinner').show();
+                        console.log(details);
                         console.log("Order id = " + data.orderID);
                         console.log("Inner orderId " + orderId);
                         showToast('Transaction '+ orderId +' completed by ' + details.payer.name.given_name + '!');
@@ -136,6 +164,11 @@ $(document).ready(function () {
                 ${customer.fullName}<br/>
                 ${customer.country}, ${customer.postcode}, ${customer.city}, ${customer.address}
                 </div>
+
+                <button id="order-cancel-btn" class="mdl-cell mdl-cell--6-col mdl-cell--6-col-phone mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                     Back to Cart
+                </button>
+
                 <div id="payment-info" class="mdl-cell mdl-cell--6-col">
                     <div class="mdl-grid">
                         <div class="mdl-cell mdl-cell--2-col">&nbsp;</div>

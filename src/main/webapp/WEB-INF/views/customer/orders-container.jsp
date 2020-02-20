@@ -27,9 +27,11 @@
         </div>
         </c:forEach>
         <!-- Accent-colored flat button -->
-        <button class="mdl-cell mdl-cell--12-col mdl-button mdl-js-button mdl-button--accent">
-          Cancel order
-        </button>
+        <c:forEach items="${order.actions}" var="action">
+            <button class="mdl-cell mdl-cell--12-col mdl-button mdl-js-button mdl-button--accent">
+              ${action.action}
+            </button>
+        </c:forEach>
     </div>
 
 </div>

@@ -255,3 +255,11 @@ function hideSpinner(){
     var timeoutID = window.setTimeout(function(){ $('#spinner').hide(); }, 50);
 
 }
+
+//Order
+
+function cancelCustomerOrder(orderId, customerId, callBack, errorCallBack) {
+    var urlService = URL_SERVICES + "/customer/order/cancel/";
+    var orderRequest = {orderId: orderId};
+    return sendDataAsJson(urlService, 'PUT', orderRequest, callBack, errorCallBack);
+}

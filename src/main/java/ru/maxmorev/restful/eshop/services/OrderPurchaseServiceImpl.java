@@ -1,10 +1,15 @@
 package ru.maxmorev.restful.eshop.services;
 
+import com.google.errorprone.annotations.FormatString;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
 import ru.maxmorev.restful.eshop.config.OrderConfiguration;
@@ -17,12 +22,16 @@ import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
 import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
 import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
+import ru.maxmorev.restful.eshop.rest.response.CustomerOrderDto;
+import ru.maxmorev.restful.eshop.rest.response.OrderGrid;
 
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("orderPurchaseService")
 @Transactional
@@ -142,4 +151,93 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
     public Optional<CustomerOrder> findOrder(Long id, Long customerId) {
         return customerOrderRepository.findByIdAndCustomerId(id, customerId);
     }
+
+    private void moveItemsFromOrderToBranch(CustomerOrder o) {
+        o.getPurchases().forEach(purchase -> {
+            CommodityBranch branch = purchase.getBranch();
+            branch.setAmount(branch.getAmount().intValue() + purchase.getAmount().intValue());
+            commodityBranchRepository.save(branch);
+        });
+    }
+
+    @Override
+    public void cancelOrderByCustomer(Long orderId) {
+        //move elements back to branch
+        CustomerOrder order = customerOrderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        moveItemsFromOrderToBranch(order);
+        //set order status to canceled
+        if (CustomerOrderStatus.AWAITING_PAYMENT.equals(order.getStatus())) {
+            customerOrderRepository.delete(order);
+            return;
+        }
+        if (CustomerOrderStatus.PAYMENT_APPROVED.equals(order.getStatus())) {
+            order.setStatus(CustomerOrderStatus.CANCELED_BY_CUSTOMER);
+            customerOrderRepository.save(order);
+            return;
+        }
+        throw new RuntimeException("Implement logic with other OrderStatus");
+    }
+
+    @Override
+    public List<CustomerOrderDto> findOrderListForCustomer(Long customerId) {
+        return customerOrderRepository
+                .findByCustomerIdAndStatusNotOrderByDateOfCreationDesc(
+                        customerId,
+                        CustomerOrderStatus.AWAITING_PAYMENT)
+                .stream()
+                .sorted()
+                .map(CustomerOrderDto::forCusrtomer)
+                .collect(Collectors.toList());
+    }
+
+    private PageRequest getPageRequeset(Integer page,
+                                        Integer rows,
+                                        String sortBy,
+                                        String order) {
+        Sort sort = null;
+        String orderBy = sortBy;
+        if (orderBy != null && orderBy.equals("dateOfCreation")) {
+            orderBy = "dateOfCreation";
+        } else {
+            orderBy = "id";
+        }
+        if (Objects.isNull(order)) {
+            order = "desc";
+        }
+        if (Objects.isNull(page)) {
+            page = 1;
+        }
+        if (Objects.isNull(rows)) {
+            rows = 10;
+        }
+
+        if (orderBy != null && order != null) {
+            if (order.equals("desc")) {
+                sort = Sort.by(Sort.Direction.DESC, orderBy);
+            } else
+                sort = Sort.by(Sort.Direction.ASC, orderBy);
+        }
+        // Constructs page request for current page
+        // Note: page number for Spring Data JPA starts with 0, while jqGrid starts with 1
+        PageRequest pageRequest = null;
+        if (sort != null) {
+            pageRequest = PageRequest.of(page - 1, rows, sort);
+        } else {
+            pageRequest = PageRequest.of(page - 1, rows);
+        }
+        return pageRequest;
+    }
+
+    @Override
+    public OrderGrid getOrdersForAdmin(Integer page, Integer rows, String sortBy, String order) {
+        return new OrderGrid(findAllOrdersByPageAndStatusNot(
+                getPageRequeset(page,
+                        rows,
+                        sortBy,
+                        order),
+                CustomerOrderStatus.AWAITING_PAYMENT));
+    }
+
 }

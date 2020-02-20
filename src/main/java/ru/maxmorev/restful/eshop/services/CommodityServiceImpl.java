@@ -209,7 +209,6 @@ public class CommodityServiceImpl implements CommodityService {
             throw new IllegalArgumentException("Illegal argument typeId=" + requestCommodity.getTypeId());
         }
 
-        log.info("CREATE COMMODITY");
         Commodity commodity = new Commodity();
         commodity.setName(requestCommodity.getName());
         commodity.setShortDescription(requestCommodity.getShortDescription());
@@ -218,8 +217,6 @@ public class CommodityServiceImpl implements CommodityService {
         //commodityRepository.save( commodity );
         commodity.getImages().addAll(createImageListOf(commodity, requestCommodity));
         //create images of commodity
-
-
         return commodity;
     }
 

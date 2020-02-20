@@ -26,6 +26,7 @@ import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 import ru.maxmorev.restful.eshop.entities.Purchase;
 import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
 import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
+import ru.maxmorev.restful.eshop.rest.response.CustomerOrderDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -263,8 +264,104 @@ public class OrderPurchaseServiceTest {
         Optional<CustomerOrder> order = orderPurchaseService.findOrder(APPROVED_ORDER_ID);
         assertTrue(order.isPresent());
         assertEquals(CustomerOrderStatus.PAYMENT_APPROVED, order.get().getStatus());
-        CustomerOrder co = orderPurchaseService.setOrderStatus(APPROVED_ORDER_ID, CustomerOrderStatus.PAYMENT_APPROVED);
+        CustomerOrder co = orderPurchaseService.setOrderStatus(APPROVED_ORDER_ID, CustomerOrderStatus.PREPARING_TO_SHIP);
         assertEquals(CustomerOrderStatus.PREPARING_TO_SHIP, co.getStatus());
     }
+
+    @Test
+    @Transactional
+    @DisplayName("should cancel order")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void cancelOrderTest() {
+        //16
+        CommodityBranch branch = commodityBranchRepository
+                .findById(5L)
+                .orElseThrow(IllegalAccessError::new);
+        assertEquals(5, branch.getAmount().intValue());
+        orderPurchaseService.cancelOrderByCustomer(16L);
+        assertEquals(7,
+                commodityBranchRepository
+                        .findById(5L)
+                        .get()
+                        .getAmount()
+                        .intValue());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should except change order status by customer")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void cancelOrderExceptionTest() {
+
+        orderPurchaseService.cancelOrderByCustomer(APPROVED_ORDER_ID);
+
+        orderPurchaseService.findOrder(APPROVED_ORDER_ID).ifPresent(o -> {
+            assertEquals(CustomerOrderStatus.CANCELED_BY_CUSTOMER, o.getStatus());
+        });
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should except correct list of orders dto for customer no orders with status=AWAITING_PAYMENT")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void getCorrectOrderListDtoForCustomerWithActionTest() {
+
+        List<CustomerOrderDto> orders = orderPurchaseService.findOrderListForCustomer(10L);
+        assertEquals(1, orders.size());
+        assertEquals(25L, orders.get(0).getId().longValue());
+        assertEquals(1, orders.get(0).getActions().size());
+        assertEquals(CustomerOrderStatus.CANCELED_BY_CUSTOMER.name(),
+                orders.get(0).getActions().get(0).getAction());
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should except correct Page for admin")
+    @SqlGroup({
+            @Sql(value = "classpath:db/purchase/test-data.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "classpath:db/purchase/clean-up.sql",
+                    config = @SqlConfig(encoding = "utf-8", separator = ";", commentPrefix = "--"),
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    public void getCorrectOrderPageForAdminTest() {
+
+        var page = orderPurchaseService.getOrdersForAdmin(null, null, null, null);
+        assertEquals(1, page.getTotalRecords());
+        assertEquals(CustomerOrderStatus.PREPARING_TO_SHIP.name(),
+                page.getOrderData()
+                        .get(0)
+                        .getActions()
+                        .get(0)
+                        .getAction());
+
+    }
+
+
+
 
 }

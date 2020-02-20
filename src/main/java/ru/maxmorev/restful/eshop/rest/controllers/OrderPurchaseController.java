@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
 import ru.maxmorev.restful.eshop.rest.Constants;
+import ru.maxmorev.restful.eshop.rest.request.OrderIdRequest;
 import ru.maxmorev.restful.eshop.rest.request.OrderPaymentConfirmation;
 import ru.maxmorev.restful.eshop.rest.response.CustomerOrderDto;
 import ru.maxmorev.restful.eshop.rest.response.Message;
+import ru.maxmorev.restful.eshop.rest.response.OrderGrid;
 import ru.maxmorev.restful.eshop.services.OrderPurchaseService;
 
 import javax.validation.Valid;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
 public class OrderPurchaseController {
@@ -72,20 +73,26 @@ public class OrderPurchaseController {
         return orderPurchaseService
                 .findOrder(orderId, customerId)
                 .map(CustomerOrderDto::of)
-                .orElseThrow(()->new NoSuchElementException("No such order"));
+                .orElseThrow(() -> new NoSuchElementException("No such order"));
     }
 
     @RequestMapping(path = Constants.REST_CUSTOMER_URI + "order/list/{customerId}", method = RequestMethod.GET)
     @ResponseBody
     List<CustomerOrderDto> customerOrderList(@PathVariable(name = "customerId", required = true) Long customerId, Locale locale) {
         //TODO check auth customer.id with id in PathVariable
-        return orderPurchaseService
-                .findCustomerOrders(customerId)
-                .stream()
-                .sorted()
-                .map(CustomerOrderDto::of)
-                .collect(Collectors.toList());
+        return orderPurchaseService.findOrderListForCustomer(customerId);
     }
+
+    @RequestMapping(path = Constants.REST_CUSTOMER_URI + "order/cancel/", method = RequestMethod.PUT)
+    @ResponseBody
+    Message customerOrderCancel(
+            @Valid @RequestBody OrderIdRequest order,
+            Locale locale) {
+        //TODO check auth customer.id with id in PathVariable
+        orderPurchaseService.cancelOrderByCustomer(order.getOrderId());
+        return new Message(Message.SUCCES, messageSource.getMessage("message_success", new Object[]{}, locale));
+    }
+
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI + "order/{status}/{id}", method = RequestMethod.POST)
     @ResponseBody
@@ -102,48 +109,18 @@ public class OrderPurchaseController {
 
     @RequestMapping(path = Constants.REST_PRIVATE_URI + "order/list/", method = RequestMethod.GET)
     @ResponseBody
-    List<CustomerOrderDto> customerOrderList(
+    OrderGrid adminAllCustomerOrderList(
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "rows", required = false) Integer rows,
             @RequestParam(value = "sort", required = false) String sortBy,
             @RequestParam(value = "order", required = false) String order,
             Locale locale) {
-        Sort sort = null;
-        String orderBy = sortBy;
-        if (orderBy != null && orderBy.equals("dateOfCreation")) {
-            orderBy = "dateOfCreation";
-        }else{
-            orderBy = "id";
-        }
-        if(Objects.isNull(order)){
-            order = "desc";
-        }
-        if(Objects.isNull(page)){
-            page = 1;
-        }
-        if(Objects.isNull(rows)){
-            rows = 10;
-        }
 
-        if (orderBy != null && order != null) {
-            if (order.equals("desc")) {
-                sort = Sort.by(Sort.Direction.DESC, orderBy);
-            } else
-                sort = Sort.by(Sort.Direction.ASC, orderBy);
-        }
-        // Constructs page request for current page
-        // Note: page number for Spring Data JPA starts with 0, while jqGrid starts with 1
-        PageRequest pageRequest = null;
-        if (sort != null) {
-            pageRequest =  PageRequest.of(page - 1, rows, sort);
-        } else {
-            pageRequest = PageRequest.of(page - 1, rows);
-        }
-        List<CustomerOrderDto> mapedList = new ArrayList<>();
-        orderPurchaseService
-                .findAllOrdersByPageAndStatusNot(pageRequest, CustomerOrderStatus.AWAITING_PAYMENT)
-                .forEach(customerOrder -> mapedList.add(CustomerOrderDto.of(customerOrder)));
-        return mapedList;
+        return orderPurchaseService
+                .getOrdersForAdmin(page,
+                        rows,
+                        sortBy,
+                        order);
     }
 
 }

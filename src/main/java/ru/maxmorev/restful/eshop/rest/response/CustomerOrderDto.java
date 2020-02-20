@@ -28,7 +28,7 @@ public class CustomerOrderDto {
     private List<Action> actions;
     private Double totalPrice;
 
-    public static CustomerOrderDto of(CustomerOrder co) {
+    private static CustomerOrderDto.CustomerOrderDtoBuilder getCommonBuilder(CustomerOrder co) {
         return CustomerOrderDto.builder()
                 .id(co.getId())
                 .customerId(co.getCustomer().getId())
@@ -40,7 +40,17 @@ public class CustomerOrderDto {
                         .stream()
                         .sorted()
                         .map(PurchaseDto::of)
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toList()));
+    }
+
+    public static CustomerOrderDto forCusrtomer(CustomerOrder co){
+        return getCommonBuilder(co)
+                .actions(getCustomerAvailableActions(co.getStatus()))
+                .build();
+    }
+
+    public static CustomerOrderDto of(CustomerOrder co) {
+        return getCommonBuilder(co)
                 .actions(getAvailableActions(co.getStatus()))
                 .build();
     }
@@ -60,6 +70,20 @@ public class CustomerOrderDto {
                         .id(3)
                         .build());
                 break;
+        }
+        return actions;
+    }
+
+    public static List<Action> getCustomerAvailableActions(CustomerOrderStatus status) {
+        List<Action> actions = new ArrayList<>();
+        switch (status) {
+            case PAYMENT_APPROVED:
+                actions.add(Action.builder()
+                        .action(CustomerOrderStatus.CANCELED_BY_CUSTOMER.name())
+                        .id(2)
+                        .build());
+                break;
+
         }
         return actions;
     }

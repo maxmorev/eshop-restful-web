@@ -132,7 +132,7 @@ insert into customer_order (
         customer_id)
         values (
         25,
-        '2019-08-23 18:46:23.918',
+        '2019-08-23 18:46:25.918',
          'PAYPALZX1293',
          'Paypal',
          'PAYMENT_APPROVED',

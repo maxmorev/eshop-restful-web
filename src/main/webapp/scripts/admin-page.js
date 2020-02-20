@@ -1177,15 +1177,15 @@ function loadOrders() {
 
     $.getJSON( URL_SERVICES + ordersURL, function(json, status) {
         console.log(json);
-        CURRENT_ORDERS = json;
+        CURRENT_ORDERS = json.orderData;
         var content = "";
-        for(var i=0; i<json.length; i++) {
+        for(var i=0; i<CURRENT_ORDERS.length; i++) {
             var totalPrice = 0;
-            json[i].purchases.forEach(function(purchase){totalPrice += purchase.amount*purchase.price});
+            CURRENT_ORDERS[i].purchases.forEach(function(purchase){totalPrice += purchase.amount*purchase.price});
             content += "<tr>";
-            content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].id + "<br/>" + formatDate(new Date(json[i].dateOfCreation)) + "</td>";
-            content += "<td class='mdl-data-table__cell--non-numeric'>" + json[i].status + "<br/>total price: <b>" + totalPrice + "</b></td>";
-            content += "<td class='mdl-data-table__cell--non-numeric'><button class='mdl-button mdl-js-button mdl-button--icon mdl-button--colored' onclick='onEditOrderClick(" + json[i].id + ");'><i class='material-icons'>edit</i></button></td>";
+            content += "<td class='mdl-data-table__cell--non-numeric'>" + CURRENT_ORDERS[i].id + "<br/>" + formatDate(new Date(CURRENT_ORDERS[i].dateOfCreation)) + "</td>";
+            content += "<td class='mdl-data-table__cell--non-numeric'>" + CURRENT_ORDERS[i].status + "<br/>total price: <b>" + totalPrice + "</b></td>";
+            content += "<td class='mdl-data-table__cell--non-numeric'><button class='mdl-button mdl-js-button mdl-button--icon mdl-button--colored' onclick='onEditOrderClick(" + CURRENT_ORDERS[i].id + ");'><i class='material-icons'>edit</i></button></td>";
             content += "</tr>";
         }
         $('#container-orders').empty();

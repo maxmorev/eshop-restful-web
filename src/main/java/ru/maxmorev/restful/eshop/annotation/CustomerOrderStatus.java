@@ -6,6 +6,8 @@ public enum CustomerOrderStatus {
     PAYMENT_APPROVED,
     PREPARING_TO_SHIP,
     DISPATCHED,
-    DELIVERED
+    DELIVERED,
+    CANCELED_BY_CUSTOMER,
+    CANCELED_BY_ADMIN
 
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.maxmorev.restful.eshop.annotation.ShoppingCookie;
 import ru.maxmorev.restful.eshop.rest.response.CustomerDTO;
-import ru.maxmorev.restful.eshop.rest.response.CustomerOrderDto;
 import ru.maxmorev.restful.eshop.services.CommodityDtoService;
 import ru.maxmorev.restful.eshop.services.CustomerService;
 import ru.maxmorev.restful.eshop.services.OrderPurchaseService;
@@ -17,8 +16,6 @@ import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -45,7 +42,7 @@ public class CustomerWebController extends CommonWebController {
             Model uiModel) throws IOException {
         addCommonAttributesToModel(uiModel);
         addShoppingCartAttributesToModel(cartCookie, response, uiModel);
-        from.ifPresent( s-> uiModel.addAttribute("fromPage", s) );
+        from.ifPresent(s -> uiModel.addAttribute("fromPage", s));
         return "customer/createAccount";
     }
 
@@ -59,13 +56,11 @@ public class CustomerWebController extends CommonWebController {
         String id = getAuthenticationCustomerId();
         CustomerDTO customerDTO = customerService.findByEmail(id).map(CustomerDTO::of).get();
         log.info("CUSTOMER: {}", customerDTO);
-        uiModel.addAttribute("customer", customerDTO );
-        List<CustomerOrderDto> orderDtoList = new ArrayList<>();
-        orderPurchaseService.findCustomerOrders(customerDTO.getId())
-                .forEach(order -> {
-                    orderDtoList.add(CustomerOrderDto.of(order));
-                });
-        uiModel.addAttribute("orders", orderDtoList);
+        uiModel.addAttribute("customer", customerDTO);
+        uiModel.addAttribute(
+                "orders",
+                orderPurchaseService
+                        .findOrderListForCustomer(customerDTO.getId()));
         return "customer/updateAccount";
     }
 }

@@ -24,6 +24,7 @@ public interface CustomerOrderRepository  extends PagingAndSortingRepository<Cus
     Optional<CustomerOrder> findByIdAndCustomerId(Long id, Long customerId);
     List<CustomerOrder> findByCustomerOrderByDateOfCreationDesc(Customer customer);
     List<CustomerOrder> findByCustomerAndStatusOrderByDateOfCreationDesc(Customer customer, CustomerOrderStatus status);
+    List<CustomerOrder> findByCustomerIdAndStatusNotOrderByDateOfCreationDesc(Long id, CustomerOrderStatus status);
     @Query("select co from CustomerOrder co where co.dateOfCreation < :expiredDate and co.status=:status")
     List<CustomerOrder> findExpiredOrdersByStatus(@Param("status") CustomerOrderStatus status, @Param("expiredDate") Date expiredDate);
 

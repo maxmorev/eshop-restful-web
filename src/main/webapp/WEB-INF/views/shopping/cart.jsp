@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+    <spring:eval expression="@environment.getProperty('order.expiredMinutes')" var="labelExpiredMinutes"/>
     <spring:message code="label_buy" var="labelBuy"/>
     <spring:message code="label_price" var="labelPrice"/>
     <spring:message code="label_checkout" var="labelCheckout"/>
@@ -74,7 +75,7 @@ $(document).ready(function () {
      </div>
 
      <div class="mdl-cell mdl-cell--12-col" id="cart-title">
-     <h4>Items will be reserved for 15 minutes</h4>
+     <h4>Items will be reserved for ${labelExpiredMinutes} minutes</h4>
      Shopping Cart Subtotal (<div class="data-holder" id="total-items">5</div> items):&nbsp;<div class="data-holder" id="total-cart-price">£</div>
      </div>
 
