@@ -11,7 +11,8 @@
 <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--2dp">
     <div class="mdl-grid">
         <div class="mdl-cell mdl-cell--12-col">
-        Order #${order.id}<br/>
+        <spring:message code="order.status.${order.status}" var="labelStatus"/>
+        Order #${order.id} Status: <b>${labelStatus}</b><br/>
         Date <fmt:formatDate value="${order.dateOfCreation}" pattern="yy-MMM-dd HH:mm"/>&nbsp;
         Total price: ${order.totalPrice}
         </div>
@@ -28,8 +29,9 @@
         </c:forEach>
         <!-- Accent-colored flat button -->
         <c:forEach items="${order.actions}" var="action">
+            <spring:message code="order.action.${action.action}" var="labelAction"/>
             <button class="mdl-cell mdl-cell--12-col mdl-button mdl-js-button mdl-button--accent">
-              ${action.action}
+              ${labelAction}
             </button>
         </c:forEach>
     </div>
