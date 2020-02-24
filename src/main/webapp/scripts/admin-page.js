@@ -1210,10 +1210,10 @@ function drawPurchase(purchase) {
  var str = '<div id="order-title" class="mdl-card__title mdl-card--expand" style="background: url(\'{img}\') center / cover;">';
  var res = str.replace("{img}", purchase.images[0]);
  content += res;
- content += '<h2 class="mdl-card__title-text">' + purchase.type + '</h2>'
+ content += '<h2 class="mdl-card__title-text">' + purchase.type + '</h2>';
  content += '</div>';
  content += '<div class="mdl-card__supporting-text">';
- content += 'ATTRIBUTES';
+ content += purchase.name + ' ATTRIBUTES';
  content += '</div>';
  content += '<div class="mdl-card__actions mdl-card--border">';
  content += 'amount: <b>' + purchase.amount+'</b><br/>';
