@@ -187,7 +187,6 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
                         customerId,
                         CustomerOrderStatus.AWAITING_PAYMENT)
                 .stream()
-                .sorted()
                 .map(CustomerOrderDto::forCusrtomer)
                 .collect(Collectors.toList());
     }

@@ -28,6 +28,7 @@ public class CustomerDTO {
                 .country(info.getCountry())
                 .city(info.getCity())
                 .address(info.getAddress())
+                .postcode(info.getPostcode())
                 .build();
     }
 
