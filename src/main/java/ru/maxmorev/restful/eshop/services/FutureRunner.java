@@ -12,7 +12,7 @@ public class FutureRunner {
 
     private final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
-    public <T>CompletableFuture<T> runAction(Supplier action){
+    public <T>CompletableFuture<T> runAction(Supplier<T> action){
         return CompletableFuture.supplyAsync(action, threadPoolExecutor );
     }
 

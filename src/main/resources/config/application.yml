@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: e-shop
   profiles:
     active: dev
   main:
@@ -26,6 +24,20 @@ spring:
     driverClassName: org.postgresql.Driver
     username: postgres
     password: postgres
+
+#
+external:
+  ses:
+    url: http://localhost:8081
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
 #APP PROPS
 order:
   expiredMinutes: 15

@@ -63,7 +63,6 @@ public class WebConfig implements WebMvcConfigurer {
         return tilesConfigurer;
     }
 
-
     @Bean
     public Validator validator() {
         final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
@@ -153,7 +152,7 @@ public class WebConfig implements WebMvcConfigurer {
         configurer.enable();
     }
 
-   // <=> <mvc:view-controller .../>
+    // <=> <mvc:view-controller .../>
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("commodity/list");
