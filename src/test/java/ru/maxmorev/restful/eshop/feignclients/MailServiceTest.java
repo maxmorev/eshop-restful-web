@@ -13,17 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.maxmorev.restful.eshop.feignclient.MailService;
-import ru.maxmorev.restful.eshop.feignclient.domain.MailSendResponse;
 import ru.maxmorev.restful.eshop.feignclient.domain.VerifyEmailTemplate;
-
-import java.util.Objects;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @AutoConfigureMockMvc
@@ -50,7 +47,7 @@ public class MailServiceTest {
                         .create("maxmorev@gmail.com",
                                 "ZfGT",
                                 "Maxim Morev"));
-        assertTrue(Objects.nonNull(response));
+        assertNotNull(response);
         assertEquals("0102017092c7d656-417dd273-459f-40f4-96e9-c291686d374e-000000",
                 response.getMessageId());
     }

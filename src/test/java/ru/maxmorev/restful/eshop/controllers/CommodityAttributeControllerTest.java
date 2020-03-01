@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
 import ru.maxmorev.restful.eshop.rest.Constants;
@@ -49,7 +50,7 @@ public class CommodityAttributeControllerTest {
     })
     public void getAvailableAttributeDataTypesTest() throws Exception {
 
-        mockMvc.perform(get(Constants.REST_PUBLIC_URI + CommodityAttributeController.ATTRIBUTE_DATA_TYPES))
+        mockMvc.perform(MockMvcRequestBuilders.get(Constants.REST_PUBLIC_URI + CommodityAttributeController.ATTRIBUTE_DATA_TYPES))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())

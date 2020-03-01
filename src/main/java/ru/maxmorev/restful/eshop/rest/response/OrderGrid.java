@@ -1,10 +1,8 @@
 package ru.maxmorev.restful.eshop.rest.response;
 
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
-import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 
 import java.util.List;

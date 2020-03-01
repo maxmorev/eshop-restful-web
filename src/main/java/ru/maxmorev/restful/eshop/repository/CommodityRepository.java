@@ -4,12 +4,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.entities.Commodity;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
-import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

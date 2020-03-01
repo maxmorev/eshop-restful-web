@@ -1,6 +1,5 @@
 package ru.maxmorev.restful.eshop.services;
 
-import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.rest.response.CommodityDto;
 import ru.maxmorev.restful.eshop.rest.response.CommodityTypeDto;
 

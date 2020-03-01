@@ -8,7 +8,6 @@ import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.CommodityType;
 import ru.maxmorev.restful.eshop.rest.request.RequestAttributeValue;
 import ru.maxmorev.restful.eshop.rest.request.RequestCommodity;
-import ru.maxmorev.restful.eshop.rest.response.CommodityDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +16,7 @@ public interface CommodityService {
 
     List<String> getAvailebleAttributeDataTypes();
 
-    List<CommodityType> findAllTypes(); 
+    List<CommodityType> findAllTypes();
 
     void addType(CommodityType type); 
 
@@ -31,7 +30,7 @@ public interface CommodityService {
 
     void addAttribute(RequestAttributeValue attribute); 
 
-    List<CommodityAttribute> findAttributesByTypeId(Long typeId); 
+    List<CommodityAttribute> findAttributesByTypeId(Long typeId);
 
     void deleteAttributeValueById(Long valueId); 
 
@@ -39,11 +38,11 @@ public interface CommodityService {
 
     void updateCommodity(RequestCommodity requestCommodity ); 
 
-    List<CommodityBranch> findAllBranches(); 
+    List<CommodityBranch> findAllBranches();
 
     Optional<CommodityBranch> findBranchById(Long branchId); 
 
-    List<Commodity> findAllCommodities(); 
+    List<Commodity> findAllCommodities();
     Page<Commodity> findAllCommoditiesByPage(Pageable pageable);
 
     List<Commodity> findAllCommoditiesByTypeName(String typeName);

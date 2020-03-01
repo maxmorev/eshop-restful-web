@@ -1,7 +1,6 @@
 package ru.maxmorev.restful.eshop.rest.response;
 
 import java.util.List;
-import java.util.Arrays;
 
 public class Message {
 

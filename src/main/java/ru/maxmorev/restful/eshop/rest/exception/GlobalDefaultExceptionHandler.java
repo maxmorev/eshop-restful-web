@@ -32,7 +32,7 @@ public class GlobalDefaultExceptionHandler {
     @ResponseBody
     public Message handleBadRequest(HttpServletRequest req, Exception ex) {
         logger.error(ex.getLocalizedMessage(), ex);
-        Message responseMessage = new Message(Message.ERROR, req.getRequestURL().toString(), "Internal server error", Collections.EMPTY_LIST);
+        Message responseMessage = new Message(Message.ERROR, req.getRequestURL().toString(), ex.getMessage(), Collections.EMPTY_LIST);
         return responseMessage;
     }
 

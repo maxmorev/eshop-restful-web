@@ -2,9 +2,9 @@ package ru.maxmorev.restful.eshop.services;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.Branch;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +102,7 @@ public class OrderPurchaseServiceTest {
             CustomerOrder co = orderPurchaseService.createOrderFor(c);
             assertFalse(co.getPurchases().isEmpty());
             em.flush();
-            assertEquals(CustomerOrderStatus.AWAITING_PAYMENT, co.getStatus());
+            Assertions.assertEquals(CustomerOrderStatus.AWAITING_PAYMENT, co.getStatus());
             assertEquals(branchInfo.stream().mapToInt(ShoppingCartInfo::getShoppingCartAmount).sum(), co.getPurchases().stream().mapToInt(Purchase::getAmount).sum());
             branchInfo.forEach(branch -> {
                 Optional<CommodityBranch> fromDb = commodityService.findBranchById(branch.getBranchId());
@@ -163,7 +163,7 @@ public class OrderPurchaseServiceTest {
         order.ifPresent(o -> {
             /* check if the shopping cart is Not Empty*/
             assertFalse(o.getCustomer().getShoppingCart().getShoppingSet().isEmpty());
-            assertEquals(CustomerOrderStatus.AWAITING_PAYMENT, o.getStatus());
+            Assertions.assertEquals(CustomerOrderStatus.AWAITING_PAYMENT, o.getStatus());
 
             orderPurchaseService.confirmPaymentOrder(o, PaymentProvider.Paypal, "3HW05364355651909");
             em.flush();
@@ -171,7 +171,7 @@ public class OrderPurchaseServiceTest {
             Optional<CustomerOrder> orderUpdate = orderPurchaseService.findOrder(16L);
             assertNotNull(orderUpdate.get().getPaymentID());
             /* checks status change for expected */
-            assertEquals(
+            Assertions.assertEquals(
                     CustomerOrderStatus.PAYMENT_APPROVED,
                     orderUpdate.get().getStatus()
             );
@@ -263,9 +263,9 @@ public class OrderPurchaseServiceTest {
     public void confirmOrderPreparingToShipTest() {
         Optional<CustomerOrder> order = orderPurchaseService.findOrder(APPROVED_ORDER_ID);
         assertTrue(order.isPresent());
-        assertEquals(CustomerOrderStatus.PAYMENT_APPROVED, order.get().getStatus());
+        Assertions.assertEquals(CustomerOrderStatus.PAYMENT_APPROVED, order.get().getStatus());
         CustomerOrder co = orderPurchaseService.setOrderStatus(APPROVED_ORDER_ID, CustomerOrderStatus.PREPARING_TO_SHIP);
-        assertEquals(CustomerOrderStatus.PREPARING_TO_SHIP, co.getStatus());
+        Assertions.assertEquals(CustomerOrderStatus.PREPARING_TO_SHIP, co.getStatus());
     }
 
     @Test
@@ -286,7 +286,7 @@ public class OrderPurchaseServiceTest {
                 .orElseThrow(IllegalAccessError::new);
         assertEquals(5, branch.getAmount().intValue());
         orderPurchaseService.cancelOrderByCustomer(16L);
-        assertEquals(7,
+        Assertions.assertEquals(7,
                 commodityBranchRepository
                         .findById(5L)
                         .get()

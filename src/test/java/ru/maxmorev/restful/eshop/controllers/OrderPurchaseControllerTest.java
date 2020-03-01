@@ -20,7 +20,6 @@ import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.OrderPaymentConfirmation;
-import ru.maxmorev.restful.eshop.rest.request.OrderIdRequest;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -148,7 +147,7 @@ public class OrderPurchaseControllerTest {
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].customerId", is(10)))
-                .andExpect(jsonPath("$[0].status", is("AWAITING_PAYMENT")));
+                .andExpect(jsonPath("$[0].status", is("PAYMENT_APPROVED")));
     }
 
     @Test
@@ -191,7 +190,7 @@ public class OrderPurchaseControllerTest {
                 .andDo(print())
                 .andExpect(status().is(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                 .andExpect(jsonPath("$.status", is("error")))
-                .andExpect(jsonPath("$.message", is("Internal server error")));
+                .andExpect(jsonPath("$.message", is("No such order")));
     }
 
 

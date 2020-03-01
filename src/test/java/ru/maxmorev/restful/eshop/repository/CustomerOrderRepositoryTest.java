@@ -66,7 +66,7 @@ public class CustomerOrderRepositoryTest {
         Optional<Customer> customer = customerService.findByEmail("test@titsonfire.store");
         customer.ifPresent(c -> orderPurchaseService.createOrderFor(c));
 
-        assertEquals(2, customerOrderRepository.count());
+        assertEquals(3, customerOrderRepository.count());
 
         Calendar now = Calendar.getInstance();
         now.add(Calendar.MINUTE, -orderConfiguration.getExpiredMinutes());

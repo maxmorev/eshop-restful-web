@@ -1,9 +1,7 @@
 package ru.maxmorev.restful.eshop.services;
 
-import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
-import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 
 import java.util.Optional;
 

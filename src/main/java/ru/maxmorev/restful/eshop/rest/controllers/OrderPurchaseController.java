@@ -4,8 +4,6 @@ import com.google.common.base.Enums;
 import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +22,9 @@ import ru.maxmorev.restful.eshop.rest.response.OrderGrid;
 import ru.maxmorev.restful.eshop.services.OrderPurchaseService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @RestController
 public class OrderPurchaseController {

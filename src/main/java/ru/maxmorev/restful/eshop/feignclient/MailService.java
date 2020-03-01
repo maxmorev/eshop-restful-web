@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import ru.maxmorev.restful.eshop.feignclient.domain.MailSendRequest;
 import ru.maxmorev.restful.eshop.feignclient.domain.MailSendResponse;
 
-@FeignClient(name = "mailService",url = "${external.ses.url}")
+@FeignClient(name = "mailService", url = "${external.ses.url}")
 public interface MailService {
     @RequestMapping(method = RequestMethod.POST, value = "/send/template/", consumes = "application/json")
     MailSendResponse sendTemplate(@RequestBody MailSendRequest mailSendRequest);

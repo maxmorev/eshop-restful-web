@@ -3,7 +3,6 @@ package ru.maxmorev.restful.eshop.rest.response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import ru.maxmorev.restful.eshop.entities.CommodityImage;
 import ru.maxmorev.restful.eshop.entities.CommodityInfo;

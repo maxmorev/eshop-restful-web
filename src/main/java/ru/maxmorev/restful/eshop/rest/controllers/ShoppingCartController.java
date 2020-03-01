@@ -4,9 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
-import ru.maxmorev.restful.eshop.entities.CommodityBranch;
-import ru.maxmorev.restful.eshop.entities.ShoppingCart;
-import ru.maxmorev.restful.eshop.entities.ShoppingCartSet;
 import ru.maxmorev.restful.eshop.rest.Constants;
 import ru.maxmorev.restful.eshop.rest.request.RequestShoppingCartSet;
 import ru.maxmorev.restful.eshop.rest.response.ShoppingCartDto;
@@ -15,7 +12,6 @@ import ru.maxmorev.restful.eshop.services.ShoppingCartService;
 
 import javax.validation.Valid;
 import java.util.Locale;
-import java.util.Objects;
 
 @Slf4j
 @RestController
