@@ -10,8 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.maxmorev.restful.eshop.config.FileUploadConfiguration;
 import ru.maxmorev.restful.eshop.config.MailTestConfig;
-import ru.maxmorev.restful.eshop.config.ServiceConfig;
 import ru.maxmorev.restful.eshop.config.ServiceTestConfig;
+import ru.maxmorev.restful.eshop.config.ServiceConfig;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

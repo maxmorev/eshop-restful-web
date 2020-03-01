@@ -46,7 +46,4 @@ cart:
 server:
   port: 8888
 #SMTP from env
-ESHOP_SMTP: smtp.test
-ESHOP_SMTP_PORT: 465
-ESHOP_SMTP_USERNAME: info@test
-ESHOP_SMTP_PASSWORD: test
+
