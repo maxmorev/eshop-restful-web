@@ -11,7 +11,7 @@ https://www.manning.com/books/java-persistence-with-hibernate-second-edition
 
 #### Key Features
 ~~~~
-⚫ Java 11
+⚫ Java 13
 ⚫ Spring 5
 ⚫ Java-based container configuration
 ⚫ Spring RESTful Web Service
