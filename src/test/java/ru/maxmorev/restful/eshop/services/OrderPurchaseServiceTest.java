@@ -1,5 +1,6 @@
 package ru.maxmorev.restful.eshop.services;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -8,7 +9,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -34,6 +38,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,6 +50,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 4555)
 @SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
 @DisplayName("Integration Purchase Service Test")
 public class OrderPurchaseServiceTest {
@@ -158,6 +167,12 @@ public class OrderPurchaseServiceTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     public void confirmPaymentOrderTest() {
+        stubFor(WireMock.post(urlEqualTo("/send/template/"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("mailSend.ok.json")));
+
         Optional<CustomerOrder> order = orderPurchaseService.findOrder(16L);
         assertTrue(order.isPresent());
         order.ifPresent(o -> {

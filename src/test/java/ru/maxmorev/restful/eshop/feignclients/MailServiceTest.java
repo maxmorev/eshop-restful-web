@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.maxmorev.restful.eshop.feignclient.MailService;
+import ru.maxmorev.restful.eshop.feignclient.domain.OrderPaymentConfirmedAdminTemplate;
+import ru.maxmorev.restful.eshop.feignclient.domain.OrderPaymentConfirmedTemplate;
 import ru.maxmorev.restful.eshop.feignclient.domain.VerifyEmailTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -41,7 +43,6 @@ public class MailServiceTest {
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", "application/json")
                         .withBodyFile("mailSend.ok.json")));
-
         var response = mailService
                 .sendTemplate(new VerifyEmailTemplate()
                         .create("maxmorev@gmail.com",
@@ -57,14 +58,49 @@ public class MailServiceTest {
         stubFor(post(urlEqualTo("/send/template/"))
                 .willReturn(
                         aResponse()
-                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 ));
-
-        var response = mailService
+        mailService
                 .sendTemplate(new VerifyEmailTemplate()
                         .create("maxmorev@gmail.com",
                                 "ZfGT",
                                 "Maxim Morev"));
+    }
+
+    @Test
+    public void orderPaymentConfirmedSuccessTest() {
+        stubFor(post(urlEqualTo("/send/template/"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("mailSend.ok.json")));
+        var response = mailService
+                .sendTemplate(new OrderPaymentConfirmedTemplate()
+                        .create(
+                                "maxmorev@gmail.com",
+                                "Maxim Morev",
+                                100L
+                        ));
+        assertNotNull(response);
+        assertEquals("0102017092c7d656-417dd273-459f-40f4-96e9-c291686d374e-000000",
+                response.getMessageId());
+    }
+
+    @Test
+    public void orderPaymentConfirmedAdminSuccessTest() {
+        stubFor(post(urlEqualTo("/send/template/"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("mailSend.ok.json")));
+        var response = mailService
+                .sendTemplate(new OrderPaymentConfirmedAdminTemplate()
+                        .create(
+                                "info@titsonfire.store",
+                                100L));
+        assertNotNull(response);
+        assertEquals("0102017092c7d656-417dd273-459f-40f4-96e9-c291686d374e-000000",
+                response.getMessageId());
     }
 
 }

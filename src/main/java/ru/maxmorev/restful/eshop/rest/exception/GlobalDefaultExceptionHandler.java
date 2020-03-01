@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.maxmorev.restful.eshop.rest.response.Message;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,7 @@ public class GlobalDefaultExceptionHandler {
      * @return
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(value = org.springframework.dao.DataAccessException.class)
+    @ExceptionHandler(value = {org.springframework.dao.DataAccessException.class, PersistenceException.class})
     @ResponseBody
     public Message handleHibernateException(HttpServletRequest req, Exception ex) {
         Message responseMessage = new Message(Message.ERROR, req.getRequestURL().toString(), "Internal storage error", Collections.EMPTY_LIST);

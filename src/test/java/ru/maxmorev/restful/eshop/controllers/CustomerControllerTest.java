@@ -1,11 +1,14 @@
 package ru.maxmorev.restful.eshop.controllers;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.annotation.DirtiesContext;
@@ -28,6 +31,9 @@ import ru.maxmorev.restful.eshop.services.CustomerService;
 
 import java.util.Optional;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 4555)
 @RunWith(SpringRunner.class)
 @DisplayName("Integration controller (CustomerController) test")
 @SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
@@ -62,6 +69,12 @@ public class CustomerControllerTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     })
     public void createCustomerTest() throws Exception {
+        stubFor(WireMock.post(urlEqualTo("/send/template/"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("mailSend.ok.json")));
+
         Customer customer = Customer
                 .builder()
                 .email("test@titsonfire.store")
@@ -78,8 +91,7 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email", is("test@titsonfire.store")))
-                .andExpect(jsonPath("$.id").isNumber())
-                ;
+                .andExpect(jsonPath("$.id").isNumber());
     }
 
     @Test

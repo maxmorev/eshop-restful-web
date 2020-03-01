@@ -1,11 +1,16 @@
 package ru.maxmorev.restful.eshop.services;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -25,6 +30,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,6 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 4555)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ServiceTestConfig.class, ServiceConfig.class, MailTestConfig.class})
 @DisplayName("Integration Customer Service Test")
@@ -53,6 +63,11 @@ public class CustomerServiceTest {
                     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     public void testCreateCustomerAndVerifyByEmail() {
+        stubFor(WireMock.post(urlEqualTo("/send/template/"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("mailSend.ok.json")));
         Customer customer = Customer
                 .builder()
                 .email("test@titsonfire.store")
@@ -77,6 +92,7 @@ public class CustomerServiceTest {
     @DisplayName("should throw exception while create customer couse address is null")
     @Transactional
     public void testErrorCreateCustomerAndVerifyByEmail() {
+
         Customer customer = Customer
                 .builder()
                 .email("test@titsonfire.store")
@@ -87,8 +103,7 @@ public class CustomerServiceTest {
                 .country("Russia")
                 .password("helloFreakBitches")
                 .build();
-        customer = customerService.createCustomerAndVerifyByEmail(customer);
-        assertThrows(javax.validation.ConstraintViolationException.class, em::flush);
+        assertThrows(javax.validation.ConstraintViolationException.class, () -> customerService.createCustomerAndVerifyByEmail(customer));
     }
 
     @Test
@@ -106,7 +121,7 @@ public class CustomerServiceTest {
                 .country("Russia")
                 .password("helloFreakBitches")
                 .build();
-        assertThrows(org.springframework.mail.MailPreparationException.class, () -> customerService.createCustomerAndVerifyByEmail(customer));
+        assertThrows(FeignException.class, () -> customerService.createCustomerAndVerifyByEmail(customer));
         //assertThrows(javax.validation.ConstraintViolationException.class, em::flush);
     }
 

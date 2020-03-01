@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.CustomerOrderStatus;
 import ru.maxmorev.restful.eshop.annotation.PaymentProvider;
+import ru.maxmorev.restful.eshop.config.ManagerConfig;
 import ru.maxmorev.restful.eshop.config.OrderConfiguration;
 import ru.maxmorev.restful.eshop.entities.CommodityBranch;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerOrder;
 import ru.maxmorev.restful.eshop.entities.Purchase;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
+import ru.maxmorev.restful.eshop.feignclient.MailService;
+import ru.maxmorev.restful.eshop.feignclient.domain.OrderPaymentConfirmedAdminTemplate;
+import ru.maxmorev.restful.eshop.feignclient.domain.OrderPaymentConfirmedTemplate;
 import ru.maxmorev.restful.eshop.repository.CommodityBranchRepository;
 import ru.maxmorev.restful.eshop.repository.CustomerOrderRepository;
 import ru.maxmorev.restful.eshop.repository.ShoppingCartRepository;
@@ -34,11 +38,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderPurchaseServiceImpl implements OrderPurchaseService {
 
-    private CustomerService customerService;
-    private CustomerOrderRepository customerOrderRepository;
-    private CommodityBranchRepository commodityBranchRepository;
-    private ShoppingCartRepository shoppingCartRepository;
-    private OrderConfiguration orderConfiguration;
+    private final CustomerService customerService;
+    private final CustomerOrderRepository customerOrderRepository;
+    private final CommodityBranchRepository commodityBranchRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
+    private final OrderConfiguration orderConfiguration;
+    private final NotificationService notificationService;
 
     @Override
     public CustomerOrder createOrderFor(Customer customer) {
@@ -58,6 +63,7 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
         return customerOrderRepository.save(newOrder);
     }
 
+
     @Override
     public CustomerOrder confirmPaymentOrder(CustomerOrder order, PaymentProvider paymentProvider, String paymentID) {
         if (!CustomerOrderStatus.AWAITING_PAYMENT.equals(order.getStatus()))
@@ -71,6 +77,11 @@ public class OrderPurchaseServiceImpl implements OrderPurchaseService {
             shoppingCart.getShoppingSet().clear();
             shoppingCartRepository.save(shoppingCart);
         }
+        notificationService.orderPaymentConfirmation(
+                order.getCustomer().getEmail(),
+                order.getCustomer().getFullName(),
+                order.getId()
+        );
         return customerOrderRepository.save(order);
     }
 

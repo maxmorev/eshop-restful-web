@@ -45,3 +45,7 @@ cart:
   maxItemsAmount: 3
 server:
   port: 8888
+
+manager:
+  email: info@titsonfire.store
+

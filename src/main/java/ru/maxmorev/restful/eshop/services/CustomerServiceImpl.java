@@ -12,12 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maxmorev.restful.eshop.annotation.AuthorityValues;
-import ru.maxmorev.restful.eshop.domain.Mail;
 import ru.maxmorev.restful.eshop.entities.Customer;
 import ru.maxmorev.restful.eshop.entities.CustomerInfo;
 import ru.maxmorev.restful.eshop.entities.ShoppingCart;
 import ru.maxmorev.restful.eshop.repository.CustomerRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,8 +30,10 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     private CustomerRepository customerRepository;
     private PasswordEncoder bcryptEncoder;
     private MessageSource messageSource;
-    private MailService mailService;
     private ShoppingCartService shoppingCartService;
+    private NotificationService notificationService;
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
@@ -43,8 +46,8 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
     }
 
     @Autowired
-    public void setMailService(MailService ms) {
-        this.mailService = ms;
+    public void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     @Autowired
@@ -80,20 +83,11 @@ public class CustomerServiceImpl implements CustomerService, UserDetailsService 
             customer.setShoppingCart(sc);
         }
         created = customerRepository.save(customer);
-        Mail mail = Mail
-                .builder()
-                .to(customer.getEmail())
-                .subject(messageSource.getMessage("mail.plain.subject", new Object[]{}, LocaleContextHolder.getLocale()))
-                .text(messageSource.getMessage("mail.plain.text", new Object[]{customer.getFullName(), customer.getVerifyCode()}, LocaleContextHolder.getLocale()))
-                .build();
-        Boolean isMailSend = mailService.sendPlainEmail(mail);
-        if (!isMailSend) {
-            log.info("Mail sending error");
-            throw new RuntimeException(messageSource.getMessage("mail.sending.error", new Object[]{
-                    created.getFullName(), created.getVerifyCode()
-            }, LocaleContextHolder.getLocale()));
-        }
-
+        em.flush();
+        notificationService.emailVerification(
+                customer.getEmail(),
+                customer.getFullName(),
+                customer.getVerifyCode());
         return created;
     }
 
