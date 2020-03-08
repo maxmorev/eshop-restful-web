@@ -46,8 +46,8 @@ public class MailServiceTest {
         var response = mailService
                 .sendTemplate(new VerifyEmailTemplate()
                         .create("maxmorev@gmail.com",
-                                "ZfGT",
-                                "Maxim Morev"));
+                                "Maxim Morev",
+                                "ZfGT"));
         assertNotNull(response);
         assertEquals("0102017092c7d656-417dd273-459f-40f4-96e9-c291686d374e-000000",
                 response.getMessageId());
@@ -63,8 +63,8 @@ public class MailServiceTest {
         mailService
                 .sendTemplate(new VerifyEmailTemplate()
                         .create("maxmorev@gmail.com",
-                                "ZfGT",
-                                "Maxim Morev"));
+                                "Maxim Morev",
+                                "ZfGT"));
     }
 
     @Test

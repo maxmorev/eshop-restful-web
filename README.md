@@ -65,3 +65,8 @@ Run your Java application as a Service on linux
 https://medium.com/@sulmansarwar/run-your-java-application-as-a-service-on-ubuntu-544531bd6102
 
 https://docs.spring.io/spring-boot/docs/1.3.1.RELEASE/reference/html/deployment-install.html
+
+### Kubernetes
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes
+
+
